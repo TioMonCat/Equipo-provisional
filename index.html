@@ -7,7 +7,6 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -32,6 +31,30 @@
     <div class="contenedor">
         
         <div id="inicio" class="tab-content" style="display: block;">
+            
+            <div id="panel-auth" style="background: var(--tarjeta); padding: 30px; border-radius: 15px; max-width: 500px; margin: 0 auto 30px; border: 1px solid #333;">
+                <h3 id="auth-titulo" style="color: var(--acento); text-align: center; margin-top: 0;">Iniciar Sesión</h3>
+                
+                <div id="campos-registro" style="display: none;">
+                    <input type="text" id="auth-nombre" placeholder="Nombre">
+                    <input type="text" id="auth-apellido" placeholder="Apellido">
+                </div>
+                
+                <input type="email" id="auth-email" placeholder="Correo electrónico" required>
+                <input type="password" id="auth-pass" placeholder="Contraseña" required>
+                
+                <button id="btn-accion-auth" onclick="procesarAuth()">ENTRAR AL PIT LANE</button>
+                
+                <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: var(--texto-secundario);">
+                    ¿No eres miembro? <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento);">Registrar un piloto</a>
+                </p>
+            </div>
+
+            <div id="panel-privado" style="display: none; background: var(--tarjeta); padding: 20px; border-radius: 15px; max-width: 500px; margin: 0 auto 30px; text-align: center; border: 1px solid var(--acento);">
+                <h3 style="color: var(--acento); margin-top: 0;">¡Bienvenido, <span id="nombre-piloto-activo">Piloto</span>!</h3>
+                <button onclick="cerrarSesion()" style="background: #d9534f; margin-top: 10px; max-width: 200px;">Desconectar</button>
+            </div>
+
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
@@ -84,38 +107,15 @@
 
         <div id="asistencia" class="tab-content">
             <header>
-                <h2>Control de Telemetría y Asistencia</h2>
-                <p>Identifícate con tu tag de competición para acceder al panel de la crew.</p>
+                <h2>Asistencia a Pista</h2>
+                <p>Aquí se listarán las próximas carreras para confirmar tu participación.</p>
+                <p style="color: var(--acento);">(Requiere iniciar sesión en la pestaña de Inicio)</p>
             </header>
-
-            <div id="panel-auth" style="background: var(--tarjeta); padding: 30px; border-radius: 15px; max-width: 400px; margin: 0 auto; border: 1px solid #333;">
-                
-                <h3 id="auth-titulo" style="color: var(--acento); text-align: center; margin-top: 0;">Iniciar Sesión</h3>
-                
-                <input type="text" id="auth-nickname" placeholder="Tu Gamertag (Ej. Piloto_Principal)" style="display: none;">
-                
-                <input type="email" id="auth-email" placeholder="Correo electrónico" required>
-                <input type="password" id="auth-pass" placeholder="Contraseña" required>
-                
-                <button id="btn-accion-auth" onclick="procesarAuth()">ENTRAR AL PIT LANE</button>
-                
-                <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: var(--texto-secundario);">
-                    ¿El equipo es nuevo? <a href="#" onclick="cambiarModoAuth()" style="color: var(--acento);">Registrar un piloto</a>
-                </p>
-            </div>
-
-            <div id="panel-privado" style="display: none; background: var(--tarjeta); padding: 30px; border-radius: 15px; max-width: 600px; margin: 0 auto; text-align: center;">
-                <h3 style="color: var(--acento);">¡Conexión establecida, <span id="nombre-piloto-activo">Piloto</span>!</h3>
-                <p>Tus permisos están validados. Próximamente aquí verás las fechas para confirmar tu coche y rol.</p>
-                
-                <button onclick="cerrarSesion()" style="background: #d9534f; margin-top: 20px;">Desconectar</button>
-            </div>
         </div>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    
     <script src="js/ui.js"></script>
     <script type="module" src="js/firebase-config.js"></script>
 </body>
