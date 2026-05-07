@@ -15,8 +15,14 @@
 
     <nav>
         <div class="logo">TEAM <span>PORTAL</span></div>
-        <div class="menu-icon" onclick="toggleMenu()">
-            <i class="fa-solid fa-bars-staggered"></i>
+        <div class="nav-controls">
+            <div class="auth-buttons-mini" id="nav-auth-buttons">
+                <button class="btn-mini btn-mini-outline" onclick="abrirLogin()">Entrar</button>
+                <button class="btn-mini" onclick="abrirRegistro()">Registrarse</button>
+            </div>
+            <div class="menu-icon" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </div>
         </div>
     </nav>
 
@@ -33,8 +39,8 @@
         <div id="inicio" class="tab-content" style="display: block;">
             
             <div id="acceso-rapido" style="text-align: center; margin-bottom: 30px;">
-                <button onclick="showSection('zona-login')" class="btn-secundario" style="max-width: 250px;">
-                    <i class="fa-solid fa-right-to-bracket"></i> Identificación de Piloto
+                <button onclick="showSection('postulacion')" class="btn-secundario" style="max-width: 250px;">
+                    <i class="fa-solid fa-file-signature"></i> Postular al Equipo
                 </button>
             </div>
 
@@ -97,19 +103,8 @@
                 <h2>Roster Oficial</h2>
                 <p>Alineación actual del equipo de resistencia</p>
             </header>
-            <div class="grid-pilotos">
-                <div class="card-piloto">
-                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop" class="img-piloto">
-                    <h3>Benjamin V.</h3>
-                    <p><i class="fa-solid fa-location-dot" style="color:var(--acento)"></i> Chile</p>
-                    <span class="rol-tag">Driver Principal</span>
-                </div>
-                <div class="card-piloto">
-                    <img src="https://images.unsplash.com/photo-1541447237128-f4cac6138fbe?q=80&w=400&auto=format&fit=crop" class="img-piloto">
-                    <h3>Copiloto MX</h3>
-                    <p><i class="fa-solid fa-location-dot" style="color:var(--acento)"></i> México</p>
-                    <span class="rol-tag">Telemetría / Co-Driver</span>
-                </div>
+            <div class="grid-pilotos" id="contenedor-pilotos">
+                <!-- Aquí se cargarán los pilotos dinámicamente -->
             </div>
         </div>
 
@@ -118,7 +113,7 @@
                 <h2>Temporada 2026</h2>
                 <p>Cronograma oficial del campeonato</p>
             </header>
-            <img src="https://via.placeholder.com/1000x1200/12141a/e60000?text=CALENDARIO+WEC" class="calendario-img" alt="Calendario del equipo">
+            <img src="img/HorariosERCNG.png" class="calendario-img" alt="Calendario oficial del equipo">
         </div>
 
         <div id="asistencia" class="tab-content">
@@ -142,6 +137,20 @@
 
             <div id="lista-carreras" style="display: none; max-width: 800px; margin: 0 auto;">
                 </div>
+        </div>
+
+        <div id="postulacion" class="tab-content">
+            <header>
+                <h2>Formulario de Postulación</h2>
+                <p>Envía tu solicitud para unirte a la parrilla de pilotos.</p>
+            </header>
+
+            <div class="panel-racing" style="max-width: 800px; margin: 0 auto;">
+                <h3><i class="fa-solid fa-file-signature"></i> Datos del Piloto</h3>
+                <p style="font-family: 'Rajdhani'; color: var(--texto-secundario); font-size: 1.1rem;">
+                    Próximamente aquí encontrarás los campos necesarios para enviar tu postulación al equipo. ¡Gracias por tu interés!
+                </p>
+            </div>
         </div>
 
     </div>

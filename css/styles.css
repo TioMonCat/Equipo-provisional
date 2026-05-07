@@ -46,6 +46,13 @@ nav {
 .menu-icon { font-size: 1.5rem; cursor: pointer; transition: 0.3s; color: var(--acento); }
 .menu-icon:hover { color: #fff; transform: scale(1.1); }
 
+/* --- CONTROLES DE NAVEGACIÓN --- */
+.nav-controls { display: flex; align-items: center; gap: 20px; }
+.auth-buttons-mini { display: flex; gap: 10px; }
+.btn-mini { width: auto; padding: 6px 15px; font-size: 0.9rem; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+.btn-mini-outline { background: transparent; border: 1px solid var(--acento); color: var(--acento); clip-path: none; border-radius: 3px; }
+.btn-mini-outline:hover { background: var(--acento); color: #fff; }
+
 /* --- MENÚ LATERAL --- */
 .sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: rgba(11, 12, 16, 0.95); backdrop-filter: blur(10px); z-index: 200; display: flex; flex-direction: column; padding: 40px 20px; transition: 0.4s ease-in-out; border-left: 1px solid var(--borde); }
 .sidebar.active { right: 0; }

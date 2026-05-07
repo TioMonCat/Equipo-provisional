@@ -1,7 +1,7 @@
 // IMPORTAMOS TODAS LAS LIBRERÍAS NECESARIAS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, updateDoc, arrayUnion, arrayRemove, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- CONFIGURACIÓN DE FIREBASE ---
 const firebaseConfig = {
@@ -30,6 +30,16 @@ window.cambiarModoAuth = function() {
     document.getElementById('campos-registro').style.display = modoRegistro ? "block" : "none";
 };
 
+window.abrirLogin = function() {
+    if (typeof showSection === 'function') showSection('zona-login');
+    if (modoRegistro) window.cambiarModoAuth();
+};
+
+window.abrirRegistro = function() {
+    if (typeof showSection === 'function') showSection('zona-login');
+    if (!modoRegistro) window.cambiarModoAuth();
+};
+
 // --- LÓGICA DE PROCESAMIENTO ---
 window.procesarAuth = async function() {
     const email = document.getElementById('auth-email').value;
@@ -46,6 +56,7 @@ window.procesarAuth = async function() {
             await setDoc(doc(db, "pilotos", credencial.user.uid), {
                 correo: email, nombre: nombre, apellido: apellido, rol: "piloto", fechaRegistro: new Date()
             });
+            cargarRoster(); // Actualizamos la vista de pilotos de inmediato al crearse la cuenta
             mostrarPanelPrivado(`${nombre} ${apellido}`, "piloto", credencial.user.uid);
         } else {
             const credencial = await signInWithEmailAndPassword(auth, email, pass);
@@ -72,6 +83,9 @@ function mostrarPanelPrivado(nombreCompleto, rol, uid) {
     document.getElementById('acceso-rapido').style.display = "none";
     document.getElementById('panel-privado').style.display = "block";
     document.getElementById('nombre-piloto-activo').innerText = nombreCompleto;
+
+    const navAuth = document.getElementById('nav-auth-buttons');
+    if(navAuth) navAuth.style.display = "none";
 
     const herramientasAdmin = document.getElementById('herramientas-admin');
     const panelCrearCarrera = document.getElementById('panel-crear-carrera');
@@ -102,6 +116,9 @@ window.cerrarSesion = function() {
         document.getElementById('panel-auth').style.display = "block";
         document.getElementById('acceso-rapido').style.display = "block";
         document.getElementById('panel-privado').style.display = "none";
+        
+        const navAuth = document.getElementById('nav-auth-buttons');
+        if(navAuth) navAuth.style.display = "flex";
         
         document.getElementById('msg-no-login').style.display = "block";
         document.getElementById('lista-carreras').style.display = "none";
@@ -234,3 +251,55 @@ window.eliminarCarrera = async function(idCarrera) {
         }
     }
 }
+
+// ==========================================
+// LÓGICA DE ROSTER (PILOTOS)
+// ==========================================
+
+window.cargarRoster = async function() {
+    const contenedor = document.getElementById('contenedor-pilotos');
+    if (!contenedor) return;
+
+    contenedor.innerHTML = "<p style='text-align: center; grid-column: 1 / -1; color: var(--texto-secundario);'>Cargando datos de pilotos...</p>";
+
+    try {
+        // Solo traemos a los usuarios que sean 'piloto' o 'admin'
+        const q = query(collection(db, "pilotos"), where("rol", "in", ["piloto", "admin"]));
+        const querySnapshot = await getDocs(q);
+        
+        contenedor.innerHTML = "";
+
+        if (querySnapshot.empty) {
+            contenedor.innerHTML = "<p style='text-align: center; grid-column: 1 / -1; color: var(--texto-secundario);'>Aún no hay pilotos en el roster oficial.</p>";
+            return;
+        }
+
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            
+            // Procesamos el nombre para que salga como "Benjamín V."
+            let nombreFormateado = data.nombre || "Piloto";
+            if (data.apellido) {
+                nombreFormateado += ` ${data.apellido.charAt(0).toUpperCase()}.`;
+            }
+
+            let etiquetaRol = data.rol === "admin" ? "Director / Driver" : "Driver Oficial";
+            const imagenPorDefecto = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop";
+            
+            contenedor.innerHTML += `
+                <div class="card-piloto">
+                    <img src="${imagenPorDefecto}" class="img-piloto">
+                    <h3>${nombreFormateado}</h3>
+                    <p><i class="fa-solid fa-location-dot" style="color:var(--acento)"></i> Archivo Clasificado</p>
+                    <span class="rol-tag">${etiquetaRol}</span>
+                </div>
+            `;
+        });
+    } catch (error) {
+        console.error("Error cargando el roster:", error);
+        contenedor.innerHTML = "<p style='text-align: center; grid-column: 1 / -1; color: #d9534f;'>Error al conectar con la telemetría.</p>";
+    }
+};
+
+// Llamamos a la función automáticamente cuando el script termine de cargar
+cargarRoster();
