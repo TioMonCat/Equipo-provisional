@@ -1,28 +1,36 @@
 // Función para abrir/cerrar el menú lateral
 function toggleMenu() {
-    document.getElementById('sidebar').classList.toggle('active');
-    document.getElementById('overlay').classList.toggle('active');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
 }
 
-// Función para cambiar de sección (pestañas)
+// Función para cambiar de sección de forma segura
 function showSection(id) {
     // 1. Ocultar todas las secciones
     const sections = document.querySelectorAll('.tab-content');
     sections.forEach(s => s.style.display = 'none');
     
-    // 2. Mostrar solo la elegida
-    document.getElementById(id).style.display = 'block';
-    
-    // 3. Cerrar el menú lateral automáticamente
-    toggleMenu();
+    // 2. Mostrar la sección destino
+    const target = document.getElementById(id);
+    if (target) {
+        target.style.display = 'block';
+    }
 
-    // 4. Si volvemos a inicio, forzamos a Swiper a actualizarse para evitar errores visuales
-    if(id === 'inicio') { 
+    // 3. Cerrar el menú lateral SOLO si está abierto
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('active')) {
+        toggleMenu();
+    }
+
+    // 4. Actualizar Swiper si volvemos a inicio
+    if (id === 'inicio' && typeof swiper !== 'undefined') { 
         swiper.update(); 
     }
 }
 
-// Inicialización del Carrusel (Swiper)
+// Inicialización del Carrusel
 const swiper = new Swiper(".mySwiper", {
     loop: true,
     autoplay: { delay: 5000 },
