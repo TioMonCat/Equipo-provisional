@@ -124,9 +124,23 @@
         <div id="asistencia" class="tab-content">
             <header>
                 <h2>Asistencia a Pista</h2>
-                <p>Aquí se listarán las próximas carreras para confirmar tu participación.</p>
-                <p style="color: var(--acento);">(Requiere iniciar sesión en la pestaña de Inicio)</p>
+                <p>Gestiona tu participación en los próximos eventos oficiales.</p>
             </header>
+
+            <div id="msg-no-login" style="text-align: center; padding: 20px; background: var(--tarjeta); border-radius: 10px;">
+                <p style="color: var(--acento); font-weight: bold;">Debes iniciar sesión en la pestaña de Inicio para ver las carreras.</p>
+            </div>
+
+            <div id="panel-crear-carrera" style="display: none; background: var(--tarjeta); padding: 20px; border-radius: 15px; border: 1px dashed var(--acento); margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                <h3 style="color: var(--acento); margin-top: 0; text-align: center;">+ Añadir Nueva Carrera</h3>
+                <input type="text" id="nueva-carrera-nombre" placeholder="Nombre del Evento (Ej: Rally de Suecia)">
+                <input type="date" id="nueva-carrera-fecha" style="width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 8px;">
+                <input type="text" id="nueva-carrera-pista" placeholder="Pista / Tramo">
+                <button onclick="crearCarrera()" style="background: var(--acento); color: #000;">Guardar Evento en la BD</button>
+            </div>
+
+            <div id="lista-carreras" style="display: none; max-width: 800px; margin: 0 auto;">
+                </div>
         </div>
 
     </div>
