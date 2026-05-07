@@ -1,0 +1,66 @@
+:root {
+    --fondo: #0a0a0a;
+    --tarjeta: #161616;
+    --acento: #00adb5;
+    --texto: #ffffff;
+    --texto-secundario: #a0a0a0;
+    --vidrio: rgba(22, 22, 22, 0.8);
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--fondo);
+    color: var(--texto);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* --- NAVEGACIÓN --- */
+nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background: var(--tarjeta); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
+.logo { font-size: 1.5rem; font-weight: bold; color: var(--acento); letter-spacing: 2px; }
+.menu-icon { font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+.menu-icon:hover { color: var(--acento); }
+
+/* --- MENÚ LATERAL (SIDEBAR) --- */
+.sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: var(--vidrio); backdrop-filter: blur(15px); z-index: 200; display: flex; flex-direction: column; padding: 40px 20px; transition: 0.5s cubic-bezier(0.77,0.2,0.05,1.0); box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+.sidebar.active { right: 0; }
+.sidebar a { text-decoration: none; color: var(--texto); font-size: 1.2rem; margin: 15px 0; padding: 10px; border-radius: 8px; transition: 0.3s; display: flex; align-items: center; gap: 15px; }
+.sidebar a:hover { background: var(--acento); color: var(--fondo); font-weight: bold; }
+.close-btn { align-self: flex-end; font-size: 2rem; cursor: pointer; margin-bottom: 20px; }
+
+/* Overlay */
+.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 150; }
+.overlay.active { display: block; }
+
+/* --- CONTENIDO PRINCIPAL --- */
+.contenedor { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.tab-content { display: none; animation: fadeIn 0.6s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- SECCIÓN INICIO (CARRUSEL) --- */
+.swiper { width: 100%; height: 450px; border-radius: 20px; }
+.swiper-slide img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+.slide-info { position: absolute; bottom: 50px; left: 50px; }
+.slide-info h2 { font-size: 2.5rem; margin: 0; }
+.slide-info p { color: var(--acento); font-size: 1.2rem; margin: 5px 0; }
+
+/* --- SECCIÓN PILOTOS --- */
+.grid-pilotos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
+.card-piloto { background: var(--tarjeta); border-radius: 15px; overflow: hidden; text-align: center; padding-bottom: 20px; border: 1px solid #222; transition: 0.3s; }
+.card-piloto:hover { border-color: var(--acento); transform: translateY(-5px); }
+.img-piloto { width: 100%; height: 200px; background: #222; object-fit: cover; margin-bottom: 15px; }
+.card-piloto h3 { margin: 10px 0 5px; font-size: 1.4rem; }
+.card-piloto p { color: var(--texto-secundario); margin: 0; font-size: 0.9rem; }
+.rol-tag { display: inline-block; margin-top: 10px; padding: 4px 12px; background: rgba(0, 173, 181, 0.2); color: var(--acento); border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+
+/* --- SECCIÓN CALENDARIO --- */
+.calendario-img { width: 100%; max-width: 800px; display: block; margin: 20px auto; border-radius: 15px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+/* --- FORMULARIO --- */
+form { background: var(--tarjeta); padding: 30px; border-radius: 15px; max-width: 600px; margin: 0 auto; }
+input, select, textarea { width: 100%; padding: 12px; margin: 10px 0 20px; background: #222; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+button { width: 100%; padding: 15px; background: var(--acento); color: var(--fondo); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+button:hover { background: #008f96; transform: scale(1.02); }
+
+header { text-align: center; margin-bottom: 30px; }
+header h2 { color: var(--acento); font-size: 2rem; margin-bottom: 5px; }
