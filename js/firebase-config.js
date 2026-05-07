@@ -3,14 +3,14 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // ==========================================
-// 1. FUNCIONES DE INTERFAZ (Las cargamos primero para evitar bloqueos)
+// 1. FUNCIONES DE INTERFAZ
 // ==========================================
 let modoRegistro = false;
 
 window.cambiarModoAuth = function() {
     modoRegistro = !modoRegistro;
     document.getElementById('auth-titulo').innerText = modoRegistro ? "Registrar Nuevo Piloto" : "Iniciar Sesión";
-    document.getElementById('btn-accion-auth').innerText = modoRegistro ? "CREAR CUENTA" : "ENTRAR AL PIT LANE";
+    document.getElementById('btn-accion-auth').innerText = modoRegistro ? "CREAR CUENTA" : "INGRESAR AL SISTEMA";
     document.getElementById('campos-registro').style.display = modoRegistro ? "block" : "none";
 };
 
@@ -18,15 +18,14 @@ window.cambiarModoAuth = function() {
 // 2. CONFIGURACIÓN DE FIREBASE (¡Pega tus llaves aquí!)
 // ==========================================
 const firebaseConfig = {
-    apiKey: "AIzaSyC5TAQqe8BnKb6-72jO6cMhON9jCw0fzDA",
-    authDomain: "paginaequipo-44b7a.firebaseapp.com",
-    projectId: "paginaequipo-44b7a",
-    storageBucket: "paginaequipo-44b7a.firebasestorage.app",
-    messagingSenderId: "701179395550",
-    appId: "1:701179395550:web:4e52577f8eac5b91d8714f"
+      apiKey: "AIzaSyC5TAQqe8BnKb6-72jO6cMhON9jCw0fzDA",
+      authDomain: "paginaequipo-44b7a.firebaseapp.com",
+      projectId: "paginaequipo-44b7a",
+      storageBucket: "paginaequipo-44b7a.firebasestorage.app",
+      messagingSenderId: "701179395550",
+      appId: "1:701179395550:web:4e52577f8eac5b91d8714f"
 };
 
-// Inicializamos servicios
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -52,7 +51,6 @@ window.procesarAuth = async function() {
             await setDoc(doc(db, "pilotos", credencial.user.uid), {
                 correo: email, nombre: nombre, apellido: apellido, rol: "piloto", fechaRegistro: new Date()
             });
-            alert("Registro exitoso.");
             mostrarPanelPrivado(`${nombre} ${apellido}`);
         } else {
             const credencial = await signInWithEmailAndPassword(auth, email, pass);
@@ -65,20 +63,34 @@ window.procesarAuth = async function() {
         }
     } catch (error) {
         console.error("Error en Firebase:", error);
-        alert("Error de acceso. Revisa la consola para más detalles.");
+        alert("Error de acceso. Verifica tus credenciales.");
     }
 };
 
+// ==========================================
+// 4. CONTROL DE SESIÓN Y REDIRECCIÓN
+// ==========================================
 function mostrarPanelPrivado(nombreCompleto) {
+    // 1. Ocultar el formulario de Login y el botón de acceso rápido
     document.getElementById('panel-auth').style.display = "none";
+    document.getElementById('acceso-rapido').style.display = "none";
+    
+    // 2. Mostrar el panel de Bienvenida en la página de inicio
     document.getElementById('panel-privado').style.display = "block";
     document.getElementById('nombre-piloto-activo').innerText = nombreCompleto;
+
+    // 3. Redireccionar automáticamente a la pestaña de Inicio usando la función de ui.js
+    window.showSection('inicio');
 }
 
 window.cerrarSesion = function() {
     signOut(auth).then(() => {
+        // Restaurar estado visual
         document.getElementById('panel-auth').style.display = "block";
+        document.getElementById('acceso-rapido').style.display = "block";
         document.getElementById('panel-privado').style.display = "none";
+        
+        // Limpiar inputs
         document.getElementById('auth-email').value = "";
         document.getElementById('auth-pass').value = "";
         document.getElementById('auth-nombre').value = "";
