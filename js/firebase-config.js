@@ -45,15 +45,17 @@ window.procesarAuth = async function() {
             await setDoc(doc(db, "pilotos", credencial.user.uid), {
                 correo: email, nombre: nombre, apellido: apellido, rol: "piloto", fechaRegistro: new Date()
             });
-            mostrarPanelPrivado(`${nombre} ${apellido}`);
+            // Pasamos "piloto" por defecto al registrarse
+            mostrarPanelPrivado(`${nombre} ${apellido}`, "piloto");
         } else {
             const credencial = await signInWithEmailAndPassword(auth, email, pass);
             const pilotoDoc = await getDoc(doc(db, "pilotos", credencial.user.uid));
             if (pilotoDoc.exists()) {
                 const d = pilotoDoc.data();
-                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`);
+                // Pasamos el rol real que está en la base de datos
+                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol);
             } else {
-                mostrarPanelPrivado(email);
+                mostrarPanelPrivado(email, "piloto");
             }
         }
     } catch (error) {
@@ -62,20 +64,29 @@ window.procesarAuth = async function() {
     }
 };
 
-// --- FUNCIÓN DE REDIRECCIÓN CORREGIDA ---
-function mostrarPanelPrivado(nombreCompleto) {
+// --- FUNCIÓN DE REDIRECCIÓN Y VERIFICACIÓN DE ROL ---
+function mostrarPanelPrivado(nombreCompleto, rol) {
     // 1. Actualizar elementos visuales
     document.getElementById('panel-auth').style.display = "none";
     document.getElementById('acceso-rapido').style.display = "none";
     document.getElementById('panel-privado').style.display = "block";
     document.getElementById('nombre-piloto-activo').innerText = nombreCompleto;
 
-    // 2. Redirección con pequeño retraso para estabilidad
+    // 2. Lógica de Administrador: Buscar el panel oculto y mostrarlo si es admin
+    const herramientasAdmin = document.getElementById('herramientas-admin');
+    if (herramientasAdmin) {
+        if (rol === "admin") {
+            herramientasAdmin.style.display = "block";
+        } else {
+            herramientasAdmin.style.display = "none";
+        }
+    }
+
+    // 3. Redirección con pequeño retraso para estabilidad
     setTimeout(() => {
         if (typeof showSection === 'function') {
             showSection('inicio');
         } else {
-            // Fallback si la función global no responde
             const sections = document.querySelectorAll('.tab-content');
             sections.forEach(s => s.style.display = 'none');
             document.getElementById('inicio').style.display = 'block';
@@ -88,6 +99,13 @@ window.cerrarSesion = function() {
         document.getElementById('panel-auth').style.display = "block";
         document.getElementById('acceso-rapido').style.display = "block";
         document.getElementById('panel-privado').style.display = "none";
+        
+        // Ocultar panel de admin por seguridad al cerrar sesión
+        const herramientasAdmin = document.getElementById('herramientas-admin');
+        if (herramientasAdmin) {
+            herramientasAdmin.style.display = "none";
+        }
+
         // Limpiar campos
         document.getElementById('auth-email').value = "";
         document.getElementById('auth-pass').value = "";
