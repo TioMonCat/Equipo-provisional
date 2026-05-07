@@ -32,26 +32,14 @@
         
         <div id="inicio" class="tab-content" style="display: block;">
             
-            <div id="panel-auth" style="background: var(--tarjeta); padding: 30px; border-radius: 15px; max-width: 500px; margin: 0 auto 30px; border: 1px solid #333;">
-                <h3 id="auth-titulo" style="color: var(--acento); text-align: center; margin-top: 0;">Iniciar Sesión</h3>
-                
-                <div id="campos-registro" style="display: none;">
-                    <input type="text" id="auth-nombre" placeholder="Nombre">
-                    <input type="text" id="auth-apellido" placeholder="Apellido">
-                </div>
-                
-                <input type="email" id="auth-email" placeholder="Correo electrónico" required>
-                <input type="password" id="auth-pass" placeholder="Contraseña" required>
-                
-                <button id="btn-accion-auth" onclick="procesarAuth()">ENTRAR AL PIT LANE</button>
-                
-                <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: var(--texto-secundario);">
-                    ¿No eres miembro? <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento);">Registrar un piloto</a>
-                </p>
+            <div id="acceso-rapido" style="text-align: center; margin-bottom: 25px;">
+                <button onclick="showSection('zona-login')" style="padding: 10px 20px; max-width: 220px; background: transparent; border: 2px solid var(--acento); color: var(--acento); border-radius: 8px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Ingreso de Pilotos
+                </button>
             </div>
 
             <div id="panel-privado" style="display: none; background: var(--tarjeta); padding: 20px; border-radius: 15px; max-width: 500px; margin: 0 auto 30px; text-align: center; border: 1px solid var(--acento);">
-                <h3 style="color: var(--acento); margin-top: 0;">¡Bienvenido, <span id="nombre-piloto-activo">Piloto</span>!</h3>
+                <h3 style="color: var(--acento); margin-top: 0;">¡Bienvenido al Pit Lane, <span id="nombre-piloto-activo">Piloto</span>!</h3>
                 <button onclick="cerrarSesion()" style="background: #d9534f; margin-top: 10px; max-width: 200px;">Desconectar</button>
             </div>
 
@@ -73,6 +61,26 @@
                     </div>
                 </div>
                 <div class="swiper-pagination"></div>
+            </div>
+        </div>
+
+        <div id="zona-login" class="tab-content">
+            <div id="panel-auth" style="background: var(--tarjeta); padding: 30px; border-radius: 15px; max-width: 500px; margin: 0 auto; border: 1px solid #333;">
+                <h3 id="auth-titulo" style="color: var(--acento); text-align: center; margin-top: 0;">Iniciar Sesión</h3>
+                
+                <div id="campos-registro" style="display: none;">
+                    <input type="text" id="auth-nombre" placeholder="Nombre">
+                    <input type="text" id="auth-apellido" placeholder="Apellido">
+                </div>
+                
+                <input type="email" id="auth-email" placeholder="Correo electrónico" required>
+                <input type="password" id="auth-pass" placeholder="Contraseña" required>
+                
+                <button id="btn-accion-auth" onclick="procesarAuth()">INGRESAR AL SISTEMA</button>
+                
+                <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: var(--texto-secundario);">
+                    ¿Aún no eres miembro? <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento);">Registrar un piloto</a>
+                </p>
             </div>
         </div>
 
