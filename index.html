@@ -109,37 +109,10 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script>
-        // Función para abrir/cerrar menú
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
-        // Función para cambiar de sección
-        function showSection(id) {
-            // Ocultar todas
-            const sections = document.querySelectorAll('.tab-content');
-            sections.forEach(s => s.style.display = 'none');
-            
-            // Mostrar la elegida
-            document.getElementById(id).style.display = 'block';
-            
-            // Cerrar menú
-            toggleMenu();
-
-            // Si es inicio, reinicia Swiper por si acaso
-            if(id === 'inicio') { swiper.update(); }
-        }
-
-        // Configuración Carrusel
-        var swiper = new Swiper(".mySwiper", {
-            loop: true,
-            autoplay: { delay: 5000 },
-            pagination: { el: ".swiper-pagination", clickable: true },
-            observer: true,
-            observeParents: true
-        });
-    </script>
+<!-- Librería JS externa para el Carrusel -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <!-- Nuestros Scripts Modulares -->
+    <script src="js/ui.js"></script>
 </body>
 </html>
