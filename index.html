@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Portal | Official</title>
+    <title>Team Portal | Racing Crew</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -14,7 +14,7 @@
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <nav>
-        <div class="logo">TEAM PORTAL</div>
+        <div class="logo">TEAM <span>PORTAL</span></div>
         <div class="menu-icon" onclick="toggleMenu()">
             <i class="fa-solid fa-bars-staggered"></i>
         </div>
@@ -22,49 +22,48 @@
 
     <div class="sidebar" id="sidebar">
         <div class="close-btn" onclick="toggleMenu()">&times;</div>
-        <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-house"></i> Inicio</a>
-        <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-users"></i> Pilotos</a>
-        <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-calendar-days"></i> Calendario</a>
-        <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-clipboard-check"></i> Asistencia</a>
+        <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-gauge-high"></i> Inicio</a>
+        <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
+        <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
+        <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-stopwatch"></i> Telemetría / Eventos</a>
     </div>
 
     <div class="contenedor">
         
         <div id="inicio" class="tab-content" style="display: block;">
             
-            <div id="acceso-rapido" style="text-align: center; margin-bottom: 25px;">
-                <button onclick="showSection('zona-login')" style="padding: 10px 20px; max-width: 220px; background: transparent; border: 2px solid var(--acento); color: var(--acento); border-radius: 8px;">
-                    <i class="fa-solid fa-right-to-bracket"></i> Ingreso de Pilotos
+            <div id="acceso-rapido" style="text-align: center; margin-bottom: 30px;">
+                <button onclick="showSection('zona-login')" class="btn-secundario" style="max-width: 250px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Identificación de Piloto
                 </button>
             </div>
 
-            <div id="panel-privado" style="display: none; background: var(--tarjeta); padding: 20px; border-radius: 15px; max-width: 500px; margin: 0 auto 30px; text-align: center; border: 1px solid var(--acento);">
-                <h3 style="color: var(--acento); margin-top: 0;">¡Bienvenido al Pit Lane, <span id="nombre-piloto-activo">Piloto</span>!</h3>
+            <div id="panel-privado" class="panel-racing" style="display: none; max-width: 500px; text-align: center;">
+                <h3>CONEXIÓN ESTABLECIDA</h3>
+                <p style="font-size: 1.2rem; margin-bottom: 20px;">Piloto Activo: <span id="nombre-piloto-activo" style="color: var(--acento); font-weight: bold;">---</span></p>
                 
-                <div id="herramientas-admin" style="display: none; margin-top: 20px; padding: 15px; border: 1px dashed var(--acento); border-radius: 8px;">
-                    <p style="font-weight: bold; color: var(--acento); margin-top: 0;">MODO ADMINISTRADOR</p>
-                    <button onclick="showSection('asistencia')" style="background: var(--acento); color: #000; width: 100%;">
-                        Gestionar Fechas y Cupos
-                    </button>
+                <div id="herramientas-admin" style="display: none; padding: 15px; border: 1px dashed var(--acento); background: rgba(230,0,0,0.05); margin-bottom: 20px;">
+                    <p style="font-family: 'Chakra Petch'; color: var(--acento); font-weight: 700; margin-top: 0;">SISTEMA DIRECTOR DE CARRERA</p>
+                    <button onclick="showSection('asistencia')">Gestión de Calendario</button>
                 </div>
 
-                <button onclick="cerrarSesion()" style="background: #d9534f; margin-top: 15px; max-width: 200px;">Desconectar</button>
+                <button onclick="cerrarSesion()" class="btn-peligro">Desconectar Sistema</button>
             </div>
 
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
-                        <img src="https://picsum.photos/id/1071/1200/600" alt="Home 1">
+                        <img src="https://images.unsplash.com/photo-1560636886-b4dc800d3810?q=80&w=1200&auto=format&fit=crop" alt="WEC Garage">
                         <div class="slide-info">
-                            <h2>Sim Racing Pro</h2>
-                            <p>Organización y Competencia</p>
+                            <h2>Endurance Racing</h2>
+                            <p>Desempeño y Estrategia</p>
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <img src="https://picsum.photos/id/1080/1200/600" alt="Home 2">
+                        <img src="https://images.unsplash.com/photo-1614200187524-dc4b892acf16?q=80&w=1200&auto=format&fit=crop" alt="Sim Racing Setup">
                         <div class="slide-info">
-                            <h2>Telemetría Remota</h2>
-                            <p>Análisis de datos en tiempo real</p>
+                            <h2>Análisis Remoto</h2>
+                            <p>Telemetría en tiempo real</p>
                         </div>
                     </div>
                 </div>
@@ -73,70 +72,72 @@
         </div>
 
         <div id="zona-login" class="tab-content">
-            <div id="panel-auth" style="background: var(--tarjeta); padding: 30px; border-radius: 15px; max-width: 500px; margin: 0 auto; border: 1px solid #333;">
-                <h3 id="auth-titulo" style="color: var(--acento); text-align: center; margin-top: 0;">Iniciar Sesión</h3>
+            <div id="panel-auth" class="panel-racing" style="max-width: 450px;">
+                <h3 id="auth-titulo" style="text-align: center;">Acceso al Pit Lane</h3>
                 
                 <div id="campos-registro" style="display: none;">
                     <input type="text" id="auth-nombre" placeholder="Nombre">
                     <input type="text" id="auth-apellido" placeholder="Apellido">
                 </div>
                 
-                <input type="email" id="auth-email" placeholder="Correo electrónico" required>
-                <input type="password" id="auth-pass" placeholder="Contraseña" required>
+                <input type="email" id="auth-email" placeholder="Correo electrónico de comunicación" required>
+                <input type="password" id="auth-pass" placeholder="Clave de seguridad" required>
                 
-                <button id="btn-accion-auth" onclick="procesarAuth()">INGRESAR AL SISTEMA</button>
+                <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SISTEMAS</button>
                 
-                <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: var(--texto-secundario);">
-                    ¿Aún no eres miembro? <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento);">Registrar un piloto</a>
+                <p style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">
+                    ¿Nuevo en la Crew? <br>
+                    <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Solicitar credencial de piloto</a>
                 </p>
             </div>
         </div>
 
         <div id="pilotos" class="tab-content">
             <header>
-                <h2>Nuestra Crew</h2>
-                <p>Estructura oficial del equipo</p>
+                <h2>Roster Oficial</h2>
+                <p>Alineación actual del equipo de resistencia</p>
             </header>
             <div class="grid-pilotos">
                 <div class="card-piloto">
-                    <img src="https://picsum.photos/id/64/400/400" class="img-piloto">
-                    <h3>Nombre Piloto</h3>
-                    <p>Ubicación: Chile</p>
-                    <span class="rol-tag">Piloto Principal</span>
+                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop" class="img-piloto">
+                    <h3>Benjamin V.</h3>
+                    <p><i class="fa-solid fa-location-dot" style="color:var(--acento)"></i> Chile</p>
+                    <span class="rol-tag">Driver Principal</span>
                 </div>
                 <div class="card-piloto">
-                    <img src="https://picsum.photos/id/91/400/400" class="img-piloto">
-                    <h3>Nombre Copiloto</h3>
-                    <p>Ubicación: México</p>
-                    <span class="rol-tag">Navegación / Telemetría</span>
+                    <img src="https://images.unsplash.com/photo-1541447237128-f4cac6138fbe?q=80&w=400&auto=format&fit=crop" class="img-piloto">
+                    <h3>Copiloto MX</h3>
+                    <p><i class="fa-solid fa-location-dot" style="color:var(--acento)"></i> México</p>
+                    <span class="rol-tag">Telemetría / Co-Driver</span>
                 </div>
             </div>
         </div>
 
         <div id="calendario" class="tab-content">
             <header>
-                <h2>Próximas Fechas</h2>
-                <p>Cronograma oficial del mes</p>
+                <h2>Temporada 2026</h2>
+                <p>Cronograma oficial del campeonato</p>
             </header>
-            <img src="https://via.placeholder.com/1000x1200/161616/00adb5?text=SUBE+TU+FOTO+AQUÍ" class="calendario-img" alt="Calendario del equipo">
+            <img src="https://via.placeholder.com/1000x1200/12141a/e60000?text=CALENDARIO+WEC" class="calendario-img" alt="Calendario del equipo">
         </div>
 
         <div id="asistencia" class="tab-content">
             <header>
-                <h2>Asistencia a Pista</h2>
-                <p>Gestiona tu participación en los próximos eventos oficiales.</p>
+                <h2>Eventos y Asistencia</h2>
+                <p>Confirma tu disponibilidad para las próximas jornadas.</p>
             </header>
 
-            <div id="msg-no-login" style="text-align: center; padding: 20px; background: var(--tarjeta); border-radius: 10px;">
-                <p style="color: var(--acento); font-weight: bold;">Debes iniciar sesión en la pestaña de Inicio para ver las carreras.</p>
+            <div id="msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px;">
+                <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">SISTEMA BLOQUEADO. REQUIERE IDENTIFICACIÓN DE PILOTO EN LA PANTALLA PRINCIPAL.</p>
             </div>
 
-            <div id="panel-crear-carrera" style="display: none; background: var(--tarjeta); padding: 20px; border-radius: 15px; border: 1px dashed var(--acento); margin-bottom: 25px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                <h3 style="color: var(--acento); margin-top: 0; text-align: center;">+ Añadir Nueva Carrera</h3>
-                <input type="text" id="nueva-carrera-nombre" placeholder="Nombre del Evento (Ej: Rally de Suecia)">
-                <input type="date" id="nueva-carrera-fecha" style="width: 100%; padding: 12px; margin: 10px 0; background: #222; border: 1px solid #333; color: white; border-radius: 8px;">
-                <input type="text" id="nueva-carrera-pista" placeholder="Pista / Tramo">
-                <button onclick="crearCarrera()" style="background: var(--acento); color: #000;">Guardar Evento en la BD</button>
+            <div id="panel-crear-carrera" class="panel-racing" style="display: none; max-width: 600px;">
+                <h3>+ Programar Evento</h3>
+                <input type="text" id="nueva-carrera-nombre" placeholder="Nombre del Evento (Ej: 6 Horas de Spa)">
+                <input type="date" id="nueva-carrera-fecha">
+                <input type="text" id="nueva-carrera-pista" placeholder="Circuito">
+                <button onclick="crearCarrera()">Guardar en Servidor</button>
             </div>
 
             <div id="lista-carreras" style="display: none; max-width: 800px; margin: 0 auto;">
