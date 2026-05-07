@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+    --fondo: #0b0c10; /* Asfalto oscuro */
+    --tarjeta: #12141a; /* Paneles HUD */
+    --acento: #e60000; /* Rojo WEC Hypercar */
+    --acento-hover: #ff1a1a;
+    --secundario: #e6cc00; /* Amarillo Endurance (Bandera/LMP) */
+    --texto: #f0f0f0;
+    --texto-secundario: #8a92a5;
+    --borde: #2a2e3d;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background-color: var(--fondo);
+    /* Cuadrícula de telemetría sutil en el fondo */
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    color: var(--texto);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* --- TIPOGRAFÍA RACING --- */
+h1, h2, h3, .logo, button {
+    font-family: 'Chakra Petch', sans-serif;
+    text-transform: uppercase;
+    font-style: italic;
+    letter-spacing: 1px;
+}
+
+/* --- NAVEGACIÓN --- */
+nav { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 15px 5%; 
+    background: var(--tarjeta); 
+    border-bottom: 3px solid var(--acento); /* Línea roja del Pit Wall */
+    position: sticky; top: 0; z-index: 100; 
+    box-shadow: 0 5px 20px rgba(230, 0, 0, 0.15);
+}
+.logo { font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: 3px; }
+.logo span { color: var(--acento); }
+.menu-icon { font-size: 1.5rem; cursor: pointer; transition: 0.3s; color: var(--acento); }
+.menu-icon:hover { color: #fff; transform: scale(1.1); }
+
+/* --- CONTROLES DE NAVEGACIÓN --- */
+.nav-controls { display: flex; align-items: center; gap: 20px; }
+.auth-buttons-mini { display: flex; gap: 10px; }
+.btn-mini { width: auto; padding: 6px 15px; font-size: 0.9rem; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); }
+.btn-mini-outline { background: transparent; border: 1px solid var(--acento); color: var(--acento); clip-path: none; border-radius: 3px; }
+.btn-mini-outline:hover { background: var(--acento); color: #fff; }
+
+/* --- MENÚ LATERAL --- */
+.sidebar { position: fixed; right: -300px; top: 0; width: 280px; height: 100%; background: rgba(11, 12, 16, 0.95); backdrop-filter: blur(10px); z-index: 200; display: flex; flex-direction: column; padding: 40px 20px; transition: 0.4s ease-in-out; border-left: 1px solid var(--borde); }
+.sidebar.active { right: 0; }
+.sidebar a { text-decoration: none; color: var(--texto-secundario); font-size: 1.2rem; font-family: 'Chakra Petch', sans-serif; font-style: italic; font-weight: 600; margin: 10px 0; padding: 12px; border-left: 4px solid transparent; transition: 0.3s; display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); }
+.sidebar a:hover { background: rgba(230, 0, 0, 0.1); color: #fff; border-left: 4px solid var(--acento); transform: translateX(-5px); }
+.close-btn { align-self: flex-end; font-size: 2rem; cursor: pointer; color: var(--texto-secundario); margin-bottom: 20px; }
+.close-btn:hover { color: var(--acento); }
+.overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 150; }
+.overlay.active { display: block; }
+
+/* --- CONTENIDO PRINCIPAL --- */
+.contenedor { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.tab-content { display: none; animation: slideUp 0.5s ease forwards; opacity: 0; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- BOTONES ESTILO COMPETICIÓN (Cortados) --- */
+button { 
+    width: 100%; padding: 15px; 
+    background: var(--acento); color: #fff; 
+    border: none; font-weight: 700; cursor: pointer; transition: 0.3s; 
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); /* Esquinas cortadas */
+    position: relative;
+}
+button:hover { background: var(--acento-hover); transform: scale(1.02); }
+button.btn-secundario { background: transparent; border: 2px solid var(--acento); color: var(--acento); clip-path: none; border-radius: 4px; }
+button.btn-secundario:hover { background: var(--acento); color: #fff; }
+button.btn-peligro { background: #111; border: 1px solid #d9534f; color: #d9534f; clip-path: none; border-radius: 4px;}
+button.btn-peligro:hover { background: #d9534f; color: #fff; }
+button.btn-alerta { background: var(--secundario); color: #000; }
+button.btn-alerta:hover { background: #fff; }
+
+/* --- PANELES HUD (Formularios y Cajas) --- */
+.panel-racing {
+    background: var(--tarjeta);
+    padding: 30px;
+    margin: 0 auto 30px;
+    border: 1px solid var(--borde);
+    border-left: 5px solid var(--acento); /* Racing Stripe */
+    box-shadow: 10px 10px 0 rgba(0,0,0,0.5);
+}
+.panel-racing h3 { color: #fff; margin-top: 0; font-size: 1.5rem; border-bottom: 1px solid var(--borde); padding-bottom: 10px; }
+
+/* Formularios */
+input, select, textarea { 
+    width: 100%; padding: 12px; margin: 10px 0 20px; 
+    background: #000; border: 1px solid var(--borde); color: #fff; 
+    font-family: 'Rajdhani', sans-serif; font-size: 1.1rem;
+    border-radius: 2px; box-sizing: border-box; transition: 0.3s;
+}
+input:focus { outline: none; border-color: var(--acento); background: rgba(230,0,0,0.05); }
+
+/* --- CARRUSEL --- */
+.swiper { width: 100%; height: 450px; border: 1px solid var(--borde); border-bottom: 4px solid var(--acento); box-shadow: 10px 10px 0 rgba(0,0,0,0.5); }
+.swiper-slide img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%) contrast(120%); }
+.slide-info { position: absolute; bottom: 40px; left: 40px; background: rgba(0,0,0,0.8); padding: 15px 25px; border-left: 4px solid var(--acento); }
+.slide-info h2 { font-size: 2.2rem; margin: 0; color: #fff; }
+.slide-info p { color: var(--texto-secundario); font-size: 1.2rem; margin: 5px 0 0; font-family: 'Rajdhani'; }
+
+/* --- SECCIÓN PILOTOS --- */
+.grid-pilotos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 20px; }
+.card-piloto { background: var(--tarjeta); overflow: hidden; text-align: center; padding-bottom: 20px; border: 1px solid var(--borde); transition: 0.3s; position: relative; }
+.card-piloto::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--acento); }
+.card-piloto:hover { transform: translateY(-5px); border-color: var(--texto-secundario); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+.img-piloto { width: 100%; height: 200px; background: #000; object-fit: cover; margin-bottom: 15px; filter: contrast(110%); }
+.card-piloto h3 { margin: 10px 0 5px; font-size: 1.5rem; color: #fff; }
+.card-piloto p { color: var(--texto-secundario); margin: 0; font-size: 1rem; }
+.rol-tag { display: inline-block; margin-top: 15px; padding: 5px 15px; background: var(--acento); color: #fff; font-family: 'Chakra Petch'; font-style: italic; font-weight: 700; font-size: 0.9rem; letter-spacing: 1px; clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%); }
+
+/* --- CALENDARIO --- */
+.calendario-img { width: 100%; max-width: 800px; display: block; margin: 20px auto; border: 1px solid var(--borde); box-shadow: 10px 10px 0 rgba(0,0,0,0.5); }
+
+/* --- CABECERAS DE SECCIÓN --- */
+header { text-align: left; margin-bottom: 30px; border-left: 5px solid var(--acento); padding-left: 15px; }
+header h2 { color: #fff; font-size: 2.2rem; margin: 0 0 5px; }
+header p { color: var(--texto-secundario); font-size: 1.1rem; margin: 0; }
+
+/* Utilidades dinámicas para JS */
+.telemetria-data { background: rgba(0,0,0,0.5); padding: 15px; border: 1px solid var(--borde); margin: 15px 0; }
+.telemetria-data p { margin: 0 0 10px; font-weight: 600; color: #fff; }
+.telemetria-data ul { list-style: none; padding: 0; margin: 0; }
+.telemetria-data li { padding: 8px 10px; border-bottom: 1px solid #222; font-family: 'Rajdhani', monospace; color: var(--texto-secundario); }
+.telemetria-data li:last-child { border-bottom: none; }
+.telemetria-data i { color: var(--acento); width: 20px; }
