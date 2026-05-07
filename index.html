@@ -40,7 +40,15 @@
 
             <div id="panel-privado" style="display: none; background: var(--tarjeta); padding: 20px; border-radius: 15px; max-width: 500px; margin: 0 auto 30px; text-align: center; border: 1px solid var(--acento);">
                 <h3 style="color: var(--acento); margin-top: 0;">¡Bienvenido al Pit Lane, <span id="nombre-piloto-activo">Piloto</span>!</h3>
-                <button onclick="cerrarSesion()" style="background: #d9534f; margin-top: 10px; max-width: 200px;">Desconectar</button>
+                
+                <div id="herramientas-admin" style="display: none; margin-top: 20px; padding: 15px; border: 1px dashed var(--acento); border-radius: 8px;">
+                    <p style="font-weight: bold; color: var(--acento); margin-top: 0;">MODO ADMINISTRADOR</p>
+                    <button onclick="showSection('asistencia')" style="background: var(--acento); color: #000; width: 100%;">
+                        Gestionar Fechas y Cupos
+                    </button>
+                </div>
+
+                <button onclick="cerrarSesion()" style="background: #d9534f; margin-top: 15px; max-width: 200px;">Desconectar</button>
             </div>
 
             <div class="swiper mySwiper">
