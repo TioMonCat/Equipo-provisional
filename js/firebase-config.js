@@ -4,12 +4,12 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstati
 
 // Tus credenciales únicas (Reemplaza los valores entre comillas)
 const firebaseConfig = {
-    apiKey: "TU_API_KEY",
-    authDomain: "TU_DOMINIO.firebaseapp.com",
-    projectId: "TU_PROJECT_ID",
-    storageBucket: "TU_BUCKET.appspot.com",
-    messagingSenderId: "TU_SENDER_ID",
-    appId: "TU_APP_ID"
+  apiKey: "AIzaSyC5TAQqe8BnKb6-72jO6cMhON9jCw0fzDA",
+  authDomain: "paginaequipo-44b7a.firebaseapp.com",
+  projectId: "paginaequipo-44b7a",
+  storageBucket: "paginaequipo-44b7a.firebasestorage.app",
+  messagingSenderId: "701179395550",
+  appId: "1:701179395550:web:4e52577f8eac5b91d8714f"
 };
 
 // Inicializamos el núcleo de Firebase y la Autenticación
