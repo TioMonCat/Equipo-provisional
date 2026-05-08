@@ -37,7 +37,7 @@ export async function cargarRoster() {
             let nombreFormateado = data.nombre || "Piloto";
             if (data.apellido) nombreFormateado += ` ${data.apellido.charAt(0).toUpperCase()}.`;
 
-            let etiquetaRol = data.rol === "admin" ? "Director / Driver" : "Driver Oficial";
+            let etiquetaRol = data.rol === "admin" ? "Director / Piloto" : "Piloto Oficial";
             
             let catTag = "";
             if (data.categoria === "Ambas") {
