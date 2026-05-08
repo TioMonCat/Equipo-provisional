@@ -47,6 +47,7 @@
         <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-gauge-high"></i> Inicio</a>
         <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
         <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
+        <a href="#" onclick="showSection('garaje')"><i class="fa-solid fa-warehouse"></i> Garaje</a>
         <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-calendar-check"></i> Eventos y Asistencia</a>
         <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="display: none; color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
         <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="display: none; color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
@@ -208,6 +209,37 @@
                 <p>Cronograma oficial del campeonato</p>
             </header>
             <img src="img/HorarioERCNG.png" class="calendario-img" alt="Calendario oficial del equipo">
+        </div>
+
+        <div id="garaje" class="tab-content">
+            <header>
+                <h2>Garaje del Equipo</h2>
+                <p>Descarga los vehículos oficiales para la temporada.</p>
+            </header>
+
+            <div id="garaje-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE PILOTOS. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA ACCEDER AL GARAJE.</p>
+            </div>
+
+            <div id="garaje-contenido" style="display: none; max-width: 900px; margin: 0 auto;">
+                <div class="vehiculo-garaje">
+                    <img src="img/oreca07.jpg" alt="LMP2 Oreca 07" class="vehiculo-img">
+                    <div class="vehiculo-info">
+                        <h3>Oreca 07 LMP2</h3>
+                        <p>Prototipo de Le Mans. Ligero, ágil y con una carga aerodinámica excepcional, ideal para carreras de resistencia.</p>
+                        <a href="https://drive.google.com/drive/folders/1ktGUufCzFdt5V-hPexsK5AEjZWXiVbHX?usp=sharing" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Mod</a>
+                    </div>
+                </div>
+                <div class="vehiculo-garaje">
+                    <img src="img/mercedes.webp" alt="Mercedes AMG GT3" class="vehiculo-img">
+                    <div class="vehiculo-info">
+                        <h3>Mercedes AMG GT3</h3>
+                        <p>Un GT3 robusto y fiable, conocido por su estabilidad en curvas de alta velocidad y su potente motor V8.</p>
+                        <a href="https://drive.google.com/drive/folders/1ktGUufCzFdt5V-hPexsK5AEjZWXiVbHX?usp=sharing" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Mod</a>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="asistencia" class="tab-content">

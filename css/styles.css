@@ -285,6 +285,41 @@ header p { color: var(--texto-secundario); font-size: 1.1rem; margin: 0; font-fa
 }
 .admin-table select option { background: var(--tarjeta); color: var(--texto); }
 
+/* --- SECCIÓN GARAJE --- */
+.vehiculo-garaje {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    background: var(--tarjeta);
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid var(--borde);
+    margin-bottom: 25px;
+    transition: 0.3s;
+}
+.vehiculo-garaje:hover {
+    border-color: #333;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.vehiculo-garaje:last-child {
+    margin-bottom: 0;
+}
+.vehiculo-img {
+    width: 250px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--borde);
+}
+.vehiculo-info h3 { margin-top: 0; margin-bottom: 10px; color: var(--texto); font-size: 1.6rem; border-bottom: none; padding-bottom: 0; }
+.vehiculo-info p { color: var(--texto-secundario); margin-bottom: 10px; font-size: 0.95rem; }
+
+@media (max-width: 700px) {
+    .vehiculo-garaje { flex-direction: column; text-align: center; }
+    .vehiculo-img { width: 100%; max-width: 400px; height: auto; }
+}
+
 /* --- FOOTER GLOBAL --- */
 .footer-global {
     background: var(--tarjeta);
