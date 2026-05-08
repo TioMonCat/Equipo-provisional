@@ -46,13 +46,18 @@ export async function cargarRoster() {
                 catTag = `<span class="cat-tag ${data.categoria.toLowerCase()}">${data.categoria}</span>`;
             }
             
-            const imagenPorDefecto = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop";
+            let imagenPiloto = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop";
+            
+            if (data.categoria === "LMP2" || data.categoria === "Ambas") {
+                imagenPiloto = "img/LMP2driver.jpg";
+            } else if (data.categoria === "GT3") {
+                imagenPiloto = "img/GT3driver.jpg";
+            }
             
             return `
                 <div class="card-piloto">
-                    <img src="${imagenPorDefecto}" class="img-piloto">
+                    <img src="${imagenPiloto}" class="img-piloto">
                     <h3>${nombreFormateado}</h3>
-                    <p><i class="fa-solid fa-location-dot" style="color:var(--acento)"></i> Archivo Clasificado</p>
                     <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                         <span class="rol-tag" style="margin-top:0;">${etiquetaRol}</span>
                         ${catTag}
