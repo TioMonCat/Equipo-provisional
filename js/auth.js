@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, setDoc, getDoc, getDocs, query, where, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
 import { state } from "./state.js";
@@ -8,7 +8,7 @@ import { cargarUsuariosAdmin } from "./admin.js";
 import { cargarPostulacionesAdmin } from "./postulacion.js";
 
 onAuthStateChanged(auth, async (user) => {
-    if (user) {
+    if (user && user.emailVerified) {
         try {
             const pilotoDoc = await getDoc(doc(db, "pilotos", user.uid));
             if (pilotoDoc.exists()) {
@@ -58,13 +58,29 @@ export async function procesarAuth() {
         if (state.modoRegistro) {
             if (!nombre || !apellido) { alert("Ingresa nombre y apellido."); return; }
             const credencial = await createUserWithEmailAndPassword(auth, email, pass);
+            
+            // Enviar correo de verificación nativo de Firebase
+            await sendEmailVerification(credencial.user);
+            
             await setDoc(doc(db, "pilotos", credencial.user.uid), {
                 correo: email, nombre: nombre, apellido: apellido, rol: "miembro", fechaRegistro: new Date()
             });
-            cargarRoster();
-            mostrarPanelPrivado(`${nombre} ${apellido}`, "miembro", credencial.user.uid, {categoria: ""});
+            
+            // Cerramos la sesión forzosamente hasta que verifique su correo
+            await signOut(auth);
+            
+            alert("¡Registro exitoso! Hemos enviado un enlace de confirmación a tu correo. Por favor, revísalo (incluso en spam) para verificar tu cuenta antes de iniciar sesión.");
+            cambiarModoAuth(); // Volver al formulario de login
         } else {
             const credencial = await signInWithEmailAndPassword(auth, email, pass);
+            
+            // Comprobar si el correo ya está verificado
+            if (!credencial.user.emailVerified) {
+                await signOut(auth);
+                alert("Tu correo electrónico aún no ha sido verificado. Por favor, revisa tu bandeja de entrada o carpeta de spam y haz clic en el enlace de confirmación.");
+                return;
+            }
+
             const pilotoDoc = await getDoc(doc(db, "pilotos", credencial.user.uid));
             if (pilotoDoc.exists()) {
                 const d = pilotoDoc.data();
@@ -73,7 +89,11 @@ export async function procesarAuth() {
         }
     } catch (error) {
         console.error(error);
-        alert("Error de acceso. Revisa tus credenciales.");
+        if (error.code === 'auth/email-already-in-use') {
+            alert("Este correo ya se encuentra registrado en el sistema.");
+        } else {
+            alert("Error de acceso. Revisa tus credenciales.");
+        }
     }
 }
 
