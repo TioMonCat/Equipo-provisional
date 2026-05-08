@@ -99,29 +99,35 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     const nombreNav = document.getElementById('nav-nombre-piloto');
     if (nombreNav) nombreNav.innerText = nombreCompleto;
 
-    const tagsContainer = document.getElementById('nav-user-tags');
-    if (tagsContainer) {
-        tagsContainer.innerHTML = '';
-        if (rol === "admin") {
-            tagsContainer.innerHTML = `<span class="nav-tag admin">Admin</span>`;
-        } else if (rol === "piloto") {
-            const cat = userData?.categoria;
-            if (cat === "Ambas") {
-                tagsContainer.innerHTML = `
-                    <span class="nav-tag lmp2" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);">LMP2</span>
-                    <span class="nav-tag gt3" style="background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);">GT3</span>`;
-            } else if (cat === "LMP2" || cat === "GT3") {
-                const cssStyle = cat === "LMP2" ? "background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);" : "background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);";
-                tagsContainer.innerHTML = `<span class="nav-tag" style="${cssStyle}">${cat}</span>`;
-            } else {
-                tagsContainer.innerHTML = `<span class="nav-tag miembro">Reserva</span>`;
-            }
-        } else if (rol === "miembro") {
-            if (ocultarBotonPostulacion) {
-                tagsContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
-            } else {
-                tagsContainer.innerHTML = `<span class="nav-tag miembro">Bloqueado</span>`;
-            }
+    const catContainer = document.getElementById('nav-categoria-tags');
+    const rolContainer = document.getElementById('nav-rol-tags');
+
+    if (catContainer) catContainer.innerHTML = '';
+    if (rolContainer) rolContainer.innerHTML = '';
+
+    const cat = userData?.categoria;
+    let catHtml = '';
+    if (cat === "Ambas") {
+        catHtml = `<span class="nav-tag lmp2" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);">LMP2</span><span class="nav-tag gt3" style="background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);">GT3</span>`;
+    } else if (cat === "LMP2" || cat === "GT3") {
+        const cssStyle = cat === "LMP2" ? "background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);" : "background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);";
+        catHtml = `<span class="nav-tag" style="${cssStyle}">${cat}</span>`;
+    }
+    if (catContainer) catContainer.innerHTML = catHtml;
+
+    if (rol === "admin") {
+        if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag admin">Admin</span>`;
+    } else if (rol === "piloto") {
+        if (!cat) {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Reserva</span>`;
+        } else {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag" style="background: rgba(255,255,255,0.1); color: var(--texto);">Piloto</span>`;
+        }
+    } else if (rol === "miembro") {
+        if (ocultarBotonPostulacion) {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
+        } else {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Bloqueado</span>`;
         }
     }
 

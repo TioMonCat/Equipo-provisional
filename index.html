@@ -23,8 +23,9 @@
             <div class="status-info">
                 <span class="conexion-text"><i class="fa-solid fa-satellite-dish"></i> Conexión Establecida</span>
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                    <div id="nav-categoria-tags" style="display: flex; gap: 5px;"></div>
                     <span class="piloto-text" id="nav-nombre-piloto">---</span>
-                    <div id="nav-user-tags" style="display: flex; gap: 5px;"></div>
+                    <div id="nav-rol-tags" style="display: flex; gap: 5px;"></div>
                 </div>
             </div>
             <button onclick="cerrarSesion()" class="btn-desconectar" title="Desconectar"><i class="fa-solid fa-power-off"></i></button>
@@ -193,7 +194,7 @@
                     
                     <form id="form-postulacion" onsubmit="enviarPostulacion(event)">
                         <label for="postulacion-categoria" style="color: var(--texto-secundario); font-size: 0.95rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: 8px;">1. ¿En qué categoría deseas competir?</label>
-                        <select id="postulacion-categoria" required>
+                        <select id="postulacion-categoria" required onchange="actualizarFormularioTiempos()">
                             <option value="" disabled selected>Selecciona una categoría de preferencia</option>
                             <option value="LMP2">LMP2</option>
                             <option value="GT3">GT3</option>
@@ -202,15 +203,23 @@
 
                         <div style="margin: 30px 0; padding: 20px; background: rgba(0, 123, 255, 0.05); border-left: 4px solid var(--acento); border-radius: 4px;">
                             <h4 style="margin-top: 0; color: var(--acento); font-size: 1.1rem;"><i class="fa-solid fa-download"></i> 2. Descarga de Mods</h4>
-                            <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes utilizar los vehículos y físicas oficiales del equipo.</p>
+                            <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes utilizar el vehículo del equipo y el mapa de la próxima carrera.</p>
                             <a href="https://drive.google.com/drive/folders/1ktGUufCzFdt5V-hPexsK5AEjZWXiVbHX?usp=sharing" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; text-align: center; max-width: 350px; font-size: 0.9rem;"><i class="fa-solid fa-link"></i> Ir a Google Drive - Mods de Prueba</a>
                         </div>
 
-                        <div style="margin: 30px 0; padding: 25px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--borde); border-radius: 8px;">
+                        <div id="tiempos-container" style="display: none; margin: 30px 0; padding: 25px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--borde); border-radius: 8px;">
                             <h4 style="margin-top: 0; color: var(--texto); font-size: 1.1rem;"><i class="fa-solid fa-stopwatch"></i> 3. Registro de Tiempo</h4>
-                            <p style="font-size: 0.95rem; color: var(--texto-secundario); margin-bottom: 20px;">Debes marcar un tiempo menor a <strong style="color: var(--secundario);">2:15.000</strong> en el circuito de prueba. Sube tu captura a un servicio como Google Drive, Imgur o Lightshot y pega el enlace público aquí.</p>
+                            <p style="font-size: 0.95rem; color: var(--texto-secundario); margin-bottom: 20px;">Sube tu captura a un servicio como Google Drive o Lightshot y pega el enlace público aquí.</p>
                             
-                            <input type="url" id="postulacion-captura-url" placeholder="https://..." style="margin: 0; background: rgba(0,0,0,0.5);" required>
+                            <div id="tiempo-lmp2" style="display: none; margin-bottom: 15px;">
+                                <label for="postulacion-captura-lmp2" style="color: var(--texto); font-size: 0.9rem;">Tiempo objetivo LMP2: <strong style="color: var(--acento);">2:05.000</strong></label>
+                                <input type="url" id="postulacion-captura-lmp2" placeholder="Enlace captura LMP2..." style="margin-top: 5px; background: rgba(0,0,0,0.5);">
+                            </div>
+
+                            <div id="tiempo-gt3" style="display: none;">
+                                <label for="postulacion-captura-gt3" style="color: var(--texto); font-size: 0.9rem;">Tiempo objetivo GT3: <strong style="color: var(--secundario);">2:15.000</strong></label>
+                                <input type="url" id="postulacion-captura-gt3" placeholder="Enlace captura GT3..." style="margin-top: 5px; background: rgba(0,0,0,0.5);">
+                            </div>
                         </div>
                         
                         <label for="postulacion-discord" style="color: var(--texto-secundario); font-size: 0.95rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: 8px;">4. Usuario de Discord</label>

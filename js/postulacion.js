@@ -11,13 +11,17 @@ export async function enviarPostulacion(event) {
     }
 
     const categoria = document.getElementById('postulacion-categoria').value;
-    const capturaUrl = document.getElementById('postulacion-captura-url').value;
     const discord = document.getElementById('postulacion-discord').value;
+    const capturaLmp2 = document.getElementById('postulacion-captura-lmp2').value;
+    const capturaGt3 = document.getElementById('postulacion-captura-gt3').value;
 
-    if (!categoria || !capturaUrl || !discord) {
-        alert("Por favor, completa todos los campos.");
+    if (!categoria || !discord) {
+        alert("Por favor, completa todos los campos requeridos.");
         return;
     }
+    if (categoria === "LMP2" && !capturaLmp2) return alert("Falta el enlace de tu captura LMP2.");
+    if (categoria === "GT3" && !capturaGt3) return alert("Falta el enlace de tu captura GT3.");
+    if (categoria === "Ambas" && (!capturaLmp2 || !capturaGt3)) return alert("Debes subir las capturas de ambas categorías.");
 
     const btn = document.getElementById('btn-enviar-postulacion');
     btn.disabled = true;
@@ -31,7 +35,8 @@ export async function enviarPostulacion(event) {
             uid: state.usuarioActual.uid,
             nombre: state.usuarioActual.nombre,
             categoria: categoria,
-            capturaUrl: capturaUrl,
+            capturaLmp2: capturaLmp2 || null,
+            capturaGt3: capturaGt3 || null,
             discord: discord,
             fecha: new Date().getTime(),
             estado: "Pendiente"
@@ -43,8 +48,8 @@ export async function enviarPostulacion(event) {
 
         if (state.rolActual !== "admin") {
             document.getElementById('acceso-rapido').style.display = "none";
-            const tagsContainer = document.getElementById('nav-user-tags');
-            if(tagsContainer) tagsContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
+            const rolContainer = document.getElementById('nav-rol-tags');
+            if(rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
         }
 
     } catch (error) {
@@ -58,6 +63,30 @@ export async function enviarPostulacion(event) {
 }
 
 window.enviarPostulacion = enviarPostulacion;
+
+export function actualizarFormularioTiempos() {
+    const cat = document.getElementById('postulacion-categoria').value;
+    const container = document.getElementById('tiempos-container');
+    const divLmp2 = document.getElementById('tiempo-lmp2');
+    const divGt3 = document.getElementById('tiempo-gt3');
+    const inputLmp2 = document.getElementById('postulacion-captura-lmp2');
+    const inputGt3 = document.getElementById('postulacion-captura-gt3');
+
+    if (!cat) { container.style.display = "none"; return; }
+    container.style.display = "block";
+    
+    if (cat === "LMP2") {
+        divLmp2.style.display = "block"; inputLmp2.required = true;
+        divGt3.style.display = "none"; inputGt3.required = false; inputGt3.value = "";
+    } else if (cat === "GT3") {
+        divLmp2.style.display = "none"; inputLmp2.required = false; inputLmp2.value = "";
+        divGt3.style.display = "block"; inputGt3.required = true;
+    } else if (cat === "Ambas") {
+        divLmp2.style.display = "block"; inputLmp2.required = true;
+        divGt3.style.display = "block"; inputGt3.required = true;
+    }
+}
+window.actualizarFormularioTiempos = actualizarFormularioTiempos;
 
 export async function cargarPostulacionesAdmin() {
     const contenedor = document.getElementById('lista-postulaciones-admin');
@@ -93,6 +122,11 @@ export async function cargarPostulacionesAdmin() {
             const pid = docSnap.id;
             const fechaStr = new Date(p.fecha).toLocaleDateString();
             let colorEstado = p.estado === 'Pendiente' ? 'var(--secundario)' : (p.estado === 'Aprobado' ? '#4ade80' : '#d9534f');
+            
+            let enlacesHTML = "";
+            if (p.capturaLmp2) enlacesHTML += `<a href="${p.capturaLmp2}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; margin-bottom:4px; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-up-right-from-square"></i> Ver LMP2</a>`;
+            if (p.capturaGt3) enlacesHTML += `<a href="${p.capturaGt3}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-up-right-from-square"></i> Ver GT3</a>`;
+            if (p.capturaUrl) enlacesHTML += `<a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-up-right-from-square"></i> Tiempo Antiguo</a>`;
 
             html += `
                 <tr>
@@ -103,9 +137,7 @@ export async function cargarPostulacionesAdmin() {
                     </td>
                     <td><span class="cat-tag ${p.categoria.toLowerCase()}">${p.categoria}</span></td>
                     <td><span style="color: ${colorEstado}; font-weight: bold;">${p.estado}</span></td>
-                    <td>
-                        <a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Ver Tiempo</a>
-                    </td>
+                    <td>${enlacesHTML}</td>
                     <td style="display: flex; gap: 8px; align-items: center; justify-content: flex-start;">
                         <button onclick="cambiarEstadoPostulacion('${pid}', 'Aprobado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; margin:0;" title="Aprobar"><i class="fa-solid fa-check"></i></button>
                         <button onclick="cambiarEstadoPostulacion('${pid}', 'Rechazado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(217, 83, 79, 0.2); color: #d9534f; border: 1px solid #d9534f; margin:0;" title="Rechazar"><i class="fa-solid fa-xmark"></i></button>
