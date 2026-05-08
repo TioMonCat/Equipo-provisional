@@ -5,3 +5,4 @@ import "./roster.js";
 import "./carreras.js";
 import "./auth.js";
 import "./admin.js";
+import "./postulacion.js";
