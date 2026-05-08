@@ -6,3 +6,4 @@ import "./carreras.js";
 import "./auth.js";
 import "./admin.js";
 import "./postulacion.js";
+import "./stream.js";

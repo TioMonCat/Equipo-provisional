@@ -49,6 +49,15 @@
 </head>
 <body>
 
+    <!-- BANNER GLOBAL DE STREAM -->
+    <div id="live-stream-banner" class="stream-banner" style="display: none;">
+        <div class="stream-content">
+            <span class="stream-indicator"><i class="fa-solid fa-circle blink-red"></i> EN VIVO</span>
+            <span class="stream-text">ALERTA DE TELEMETRÍA: Piloto en pista.</span>
+            <a id="stream-link" href="#" target="_blank" class="btn-stream">[Ver On-Board]</a>
+        </div>
+    </div>
+
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <nav>
@@ -325,6 +334,18 @@
                 <h2>Panel de Administración</h2>
                 <p>Gestión de roles y categorías de la Crew</p>
             </header>
+
+            <!-- CONTROLES DE TRANSMISIÓN EN VIVO -->
+            <div class="panel-racing" style="max-width: 900px; margin: 0 auto 30px; text-align: left;">
+                <h3 style="margin-top: 0; color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px;"><i class="fa-solid fa-video" style="color: #00A36C;"></i> Gestión de Transmisión (En Vivo)</h3>
+                <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label for="admin-stream-url" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif;">URL de la transmisión (Twitch/YouTube)</label>
+                        <input type="url" id="admin-stream-url" placeholder="Ej: https://twitch.tv/tu_canal" style="margin-bottom: 0; margin-top: 5px;">
+                    </div>
+                    <button id="btn-toggle-stream" onclick="toggleStreamStatus()" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-satellite-dish"></i> Activar Transmisión</button>
+                </div>
+            </div>
 
             <div id="lista-usuarios-admin" style="max-width: 900px; margin: 0 auto;">
                 <!-- Cargado dinámicamente desde JS -->

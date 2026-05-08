@@ -1,4 +1,4 @@
-import { getDocs, collection, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getDocs, collection, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 import { cargarRoster } from "./roster.js";
 
@@ -153,3 +153,44 @@ export async function eliminarUsuario(uid) {
     }
 }
 window.eliminarUsuario = eliminarUsuario;
+
+export async function toggleStreamStatus() {
+    const urlInput = document.getElementById('admin-stream-url');
+    if (!urlInput) return;
+
+    const streamUrl = urlInput.value.trim();
+    const btn = document.getElementById('btn-toggle-stream');
+    const docRef = doc(db, "teamSettings", "streamStatus");
+
+    try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+        
+        const docSnap = await getDoc(docRef);
+        let isCurrentlyStreaming = false;
+        
+        if (docSnap.exists() && docSnap.data().isStreaming) {
+            isCurrentlyStreaming = true;
+        }
+
+        if (!isCurrentlyStreaming) {
+            if (!streamUrl) {
+                alert("Por favor, ingresa la URL de la transmisión para activarla.");
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-satellite-dish"></i> Activar Transmisión';
+                return;
+            }
+            // Utilizamos setDoc para crear el documento si es la primera vez en la base de datos
+            await setDoc(docRef, { isStreaming: true, streamUrl: streamUrl, updatedAt: Date.now() });
+        } else {
+            // Apagamos la transmisión
+            await setDoc(docRef, { isStreaming: false, streamUrl: "", updatedAt: Date.now() }, { merge: true });
+        }
+    } catch (error) {
+        console.error("Error al actualizar la transmisión:", error);
+        alert("Hubo un error al conectar con Firebase.");
+    } finally {
+        btn.disabled = false;
+    }
+}
+window.toggleStreamStatus = toggleStreamStatus;
