@@ -55,7 +55,7 @@ nav {
 .nav-user-status {
     display: flex;
     align-items: center;
-    gap: 15px;
+    justify-content: center;
     background: rgba(18, 18, 18, 0.85);
     padding: 6px 20px;
     border-radius: 50px;
@@ -69,6 +69,10 @@ nav {
     top: 50%;
     transform: translate(-50%, -50%);
     animation: dropDownHUD 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 @keyframes dropDownHUD {
@@ -82,13 +86,43 @@ nav {
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .piloto-text { font-size: 0.95rem; font-weight: bold; color: var(--texto); font-family: 'Montserrat', sans-serif; }
 
+.nav-user-status:hover {
+    border-color: #d9534f;
+    box-shadow: 0 4px 20px rgba(217, 83, 79, 0.2);
+}
+
+.status-info-wrapper {
+    transition: opacity 0.3s, transform 0.3s;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.nav-user-status:hover .status-info-wrapper {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.logout-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+    background: rgba(217, 83, 79, 0.15);
+    color: #d9534f; font-weight: 700; font-family: 'Montserrat', sans-serif;
+    font-size: 1rem; letter-spacing: 1px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.nav-user-status:hover .logout-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .nav-tag { font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; font-weight: bold; border: 1px solid var(--borde); font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
 .nav-tag.admin { background: rgba(217, 83, 79, 0.1); color: #d9534f; border-color: #d9534f; }
 .nav-tag.miembro { background: rgba(255, 255, 255, 0.1); color: var(--texto-secundario); border-color: var(--texto-secundario); }
 .nav-tag.pendiente { background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario); }
-
-.btn-desconectar { background: transparent; color: var(--texto-secundario); border: none; padding: 5px; cursor: pointer; transition: 0.3s; width: auto; font-size: 1.1rem; }
-.btn-desconectar:hover { color: #d9534f; transform: scale(1.1); box-shadow: none; background: transparent; }
 
 /* Adaptación móvil del HUD de conexión */
 @media (max-width: 850px) {
@@ -101,12 +135,30 @@ nav {
     }
     @keyframes dropDownMobile { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
     .conexion-text { display: none; }
+        .auth-buttons-mini {
+            position: static;
+            transform: none;
+            animation: dropDownMobile 0.5s ease forwards;
+            padding: 5px 8px !important;
+            gap: 5px !important;
+        }
     .logo-img { height: 45px; }
 }
 
 /* --- CONTROLES DE NAVEGACIÓN --- */
 .nav-controls { display: flex; align-items: center; gap: 20px; }
-.auth-buttons-mini { display: flex; gap: 10px; }
+.auth-buttons-mini { 
+    display: flex; gap: 10px; 
+    position: absolute;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    background: rgba(18, 18, 18, 0.85);
+    padding: 6px 12px;
+    border-radius: 50px;
+    border: 1px solid var(--borde);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+    animation: dropDownHUD 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 .btn-mini { width: auto; padding: 8px 18px; font-size: 0.85rem; border-radius: 6px; }
 .btn-mini-outline { background: transparent; border: 1px solid var(--texto-secundario); color: var(--texto); border-radius: 6px; }
 .btn-mini-outline:hover { background: var(--texto); color: var(--fondo); border-color: var(--texto); }

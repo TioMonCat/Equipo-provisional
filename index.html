@@ -66,16 +66,26 @@
         </div>
         
         <!-- INDICADOR CENTRAL DE SESIÓN -->
-        <div id="nav-user-status" class="nav-user-status" style="display: none;">
-            <div class="status-info">
-                <span class="conexion-text"><i class="fa-solid fa-satellite-dish"></i> Conexión Establecida</span>
-                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                    <div id="nav-categoria-tags" style="display: flex; gap: 5px;"></div>
-                    <span class="piloto-text" id="nav-nombre-piloto">---</span>
-                    <div id="nav-rol-tags" style="display: flex; gap: 5px;"></div>
+        <div id="nav-user-status" class="nav-user-status" style="display: none;" onclick="cerrarSesion()" title="Cerrar Sesión">
+            <div class="status-info-wrapper">
+                <div class="status-info">
+                    <span class="conexion-text"><i class="fa-solid fa-satellite-dish"></i> Conexión Establecida</span>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                        <div id="nav-categoria-tags" style="display: flex; gap: 5px;"></div>
+                        <span class="piloto-text" id="nav-nombre-piloto">---</span>
+                        <div id="nav-rol-tags" style="display: flex; gap: 5px;"></div>
+                    </div>
                 </div>
             </div>
-            <button onclick="cerrarSesion()" class="btn-desconectar" title="Desconectar"><i class="fa-solid fa-power-off"></i></button>
+            <div class="logout-overlay">
+                <i class="fa-solid fa-power-off"></i> DESCONECTAR
+            </div>
+        </div>
+
+        <!-- BOTONES DE ACCESO (CENTRADOS) -->
+        <div class="auth-buttons-mini" id="nav-auth-buttons" style="display: none;">
+            <button class="btn-mini btn-mini-outline" onclick="abrirLogin()">Entrar</button>
+            <button class="btn-mini" onclick="abrirRegistro()">Registrarse</button>
         </div>
 
         <div class="nav-controls">
@@ -84,10 +94,6 @@
                 <i class="fa-solid fa-circle blink-green" style="font-size: 0.55rem;"></i> <span id="online-count-text">-- en línea</span>
             </div>
 
-            <div class="auth-buttons-mini" id="nav-auth-buttons" style="display: none;">
-                <button class="btn-mini btn-mini-outline" onclick="abrirLogin()">Entrar</button>
-                <button class="btn-mini" onclick="abrirRegistro()">Registrarse</button>
-            </div>
             <div class="menu-icon" onclick="toggleMenu()">
                 <i class="fa-solid fa-bars-staggered"></i>
             </div>
