@@ -7,3 +7,4 @@ import "./auth.js";
 import "./admin.js";
 import "./postulacion.js";
 import "./stream.js";
+import "./noticias.js";

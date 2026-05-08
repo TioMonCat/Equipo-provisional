@@ -21,6 +21,13 @@ onAuthStateChanged(auth, async (user) => {
 
         const accesoRapido = document.getElementById('acceso-rapido');
         if(accesoRapido) accesoRapido.style.display = "block";
+
+        const linkNoticiasWrapper = document.getElementById('link-noticias-wrapper');
+        const bannerNoticias = document.getElementById('noticias-auth-wrapper');
+        const paddockGroup = document.getElementById('paddock-group');
+        if(linkNoticiasWrapper) linkNoticiasWrapper.style.display = "none";
+        if(bannerNoticias) bannerNoticias.style.display = "none";
+        if(paddockGroup) paddockGroup.style.display = "none";
     }
 });
 
@@ -118,19 +125,38 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     state.usuarioActual = { uid: uid, nombre: nombreCompleto, categoria: userData?.categoria || "" };
     state.rolActual = rol;
 
-    let ocultarBotonPostulacion = false;
+    let tienePostulacionPendiente = false;
     if (rol === "miembro") {
         try {
             const q = query(collection(db, "postulaciones"), where("uid", "==", uid), where("estado", "==", "Pendiente"));
             const snap = await getDocs(q);
             if (!snap.empty) {
-                ocultarBotonPostulacion = true;
+                tienePostulacionPendiente = true;
             }
         } catch(e) { console.error(e); }
     }
 
     document.getElementById('panel-auth').style.display = "none";
-    document.getElementById('acceso-rapido').style.display = (rol === "admin" || (rol === "miembro" && !ocultarBotonPostulacion)) ? "block" : "none";
+    document.getElementById('acceso-rapido').style.display = (rol === "admin" || rol === "miembro") ? "block" : "none";
+
+    const btnPostulacion = document.querySelector('#acceso-rapido button');
+    if (btnPostulacion) {
+        if (tienePostulacionPendiente) {
+            btnPostulacion.disabled = true;
+            btnPostulacion.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Postulación en Revisión';
+            btnPostulacion.style.opacity = "0.7";
+            btnPostulacion.style.cursor = "not-allowed";
+            btnPostulacion.style.borderColor = "var(--secundario)";
+            btnPostulacion.style.color = "var(--secundario)";
+        } else {
+            btnPostulacion.disabled = false;
+            btnPostulacion.innerHTML = '<i class="fa-solid fa-file-signature"></i> Postular al Equipo';
+            btnPostulacion.style.opacity = "1";
+            btnPostulacion.style.cursor = "pointer";
+            btnPostulacion.style.borderColor = "";
+            btnPostulacion.style.color = "";
+        }
+    }
 
     // Mostrar opciones de administrador de forma agrupada
     const adminGroup = document.getElementById('admin-group');
@@ -166,8 +192,8 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
             if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag" style="background: rgba(255,255,255,0.1); color: var(--texto);">Piloto</span>`;
         }
     } else if (rol === "miembro") {
-        if (ocultarBotonPostulacion) {
-            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
+        if (tienePostulacionPendiente) {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Revisión</span>`;
         } else {
             if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Invitado</span>`;
         }
@@ -182,13 +208,24 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     if (panelPrivado) panelPrivado.style.display = (rol === "admin") ? "block" : "none";
     if (panelCrearCarrera) panelCrearCarrera.style.display = (rol === "admin") ? "block" : "none";
 
-    document.getElementById('msg-no-login').style.display = (rol === "miembro") ? "block" : "none";
-    document.getElementById('lista-carreras').style.display = (rol === "miembro") ? "none" : "block";
+    // Control de acceso a contenido privado (Garaje y Noticias)
+    const canAccessPrivate = rol === 'piloto' || rol === 'admin';
     
-    // Control de acceso al Garaje
-    const canAccessGarage = rol === 'piloto' || rol === 'admin';
-    document.getElementById('garaje-msg-no-login').style.display = canAccessGarage ? 'none' : 'block';
-    document.getElementById('garaje-contenido').style.display = canAccessGarage ? 'block' : 'none';
+    document.getElementById('msg-no-login').style.display = canAccessPrivate ? 'none' : 'block';
+    document.getElementById('lista-carreras').style.display = canAccessPrivate ? 'block' : 'none';
+
+    document.getElementById('garaje-msg-no-login').style.display = canAccessPrivate ? 'none' : 'block';
+    document.getElementById('garaje-contenido').style.display = canAccessPrivate ? 'block' : 'none';
+    
+    document.getElementById('noticias-msg-no-login').style.display = canAccessPrivate ? 'none' : 'block';
+    document.getElementById('noticias-contenido').style.display = canAccessPrivate ? 'block' : 'none';
+
+    const linkNoticiasWrapper = document.getElementById('link-noticias-wrapper');
+    const bannerNoticias = document.getElementById('noticias-auth-wrapper');
+    const paddockGroup = document.getElementById('paddock-group');
+    if(linkNoticiasWrapper) linkNoticiasWrapper.style.display = canAccessPrivate ? 'block' : 'none';
+    if(bannerNoticias) bannerNoticias.style.display = canAccessPrivate ? 'block' : 'none';
+    if(paddockGroup) paddockGroup.style.display = canAccessPrivate ? 'block' : 'none';
 
     if (rol !== "miembro") cargarCarreras();
     if (rol === "admin") {

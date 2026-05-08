@@ -103,9 +103,17 @@ export async function enviarPostulacion(event) {
         document.getElementById('postulacion-mensaje').style.display = "block";
 
         if (state.rolActual !== "admin") {
-            document.getElementById('acceso-rapido').style.display = "none";
+            const btnPostulacion = document.querySelector('#acceso-rapido button');
+            if (btnPostulacion) {
+                btnPostulacion.disabled = true;
+                btnPostulacion.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Postulación en Revisión';
+                btnPostulacion.style.opacity = "0.7";
+                btnPostulacion.style.cursor = "not-allowed";
+                btnPostulacion.style.borderColor = "var(--secundario)";
+                btnPostulacion.style.color = "var(--secundario)";
+            }
             const rolContainer = document.getElementById('nav-rol-tags');
-            if(rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
+            if(rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Revisión</span>`;
         }
 
     } catch (error) {
