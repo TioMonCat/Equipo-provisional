@@ -5,6 +5,7 @@ import { state } from "./state.js";
 import { cargarRoster } from "./roster.js";
 import { cargarCarreras } from "./carreras.js";
 import { cargarUsuariosAdmin } from "./admin.js";
+import { cargarPostulacionesAdmin } from "./postulacion.js";
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
@@ -78,6 +79,9 @@ function mostrarPanelPrivado(nombreCompleto, rol, uid) {
 
     const linkAdmin = document.getElementById('link-admin');
     if (linkAdmin) linkAdmin.style.display = (rol === "admin") ? "flex" : "none";
+    
+    const linkAdminPostulaciones = document.getElementById('link-admin-postulaciones');
+    if (linkAdminPostulaciones) linkAdminPostulaciones.style.display = (rol === "admin") ? "flex" : "none";
 
     const navStatus = document.getElementById('nav-user-status');
     if (navStatus) navStatus.style.display = "flex";
@@ -97,7 +101,10 @@ function mostrarPanelPrivado(nombreCompleto, rol, uid) {
     document.getElementById('lista-carreras').style.display = (rol === "miembro") ? "none" : "block";
     
     if (rol !== "miembro") cargarCarreras();
-    if (rol === "admin") cargarUsuariosAdmin();
+    if (rol === "admin") {
+        cargarUsuariosAdmin();
+        cargarPostulacionesAdmin();
+    }
     setTimeout(() => { if (typeof showSection === 'function') { showSection('inicio'); } }, 100);
 }
 

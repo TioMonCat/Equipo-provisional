@@ -45,6 +45,7 @@
         <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
         <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-stopwatch"></i> Telemetría / Eventos</a>
         <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="display: none; color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
+        <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="display: none; color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
     </div>
 
     <div class="contenedor">
@@ -166,6 +167,17 @@
             </div>
         </div>
 
+        <div id="admin-postulaciones" class="tab-content">
+            <header>
+                <h2>Revisión de Postulaciones</h2>
+                <p>Evalúa a los candidatos que desean unirse al equipo.</p>
+            </header>
+
+            <div id="lista-postulaciones-admin" style="max-width: 900px; margin: 0 auto;">
+                <!-- Cargado dinámicamente desde JS -->
+            </div>
+        </div>
+
         <div id="postulacion" class="tab-content">
             <header>
                 <h2>Formulario de Postulación</h2>
@@ -188,7 +200,7 @@
                         <div style="margin: 30px 0; padding: 20px; background: rgba(0, 123, 255, 0.05); border-left: 4px solid var(--acento); border-radius: 4px;">
                             <h4 style="margin-top: 0; color: var(--acento); font-size: 1.1rem;"><i class="fa-solid fa-download"></i> 2. Descarga de Mods</h4>
                             <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes utilizar los vehículos y físicas oficiales del equipo.</p>
-                            <a href="https://drive.google.com/drive/folders/EJEMPLO" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; text-align: center; max-width: 350px; font-size: 0.9rem;"><i class="fa-solid fa-link"></i> Ir a Google Drive - Mods de Prueba</a>
+                            <a href="https://drive.google.com/drive/folders/1ktGUufCzFdt5V-hPexsK5AEjZWXiVbHX?usp=sharing" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; text-align: center; max-width: 350px; font-size: 0.9rem;"><i class="fa-solid fa-link"></i> Ir a Google Drive - Mods de Prueba</a>
                         </div>
 
                         <div style="margin: 30px 0; padding: 25px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--borde); border-radius: 8px;">

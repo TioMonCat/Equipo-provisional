@@ -1,4 +1,4 @@
-import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 import { state } from "./state.js";
 
@@ -50,3 +50,86 @@ export async function enviarPostulacion(event) {
 }
 
 window.enviarPostulacion = enviarPostulacion;
+
+export async function cargarPostulacionesAdmin() {
+    const contenedor = document.getElementById('lista-postulaciones-admin');
+    if (!contenedor) return;
+
+    contenedor.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>Cargando postulaciones de la base de datos...</p>";
+
+    try {
+        const querySnapshot = await getDocs(collection(db, "postulaciones"));
+        contenedor.innerHTML = "";
+
+        if (querySnapshot.empty) {
+            contenedor.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>No hay postulaciones pendientes en este momento.</p>";
+            return;
+        }
+
+        let html = `
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Piloto</th>
+                        <th>Categoría</th>
+                        <th>Estado</th>
+                        <th>Captura</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+        querySnapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            const pid = docSnap.id;
+            const fechaStr = new Date(p.fecha).toLocaleDateString();
+            let colorEstado = p.estado === 'Pendiente' ? 'var(--secundario)' : (p.estado === 'Aprobado' ? '#4ade80' : '#d9534f');
+
+            html += `
+                <tr>
+                    <td>
+                        <strong>${p.nombre}</strong><br>
+                        <small style="color: var(--texto-secundario);">${fechaStr}</small>
+                    </td>
+                    <td><span class="cat-tag ${p.categoria.toLowerCase()}">${p.categoria}</span></td>
+                    <td><span style="color: ${colorEstado}; font-weight: bold;">${p.estado}</span></td>
+                    <td>
+                        <a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Ver Tiempo</a>
+                    </td>
+                    <td style="display: flex; gap: 8px; align-items: center; justify-content: flex-start;">
+                        <button onclick="cambiarEstadoPostulacion('${pid}', 'Aprobado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; margin:0;" title="Aprobar"><i class="fa-solid fa-check"></i></button>
+                        <button onclick="cambiarEstadoPostulacion('${pid}', 'Rechazado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(217, 83, 79, 0.2); color: #d9534f; border: 1px solid #d9534f; margin:0;" title="Rechazar"><i class="fa-solid fa-xmark"></i></button>
+                        <button onclick="eliminarPostulacion('${pid}')" class="btn-mini btn-peligro" style="margin:0;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table></div>`;
+        contenedor.innerHTML = html;
+    } catch (error) { console.error("Error cargando postulaciones:", error); }
+}
+
+export async function cambiarEstadoPostulacion(id, nuevoEstado, uid, categoria) {
+    if (confirm(`¿Estás seguro de marcar esta postulación como ${nuevoEstado}?`)) {
+        try {
+            await updateDoc(doc(db, "postulaciones", id), { estado: nuevoEstado });
+            if (nuevoEstado === 'Aprobado') {
+                await updateDoc(doc(db, "pilotos", uid), { rol: "piloto", categoria: categoria === "Ambas" ? "" : categoria });
+                if (window.cargarUsuariosAdmin) window.cargarUsuariosAdmin();
+                if (window.cargarRoster) window.cargarRoster();
+            }
+            cargarPostulacionesAdmin();
+        } catch (error) { alert("Error al actualizar la postulación."); }
+    }
+}
+
+export async function eliminarPostulacion(id) {
+    if (confirm("¿Seguro que deseas eliminar esta postulación del registro?")) {
+        try { await deleteDoc(doc(db, "postulaciones", id)); cargarPostulacionesAdmin();
+        } catch (error) { alert("Error al eliminar la postulación."); }
+    }
+}
+
+window.cargarPostulacionesAdmin = cargarPostulacionesAdmin; window.cambiarEstadoPostulacion = cambiarEstadoPostulacion; window.eliminarPostulacion = eliminarPostulacion;
