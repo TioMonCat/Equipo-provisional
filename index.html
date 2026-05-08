@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Portal | Racing Crew</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <nav>
+        <div class="logo">
+            <img src="img/LogoEquipo.png" alt="Logo Oficial del Equipo" class="logo-img">
+        </div>
+        <div class="nav-controls">
+            <div class="auth-buttons-mini" id="nav-auth-buttons">
+                <button class="btn-mini btn-mini-outline" onclick="abrirLogin()">Entrar</button>
+                <button class="btn-mini" onclick="abrirRegistro()">Registrarse</button>
+            </div>
+            <div class="menu-icon" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="close-btn" onclick="toggleMenu()">&times;</div>
+        <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-gauge-high"></i> Inicio</a>
+        <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
+        <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
+        <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-stopwatch"></i> Telemetría / Eventos</a>
+    </div>
+
+    <div class="contenedor">
+        
+        <div id="inicio" class="tab-content" style="display: block;">
+            
+            <div id="acceso-rapido" style="text-align: center; margin-bottom: 30px;">
+                <button onclick="showSection('postulacion')" class="btn-secundario" style="max-width: 250px;">
+                    <i class="fa-solid fa-file-signature"></i> Postular al Equipo
+                </button>
+            </div>
+
+            <div id="panel-privado" class="panel-racing" style="display: none; max-width: 500px; text-align: center;">
+                <h3>CONEXIÓN ESTABLECIDA</h3>
+                <p style="font-size: 1.2rem; margin-bottom: 20px;">Piloto Activo: <span id="nombre-piloto-activo" style="color: var(--acento); font-weight: bold;">---</span></p>
+                
+                <div id="herramientas-admin" style="display: none; padding: 15px; border: 1px dashed var(--acento); background: rgba(230,0,0,0.05); margin-bottom: 20px;">
+                    <p style="font-family: 'Chakra Petch'; color: var(--acento); font-weight: 700; margin-top: 0;">SISTEMA DIRECTOR DE CARRERA</p>
+                    <button onclick="showSection('asistencia')">Gestión de Calendario</button>
+                </div>
+
+                <button onclick="cerrarSesion()" class="btn-peligro">Desconectar Sistema</button>
+            </div>
+
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="https://images.unsplash.com/photo-1560636886-b4dc800d3810?q=80&w=1200&auto=format&fit=crop" alt="WEC Garage">
+                        <div class="slide-info">
+                            <h2>Endurance Racing</h2>
+                            <p>Desempeño y Estrategia</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="https://images.unsplash.com/photo-1614200187524-dc4b892acf16?q=80&w=1200&auto=format&fit=crop" alt="Sim Racing Setup">
+                        <div class="slide-info">
+                            <h2>Análisis Remoto</h2>
+                            <p>Telemetría en tiempo real</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+
+        <div id="zona-login" class="tab-content">
+            <div id="panel-auth" class="panel-racing" style="max-width: 450px;">
+                <h3 id="auth-titulo" style="text-align: center;">Acceso al Pit Lane</h3>
+                
+                <div id="campos-registro" style="display: none;">
+                    <input type="text" id="auth-nombre" placeholder="Nombre">
+                    <input type="text" id="auth-apellido" placeholder="Apellido">
+                </div>
+                
+                <input type="email" id="auth-email" placeholder="Correo electrónico de comunicación" required>
+                <input type="password" id="auth-pass" placeholder="Clave de seguridad" required>
+                
+                <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SISTEMAS</button>
+                
+                <p style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">
+                    ¿Nuevo en la Crew? <br>
+                    <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Solicitar credencial de piloto</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="pilotos" class="tab-content">
+            <header>
+                <h2>Roster Oficial</h2>
+                <p>Alineación actual del equipo de resistencia</p>
+            </header>
+            <div class="grid-pilotos" id="contenedor-pilotos">
+                <!-- Aquí se cargarán los pilotos dinámicamente -->
+            </div>
+        </div>
+
+        <div id="calendario" class="tab-content">
+            <header>
+                <h2>Temporada 2026</h2>
+                <p>Cronograma oficial del campeonato</p>
+            </header>
+            <img src="img/HorarioERCNG.png" class="calendario-img" alt="Calendario oficial del equipo">
+        </div>
+
+        <div id="asistencia" class="tab-content">
+            <header>
+                <h2>Eventos y Asistencia</h2>
+                <p>Confirma tu disponibilidad para las próximas jornadas.</p>
+            </header>
+
+            <div id="msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px;">
+                <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">SISTEMA BLOQUEADO. REQUIERE IDENTIFICACIÓN DE PILOTO EN LA PANTALLA PRINCIPAL.</p>
+            </div>
+
+            <div id="panel-crear-carrera" class="panel-racing" style="display: none; max-width: 600px;">
+                <h3>+ Programar Evento</h3>
+                <input type="text" id="nueva-carrera-nombre" placeholder="Nombre del Evento (Ej: 6 Horas de Spa)">
+                <input type="date" id="nueva-carrera-fecha">
+                <input type="text" id="nueva-carrera-pista" placeholder="Circuito">
+                <button onclick="crearCarrera()">Guardar en Servidor</button>
+            </div>
+
+            <div id="lista-carreras" style="display: none; max-width: 800px; margin: 0 auto;">
+                </div>
+        </div>
+
+        <div id="postulacion" class="tab-content">
+            <header>
+                <h2>Formulario de Postulación</h2>
+                <p>Envía tu solicitud para unirte a la parrilla de pilotos.</p>
+            </header>
+
+            <div class="panel-racing" style="max-width: 800px; margin: 0 auto;">
+                <h3><i class="fa-solid fa-file-signature"></i> Datos del Piloto</h3>
+                <p style="font-family: 'Rajdhani'; color: var(--texto-secundario); font-size: 1.1rem;">
+                    Próximamente aquí encontrarás los campos necesarios para enviar tu postulación al equipo. ¡Gracias por tu interés!
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="js/ui.js"></script>
+    <script type="module" src="js/firebase-config.js"></script>
+</body>
+</html>
