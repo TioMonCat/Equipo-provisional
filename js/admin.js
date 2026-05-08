@@ -1,4 +1,4 @@
-import { getDocs, collection, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getDocs, collection, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 import { cargarRoster } from "./roster.js";
 
@@ -34,6 +34,7 @@ export async function cargarUsuariosAdmin() {
                         <th>Piloto / Usuario</th>
                         <th>Rol de Acceso</th>
                         <th>Categoría</th>
+                        <th style="text-align: center;">Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>`;
@@ -60,6 +61,9 @@ export async function cargarUsuariosAdmin() {
                             <option value="GT3" ${u.categoria === 'GT3' ? 'selected' : ''}>GT3</option>
                             <option value="Ambas" ${u.categoria === 'Ambas' ? 'selected' : ''}>Ambas Categorías</option>
                         </select>
+                    </td>
+                    <td style="text-align: center;">
+                        <button onclick="eliminarUsuario('${u.uid}')" class="btn-mini btn-peligro" style="margin:0; width: 40px; height: 40px; border-radius: 8px;" title="Eliminar Piloto"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
             `;
@@ -135,3 +139,17 @@ export async function guardarTodosLosCambios() {
 
 window.cargarUsuariosAdmin = cargarUsuariosAdmin;
 window.guardarTodosLosCambios = guardarTodosLosCambios;
+
+export async function eliminarUsuario(uid) {
+    if (confirm("¿Estás seguro de que deseas eliminar este perfil de la base de datos del equipo? Esta acción no se puede deshacer.")) {
+        try {
+            await deleteDoc(doc(db, "pilotos", uid));
+            cargarUsuariosAdmin(); // Recarga la tabla de administración
+            cargarRoster(); // Actualiza el roster para quitarlo visualmente
+        } catch (error) {
+            console.error("Error al eliminar usuario:", error);
+            alert("Hubo un error al intentar eliminar el usuario.");
+        }
+    }
+}
+window.eliminarUsuario = eliminarUsuario;
