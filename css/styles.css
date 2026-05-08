@@ -11,8 +11,8 @@ html {
 :root {
     --fondo: #080808; /* Minimalista oscuro */
     --tarjeta: #121212; /* Paneles limpios */
-    --acento: #007BFF; /* Mantenemos la variable de acento */
-    --acento-hover: #0056b3; 
+    --acento: #3b82f6; /* Azul más suave y moderno */
+    --acento-hover: #2563eb; 
     --secundario: #e6cc00; 
     --texto: #e5e5e5; /* Texto limpio */
     --texto-secundario: #888888;
@@ -265,12 +265,13 @@ nav {
 /* --- BOTONES ESTILO COMPETICIÓN (Cortados) --- */
 button { 
     width: 100%; padding: 14px 20px; 
-    background: var(--acento); color: var(--texto); 
-    border: none; font-weight: 700; cursor: pointer; transition: 0.3s; 
+    background: rgba(59, 130, 246, 0.1); color: #73C2FB; /* Azul Maya sutil */
+    border: 1px solid rgba(115, 194, 251, 0.3); font-weight: 700; cursor: pointer; transition: 0.3s; 
     border-radius: 8px;
     font-family: 'Montserrat', sans-serif;
+    letter-spacing: 1px;
 }
-button:hover { background: var(--acento-hover); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+button:hover { background: rgba(59, 130, 246, 0.2); border-color: #73C2FB; color: #fff; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(59, 130, 246, 0.15); }
 button.btn-secundario { background: transparent; border: 1px solid var(--acento); color: var(--acento); border-radius: 8px; }
 button.btn-secundario:hover { background: var(--acento); color: var(--texto); }
 button.btn-peligro { background: rgba(217, 83, 79, 0.1); border: 1px solid #d9534f; color: #d9534f; border-radius: 8px; }
