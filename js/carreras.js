@@ -186,12 +186,19 @@ export async function eliminarCarrera(idCarrera) {
 window.iniciarContadores = function() {
     if (window.countdownInterval) clearInterval(window.countdownInterval);
     
+    const contadoresNodos = document.querySelectorAll('.countdown-timer'); 
+    if (contadoresNodos.length === 0) return;
+
+    // Optimización: Cachear nodos del DOM y parsear timestamp una sola vez
+    const contadores = Array.from(contadoresNodos).map(el => ({
+        el: el,
+        fechaEvento: parseInt(el.getAttribute('data-timestamp'), 10)
+    }));
+
     const actualizar = () => { 
-        const contadores = document.querySelectorAll('.countdown-timer'); 
         const ahora = Date.now(); 
         
-        contadores.forEach(el => { 
-            const fechaEvento = parseInt(el.getAttribute('data-timestamp'), 10); 
+        contadores.forEach(({ el, fechaEvento }) => { 
             const diff = fechaEvento - ahora; 
             
             if (diff > 0) { 

@@ -6,6 +6,18 @@ import { cargarCarreras } from "./carreras.js";
 import { cargarUsuariosAdmin } from "./admin.js";
 import { cargarPostulacionesAdmin } from "./postulacion.js";
 
+// FUNCIÓN AUXILIAR: Centraliza la lógica para mostrar u ocultar la UI protegida
+function togglePrivateUI(canAccess) {
+    const displayState = canAccess ? 'block' : 'none';
+    const lockState = canAccess ? 'none' : 'block';
+    
+    const privateIds = ['garaje-contenido', 'noticias-contenido', 'lista-carreras', 'link-noticias-wrapper', 'noticias-auth-wrapper', 'paddock-group'];
+    const guestIds = ['msg-no-login', 'garaje-msg-no-login', 'noticias-msg-no-login'];
+    
+    privateIds.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = displayState; });
+    guestIds.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = lockState; });
+}
+
 onAuthStateChanged(auth, async (user) => {
     if (user && user.emailVerified) {
         try {
@@ -21,13 +33,8 @@ onAuthStateChanged(auth, async (user) => {
 
         const accesoRapido = document.getElementById('acceso-rapido');
         if(accesoRapido) accesoRapido.style.display = "block";
-
-        const linkNoticiasWrapper = document.getElementById('link-noticias-wrapper');
-        const bannerNoticias = document.getElementById('noticias-auth-wrapper');
-        const paddockGroup = document.getElementById('paddock-group');
-        if(linkNoticiasWrapper) linkNoticiasWrapper.style.display = "none";
-        if(bannerNoticias) bannerNoticias.style.display = "none";
-        if(paddockGroup) paddockGroup.style.display = "none";
+        
+        togglePrivateUI(false);
     }
 });
 
@@ -210,22 +217,7 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
 
     // Control de acceso a contenido privado (Garaje y Noticias)
     const canAccessPrivate = rol === 'piloto' || rol === 'admin';
-    
-    document.getElementById('msg-no-login').style.display = canAccessPrivate ? 'none' : 'block';
-    document.getElementById('lista-carreras').style.display = canAccessPrivate ? 'block' : 'none';
-
-    document.getElementById('garaje-msg-no-login').style.display = canAccessPrivate ? 'none' : 'block';
-    document.getElementById('garaje-contenido').style.display = canAccessPrivate ? 'block' : 'none';
-    
-    document.getElementById('noticias-msg-no-login').style.display = canAccessPrivate ? 'none' : 'block';
-    document.getElementById('noticias-contenido').style.display = canAccessPrivate ? 'block' : 'none';
-
-    const linkNoticiasWrapper = document.getElementById('link-noticias-wrapper');
-    const bannerNoticias = document.getElementById('noticias-auth-wrapper');
-    const paddockGroup = document.getElementById('paddock-group');
-    if(linkNoticiasWrapper) linkNoticiasWrapper.style.display = canAccessPrivate ? 'block' : 'none';
-    if(bannerNoticias) bannerNoticias.style.display = canAccessPrivate ? 'block' : 'none';
-    if(paddockGroup) paddockGroup.style.display = canAccessPrivate ? 'block' : 'none';
+    togglePrivateUI(canAccessPrivate);
 
     if (rol !== "miembro") cargarCarreras();
     if (rol === "admin") {

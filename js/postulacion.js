@@ -30,6 +30,15 @@ async function comprimirImagen(file) {
     });
 }
 
+// FUNCIÓN AUXILIAR: Renderiza el enlace inteligente a la imagen
+function generarHtmlCaptura(captura, tipo) {
+    if (!captura) return "";
+    if (captura.startsWith('data:image')) {
+        return `<div style="text-align:center;"><small style="color:var(--texto-secundario);">${tipo}</small><br><a href="${captura}" target="_blank" title="Abrir imagen"><img src="${captura}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
+    }
+    return `<a href="${captura}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> ${tipo}</a>`;
+}
+
 export async function enviarPostulacion(event) {
     event.preventDefault(); // Evitamos que la página se recargue
 
@@ -208,18 +217,8 @@ export async function cargarPostulacionesAdmin() {
                 pendientesCount++;
                 let enlacesHTML = "<div style='display: flex; gap: 8px; flex-wrap: wrap;'>";
                 
-                // Renderizado inteligente (Detecta si es un Base64 comprimido o un viejo enlace por retrocompatibilidad)
-                if (p.capturaLmp2 && p.capturaLmp2.startsWith('data:image')) {
-                    enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">LMP2</small><br><a href="${p.capturaLmp2}" target="_blank" title="Abrir imagen"><img src="${p.capturaLmp2}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
-                } else if (p.capturaLmp2) {
-                    enlacesHTML += `<a href="${p.capturaLmp2}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> LMP2</a>`;
-                }
-
-                if (p.capturaGt3 && p.capturaGt3.startsWith('data:image')) {
-                    enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">GT3</small><br><a href="${p.capturaGt3}" target="_blank" title="Abrir imagen"><img src="${p.capturaGt3}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
-                } else if (p.capturaGt3) {
-                    enlacesHTML += `<a href="${p.capturaGt3}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> GT3</a>`;
-                }
+                enlacesHTML += generarHtmlCaptura(p.capturaLmp2, "LMP2");
+                enlacesHTML += generarHtmlCaptura(p.capturaGt3, "GT3");
                 
                 if (p.capturaUrl) enlacesHTML += `<a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> Antiguo</a>`;
                 enlacesHTML += "</div>";
