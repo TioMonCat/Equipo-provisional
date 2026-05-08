@@ -48,7 +48,7 @@ export async function cargarUsuariosAdmin() {
                     </td>
                     <td>
                         <select id="admin-rol-${u.uid}" class="admin-select" data-original="${u.rol || 'miembro'}">
-                            <option value="miembro" ${u.rol === 'miembro' ? 'selected' : ''}>Miembro (Bloqueado)</option>
+                            <option value="miembro" ${u.rol === 'miembro' ? 'selected' : ''}>Miembro (Invitado)</option>
                             <option value="piloto" ${u.rol === 'piloto' ? 'selected' : ''}>Piloto Oficial</option>
                             <option value="admin" ${u.rol === 'admin' ? 'selected' : ''}>Administrador</option>
                         </select>

@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 import { state } from "./state.js";
 
@@ -76,8 +76,34 @@ export async function cargarCarreras() {
             const inscritos = carrera.inscritos || []; 
             const estoyInscrito = inscritos.some(p => p.uid === state.usuarioActual.uid);
 
-            let htmlInscritos = inscritos.map(p => `<li><i class="fa-solid fa-helmet-safety"></i> ${p.nombre}</li>`).join('');
-            if(htmlInscritos === "") htmlInscritos = "<li style='color: #666;'>Ningún piloto confirmado.</li>";
+            let htmlInscritos = "";
+            if (inscritos.length === 0) {
+                htmlInscritos = "<li style='color: #666;'>Ningún piloto confirmado.</li>";
+            } else {
+                const lmp2 = [];
+                const gt3 = [];
+                const otros = [];
+
+                inscritos.forEach(p => {
+                    const cat = p.categoria || "Reserva";
+                    if (cat === "LMP2" || cat === "Ambas") { if (!lmp2.some(x => x.uid === p.uid)) lmp2.push(p); }
+                    if (cat === "GT3" || cat === "Ambas") { if (!gt3.some(x => x.uid === p.uid)) gt3.push(p); }
+                    if (cat !== "LMP2" && cat !== "GT3" && cat !== "Ambas") otros.push(p);
+                });
+
+                if (lmp2.length > 0) {
+                    htmlInscritos += `<li style='color: var(--acento); font-weight: bold; background: rgba(0, 123, 255, 0.1); border-radius: 4px; margin-top: 5px;'><i class="fa-solid fa-gauge-high"></i> LMP2</li>`;
+                    htmlInscritos += lmp2.map(p => `<li>&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-helmet-safety"></i> ${p.nombre}</li>`).join('');
+                }
+                if (gt3.length > 0) {
+                    htmlInscritos += `<li style='color: var(--secundario); font-weight: bold; background: rgba(230, 204, 0, 0.1); border-radius: 4px; margin-top: 5px;'><i class="fa-solid fa-car-side"></i> GT3</li>`;
+                    htmlInscritos += gt3.map(p => `<li>&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-helmet-safety"></i> ${p.nombre}</li>`).join('');
+                }
+                if (otros.length > 0) {
+                    htmlInscritos += `<li style='color: var(--texto-secundario); font-weight: bold; background: rgba(255, 255, 255, 0.05); border-radius: 4px; margin-top: 5px;'><i class="fa-solid fa-users"></i> Reservas</li>`;
+                    htmlInscritos += otros.map(p => `<li>&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-helmet-safety"></i> ${p.nombre}</li>`).join('');
+                }
+            }
             
             let htmlBotones = "";
             if(estoyInscrito) {
@@ -119,8 +145,20 @@ export async function cargarCarreras() {
 export async function cambiarInscripcion(idCarrera, meInscribo) {
     try {
         const refCarrera = doc(db, "carreras", idCarrera);
-        if (meInscribo) await updateDoc(refCarrera, { inscritos: arrayUnion({ uid: state.usuarioActual.uid, nombre: state.usuarioActual.nombre }) });
-        else await updateDoc(refCarrera, { inscritos: arrayRemove({ uid: state.usuarioActual.uid, nombre: state.usuarioActual.nombre }) });
+        const docSnap = await getDoc(refCarrera);
+        if (!docSnap.exists()) return;
+        
+        let inscritos = docSnap.data().inscritos || [];
+        
+        if (meInscribo) {
+            if (!inscritos.some(p => p.uid === state.usuarioActual.uid)) {
+                inscritos.push({ uid: state.usuarioActual.uid, nombre: state.usuarioActual.nombre, categoria: state.usuarioActual.categoria || "Reserva" });
+            }
+        } else {
+            inscritos = inscritos.filter(p => p.uid !== state.usuarioActual.uid);
+        }
+        
+        await updateDoc(refCarrera, { inscritos });
         cargarCarreras(); 
     } catch (error) { console.error("Error al actualizar inscripción:", error); }
 }

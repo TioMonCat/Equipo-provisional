@@ -71,7 +71,7 @@ export async function procesarAuth() {
 }
 
 async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
-    state.usuarioActual = { uid: uid, nombre: nombreCompleto };
+    state.usuarioActual = { uid: uid, nombre: nombreCompleto, categoria: userData?.categoria || "" };
     state.rolActual = rol;
 
     let ocultarBotonPostulacion = false;
@@ -127,7 +127,7 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
         if (ocultarBotonPostulacion) {
             if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
         } else {
-            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Bloqueado</span>`;
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Invitado</span>`;
         }
     }
 
