@@ -135,9 +135,18 @@
             </div>
 
             <div id="panel-crear-carrera" class="panel-racing" style="display: none; max-width: 600px;">
-                <h3>+ Programar Evento</h3>
+                <h3>Programar Evento</h3>
                 <input type="text" id="nueva-carrera-nombre" placeholder="Nombre del Evento (Ej: 6 Horas de Spa)">
-                <input type="date" id="nueva-carrera-fecha">
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label for="nueva-carrera-fecha" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: -5px;">Fecha</label>
+                        <input type="date" id="nueva-carrera-fecha">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="nueva-carrera-hora" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: -5px;">Hora de Inicio</label>
+                        <input type="time" id="nueva-carrera-hora">
+                    </div>
+                </div>
                 <input type="text" id="nueva-carrera-pista" placeholder="Circuito">
                 <button onclick="crearCarrera()">Guardar en Servidor</button>
             </div>

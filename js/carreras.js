@@ -5,15 +5,20 @@ import { state } from "./state.js";
 export async function crearCarrera() {
     const nombre = document.getElementById('nueva-carrera-nombre').value;
     const fecha = document.getElementById('nueva-carrera-fecha').value;
+    const hora = document.getElementById('nueva-carrera-hora').value || "00:00";
     const pista = document.getElementById('nueva-carrera-pista').value;
 
     if(!nombre || !fecha || !pista) { alert("Completa todos los datos del evento."); return; }
 
+    // Creamos un tiempo absoluto global basado en la hora local de quien crea el evento
+    const timestampAbsoluto = new Date(`${fecha}T${hora}:00`).getTime();
+
     try {
-        await addDoc(collection(db, "carreras"), { nombre: nombre, fecha: fecha, pista: pista, inscritos: [] });
+        await addDoc(collection(db, "carreras"), { nombre: nombre, fecha: fecha, hora: hora, pista: pista, inscritos: [], timestamp: timestampAbsoluto });
         alert("Evento guardado en el servidor.");
         document.getElementById('nueva-carrera-nombre').value = "";
         document.getElementById('nueva-carrera-fecha').value = "";
+        document.getElementById('nueva-carrera-hora').value = "";
         document.getElementById('nueva-carrera-pista').value = "";
         cargarCarreras(); 
     } catch (error) {
@@ -43,8 +48,24 @@ export async function cargarCarreras() {
         querySnapshot.forEach((docSnap) => {
             const carrera = docSnap.data();
             const idCarrera = docSnap.id;
-            const fechaEvento = new Date(carrera.fecha + 'T00:00:00').getTime();
-            const tiempoPasado = ahora - fechaEvento;
+            
+            // Lógica de Zona Horaria Inteligente
+            let fechaMilisegundos;
+            let txtFecha = carrera.fecha;
+            let txtHora = carrera.hora || "00:00";
+
+            if (carrera.timestamp) {
+                fechaMilisegundos = carrera.timestamp;
+                const d = new Date(carrera.timestamp);
+                txtFecha = d.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' });
+                txtHora = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else {
+                // Retrocompatibilidad por si tienes eventos viejos creados antes de esta actualización
+                const horaEvento = carrera.hora || "00:00";
+                fechaMilisegundos = new Date(`${carrera.fecha}T${horaEvento}:00`).getTime();
+            }
+
+            const tiempoPasado = ahora - fechaMilisegundos;
             
             if (tiempoPasado > limiteEliminacion) {
                 deleteDoc(doc(db, "carreras", idCarrera)).catch(e => console.error("Error borrando evento:", e));
@@ -73,9 +94,9 @@ export async function cargarCarreras() {
                 <div class="panel-racing" style="padding: 25px;">
                     <h3 style="color: var(--texto); font-size: 1.8rem; border-bottom:none; padding-bottom:0;">${carrera.nombre}</h3>
                     <p style="color: var(--acento); font-family: 'Chakra Petch'; font-size: 1.1rem; margin-top: -10px;">
-                        <i class="fa-regular fa-calendar"></i> ${carrera.fecha} &nbsp;|&nbsp; <i class="fa-solid fa-flag-checkered"></i> ${carrera.pista}
+                        <i class="fa-regular fa-calendar"></i> ${txtFecha} ${txtHora !== '00:00' ? `(${txtHora} hs local)` : ''} &nbsp;|&nbsp; <i class="fa-solid fa-flag-checkered"></i> ${carrera.pista}
                     </p>
-                    <div class="countdown-timer" data-fecha="${carrera.fecha}T00:00:00">Sincronizando telemetría temporal...</div>
+                    <div class="countdown-timer" data-timestamp="${fechaMilisegundos}">Sincronizando telemetría temporal...</div>
                     <div class="telemetria-data">
                         <p>STATUS DE PARRILLA:</p>
                         <ul>${htmlInscritos}</ul>
@@ -112,10 +133,31 @@ export async function eliminarCarrera(idCarrera) {
 }
 
 window.iniciarContadores = function() {
-    /* El código del contador sigue siendo exactamente el mismo */
     if (window.countdownInterval) clearInterval(window.countdownInterval);
-    const actualizar = () => { const contadores = document.querySelectorAll('.countdown-timer'); const ahora = Date.now(); contadores.forEach(el => { const fechaEvento = new Date(el.getAttribute('data-fecha')).getTime(); const diff = fechaEvento - ahora; if (diff > 0) { const dias = Math.floor(diff / (1000 * 60 * 60 * 24)); const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const segundos = Math.floor((diff % (1000 * 60)) / 1000); el.innerHTML = `<i class="fa-solid fa-stopwatch"></i> T-MINUS: ${dias}d ${horas}h ${minutos}m ${segundos}s`; el.style.color = "var(--acento)"; } else { el.innerHTML = `<i class="fa-solid fa-flag-checkered"></i> Evento en curso o finalizado`; el.style.color = "var(--secundario)"; } }); };
-    actualizar(); window.countdownInterval = setInterval(actualizar, 1000);
+    
+    const actualizar = () => { 
+        const contadores = document.querySelectorAll('.countdown-timer'); 
+        const ahora = Date.now(); 
+        
+        contadores.forEach(el => { 
+            const fechaEvento = parseInt(el.getAttribute('data-timestamp'), 10); 
+            const diff = fechaEvento - ahora; 
+            
+            if (diff > 0) { 
+                const dias = Math.floor(diff / (1000 * 60 * 60 * 24)); 
+                const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); 
+                const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); 
+                const segundos = Math.floor((diff % (1000 * 60)) / 1000); 
+                el.innerHTML = `<i class="fa-solid fa-stopwatch"></i> T-MINUS: ${dias}d ${horas}h ${minutos}m ${segundos}s`; 
+                el.style.color = "var(--acento)"; 
+            } else { 
+                el.innerHTML = `<i class="fa-solid fa-flag-checkered"></i> Evento en curso o finalizado`; 
+                el.style.color = "var(--secundario)"; 
+            } 
+        }); 
+    };
+    actualizar(); 
+    window.countdownInterval = setInterval(actualizar, 1000);
 };
 
 window.crearCarrera = crearCarrera; window.cargarCarreras = cargarCarreras; window.cambiarInscripcion = cambiarInscripcion; window.eliminarCarrera = eliminarCarrera;
