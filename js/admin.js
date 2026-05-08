@@ -194,3 +194,41 @@ export async function toggleStreamStatus() {
     }
 }
 window.toggleStreamStatus = toggleStreamStatus;
+
+export async function notificarNoticiaDiscord() {
+    const tituloInput = document.getElementById('admin-noticia-titulo');
+    const titulo = tituloInput.value.trim();
+
+    if (!titulo) {
+        alert("Por favor, ingresa el título de la noticia para notificar.");
+        return;
+    }
+
+    const btn = document.getElementById('btn-discord-noticia');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+
+    const webhookUrl = "https://discord.com/api/webhooks/1502446014496374814/cYRrHJQ4FTSG7lpk7R3rAbXc5JXxhaxAevoEVxBLQp0xot4jpjZJwvKyZmQUU52SmdTc";
+
+    const payload = {
+        content: "📢 **¡NUEVO ANUNCIO OFICIAL PUBLICADO!** 📢\n@everyone",
+        embeds: [{
+            title: titulo,
+            description: `Se ha publicado un nuevo comunicado en el portal del equipo. Por favor, ingresen a la sección de **Noticias** en la web para leer los detalles completos.\n\n🔗 **Ir al Portal Oficial**`,
+            color: 3447003 // Color Azul Oficial (Hexadecimal convertido a decimal)
+        }]
+    };
+
+    try {
+        await fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        alert("¡Aviso enviado a Discord exitosamente!");
+        tituloInput.value = "";
+    } catch (error) {
+        console.error("Error enviando webhook:", error);
+        alert("Hubo un error al conectar con Discord.");
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Aviso';
+    }
+}
+window.notificarNoticiaDiscord = notificarNoticiaDiscord;

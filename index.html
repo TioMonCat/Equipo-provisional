@@ -362,6 +362,18 @@
                 </div>
             </div>
 
+            <!-- NOTIFICACIONES A DISCORD -->
+            <div class="panel-racing" style="max-width: 900px; margin: 0 auto 30px; text-align: left;">
+                <h3 style="margin-top: 0; color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px;"><i class="fa-brands fa-discord" style="color: #5865F2;"></i> Avisos de Noticias</h3>
+                <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label for="admin-noticia-titulo" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif;">Título del Anuncio (Para Discord)</label>
+                        <input type="text" id="admin-noticia-titulo" placeholder="Ej: Apertura del Portal Oficial" style="margin-bottom: 0; margin-top: 5px;">
+                    </div>
+                    <button id="btn-discord-noticia" onclick="notificarNoticiaDiscord()" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-paper-plane"></i> Enviar Aviso</button>
+                </div>
+            </div>
+
             <div id="lista-usuarios-admin" style="max-width: 900px; margin: 0 auto;">
                 <!-- Cargado dinámicamente desde JS -->
             </div>
@@ -528,25 +540,14 @@
             </div>
 
             <div id="noticias-contenido" style="display: none; max-width: 900px; margin: 0 auto;">
-                <!-- EJEMPLO DE NOTICIA 1 -->
+                <!-- ÚNICO ANUNCIO (SIN FECHA) -->
                 <article class="panel-racing noticia-card">
-                    <span class="nav-tag" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento); margin-bottom: 15px; display: inline-block;">Actualización</span>
-                    <span style="color: var(--texto-secundario); font-size: 0.85rem; margin-left: 10px;"><i class="fa-regular fa-calendar"></i> 08 Mayo 2026</span>
-                    <h3 style="margin-top: 0; font-size: 1.8rem; border: none; padding-bottom: 0;">Apertura del Portal Oficial del Equipo</h3>
-                    <p style="color: var(--texto-secundario); line-height: 1.7; margin-bottom: 20px;">
-                        Bienvenidos al nuevo centro de operaciones de la escudería. A partir de hoy, todos los pilotos oficiales y aspirantes deberán utilizar esta plataforma para gestionar sus asistencias, descargar los diseños oficiales de los vehículos y revisar los datos de la temporada.
-                    </p>
-                    <img src="img/promo2.jpg" alt="Noticia" style="width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; border: 1px solid var(--borde);">
-                </article>
-
-                <!-- EJEMPLO DE NOTICIA 2 -->
-                <article class="panel-racing noticia-card">
-                    <span class="nav-tag pendiente" style="margin-bottom: 15px; display: inline-block;">Competición</span>
-                    <span style="color: var(--texto-secundario); font-size: 0.85rem; margin-left: 10px;"><i class="fa-regular fa-calendar"></i> 01 Mayo 2026</span>
-                    <h3 style="margin-top: 0; font-size: 1.8rem; border: none; padding-bottom: 0;">Preparativos para Interlagos</h3>
+                    <span class="nav-tag" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento); margin-bottom: 15px; display: inline-block;">Aviso Oficial</span>
+                    <h3 style="margin-top: 0; font-size: 1.8rem; border: none; padding-bottom: 0;">Temporada a punto de iniciar</h3>
                     <p style="color: var(--texto-secundario); line-height: 1.7;">
-                        El equipo de ingenieros ya ha liberado las primeras directrices para el circuito de Interlagos. Recomendamos a todos los pilotos descargar los paquetes en la sección de Garaje y comenzar las prácticas libres en los servidores.
+                        Esto va a comenzar pronto. Mantengan sus simuladores actualizados y estén atentos a los próximos comunicados en esta sección.
                     </p>
+                    <img src="img/promo2.jpg" alt="Aviso Oficial" style="width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; border: 1px solid var(--borde); margin-top: 20px;">
                 </article>
             </div>
         </div>
