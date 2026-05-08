@@ -25,7 +25,7 @@ export async function enviarPostulacion(event) {
 
     const btn = document.getElementById('btn-enviar-postulacion');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Transfiriendo telemetría...';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando datos de prueba...';
     btn.style.opacity = "0.7";
     btn.style.cursor = "not-allowed";
 

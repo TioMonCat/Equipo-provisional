@@ -6,7 +6,7 @@ export async function cargarUsuariosAdmin() {
     const contenedor = document.getElementById('lista-usuarios-admin');
     if (!contenedor) return;
 
-    contenedor.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>Conectando con la base de datos de telemetría...</p>";
+    contenedor.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>Conectando con la base de datos del equipo...</p>";
 
     try {
         const querySnapshot = await getDocs(collection(db, "pilotos"));

@@ -30,7 +30,7 @@ export async function cargarCarreras() {
     if (window.countdownInterval) clearInterval(window.countdownInterval);
 
     const contenedor = document.getElementById('lista-carreras');
-    contenedor.innerHTML = "<p style='text-align:center;'>Cargando telemetría de eventos...</p>";
+    contenedor.innerHTML = "<p style='text-align:center;'>Cargando eventos programados...</p>";
 
     try {
         const querySnapshot = await getDocs(collection(db, "carreras"));
@@ -122,7 +122,7 @@ export async function cargarCarreras() {
                     <p style="color: var(--acento); font-family: 'Chakra Petch'; font-size: 1.1rem; margin-top: -10px;">
                         <i class="fa-regular fa-calendar"></i> ${txtFecha} ${txtHora !== '00:00' ? `(${txtHora} hs local)` : ''} &nbsp;|&nbsp; <i class="fa-solid fa-flag-checkered"></i> ${carrera.pista}
                     </p>
-                    <div class="countdown-timer" data-timestamp="${fechaMilisegundos}">Sincronizando telemetría temporal...</div>
+                    <div class="countdown-timer" data-timestamp="${fechaMilisegundos}">Calculando tiempo restante...</div>
                     <div class="telemetria-data">
                         <p>STATUS DE PARRILLA:</p>
                         <ul>${htmlInscritos}</ul>

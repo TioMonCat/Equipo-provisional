@@ -47,7 +47,7 @@
         <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-gauge-high"></i> Inicio</a>
         <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
         <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
-        <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-stopwatch"></i> Telemetría / Eventos</a>
+        <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-calendar-check"></i> Eventos y Asistencia</a>
         <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="display: none; color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
         <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="display: none; color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
         <a href="#" id="link-admin-telemetria" onclick="showSection('telemetria-vivo')" style="display: none; color: var(--secundario);"><i class="fa-solid fa-satellite-dish"></i> Telemetría (Beta)</a>
@@ -218,7 +218,7 @@
 
             <div id="msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px;">
                 <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
-                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE PILOTOS. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA ACCEDER A LA TELEMETRÍA DE EVENTOS.</p>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE PILOTOS. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA GESTIONAR TU ASISTENCIA A LOS EVENTOS.</p>
             </div>
 
             <div id="panel-crear-carrera" class="panel-racing" style="display: none; max-width: 600px;">
@@ -330,7 +330,7 @@
                 <div id="postulacion-mensaje" style="display: none; text-align: center; padding: 40px 20px;">
                     <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: #4ade80; margin-bottom: 20px;"></i>
                     <h3 style="margin-top: 0;">¡Postulación Enviada!</h3>
-                    <p style="color: var(--texto-secundario);">Tus datos y tiempo han sido registrados en la telemetría.<br>Los directores de carrera evaluarán tu solicitud pronto.</p>
+                    <p style="color: var(--texto-secundario);">Tus datos y tiempo han sido registrados para su evaluación.<br>Los directores de carrera evaluarán tu solicitud pronto.</p>
                     <button onclick="showSection('inicio')" class="btn-secundario" style="max-width: 250px; margin-top: 20px;">Volver al Inicio</button>
                 </div>
             </div>

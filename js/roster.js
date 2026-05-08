@@ -82,7 +82,7 @@ export async function cargarRoster() {
         contenedor.innerHTML = htmlFinal;
     } catch (error) {
         console.error("Error cargando el roster:", error);
-        contenedor.innerHTML = "<p style='text-align: center; grid-column: 1 / -1; color: #d9534f;'>Error al conectar con la telemetría.</p>";
+        contenedor.innerHTML = "<p style='text-align: center; grid-column: 1 / -1; color: #d9534f;'>Error al conectar con la base de datos.</p>";
     }
 }
 
