@@ -1,6 +1,6 @@
 // IMPORTAMOS TODAS LAS LIBRERÍAS NECESARIAS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, updateDoc, arrayUnion, arrayRemove, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- CONFIGURACIÓN DE FIREBASE ---
@@ -21,6 +21,28 @@ const db = getFirestore(app);
 let modoRegistro = false;
 let usuarioActual = null; // Guardará {uid, nombre} para las inscripciones
 let rolActual = "piloto";
+
+// --- OBSERVADOR DE SESIÓN (MANTIENE EL LOGIN AL RECARGAR) ---
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            // El usuario ya tiene sesión activa, traemos sus datos de la base de datos
+            const pilotoDoc = await getDoc(doc(db, "pilotos", user.uid));
+            if (pilotoDoc.exists()) {
+                const d = pilotoDoc.data();
+                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol, user.uid);
+            } else {
+                mostrarPanelPrivado(user.email, "piloto", user.uid);
+            }
+        } catch (error) {
+            console.error("Error al recuperar la sesión:", error);
+        }
+    } else {
+        // Si no hay sesión activa, mostramos los botones de login en la navegación
+        const navAuth = document.getElementById('nav-auth-buttons');
+        if(navAuth) navAuth.style.display = "flex";
+    }
+});
 
 // --- LÓGICA DE INTERFAZ LOGIN ---
 window.cambiarModoAuth = function() {
@@ -81,20 +103,23 @@ function mostrarPanelPrivado(nombreCompleto, rol, uid) {
 
     document.getElementById('panel-auth').style.display = "none";
     document.getElementById('acceso-rapido').style.display = "none";
-    document.getElementById('panel-privado').style.display = "block";
-    document.getElementById('nombre-piloto-activo').innerText = nombreCompleto;
+
+    const navStatus = document.getElementById('nav-user-status');
+    if (navStatus) navStatus.style.display = "flex";
+    const nombreNav = document.getElementById('nav-nombre-piloto');
+    if (nombreNav) nombreNav.innerText = nombreCompleto;
 
     const navAuth = document.getElementById('nav-auth-buttons');
     if(navAuth) navAuth.style.display = "none";
 
-    const herramientasAdmin = document.getElementById('herramientas-admin');
+    const panelPrivado = document.getElementById('panel-privado');
     const panelCrearCarrera = document.getElementById('panel-crear-carrera');
     
     if (rol === "admin") {
-        if(herramientasAdmin) herramientasAdmin.style.display = "block";
+        if(panelPrivado) panelPrivado.style.display = "block";
         if(panelCrearCarrera) panelCrearCarrera.style.display = "block";
     } else {
-        if(herramientasAdmin) herramientasAdmin.style.display = "none";
+        if(panelPrivado) panelPrivado.style.display = "none";
         if(panelCrearCarrera) panelCrearCarrera.style.display = "none";
     }
 
@@ -115,8 +140,10 @@ window.cerrarSesion = function() {
 
         document.getElementById('panel-auth').style.display = "block";
         document.getElementById('acceso-rapido').style.display = "block";
-        document.getElementById('panel-privado').style.display = "none";
         
+        const navStatus = document.getElementById('nav-user-status');
+        if (navStatus) navStatus.style.display = "none";
+
         const navAuth = document.getElementById('nav-auth-buttons');
         if(navAuth) navAuth.style.display = "flex";
         
@@ -125,8 +152,8 @@ window.cerrarSesion = function() {
         document.getElementById('panel-crear-carrera').style.display = "none";
         document.getElementById('lista-carreras').innerHTML = ""; 
         
-        const herramientasAdmin = document.getElementById('herramientas-admin');
-        if (herramientasAdmin) herramientasAdmin.style.display = "none";
+        const panelPrivado = document.getElementById('panel-privado');
+        if (panelPrivado) panelPrivado.style.display = "none";
 
         document.getElementById('auth-email').value = "";
         document.getElementById('auth-pass').value = "";
