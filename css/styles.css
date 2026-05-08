@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap');
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: #080808; 
+}
+
 :root {
     --fondo: #080808; /* Minimalista oscuro */
     --tarjeta: #121212; /* Paneles limpios */
@@ -17,6 +25,7 @@ body {
     color: var(--texto);
     margin: 0;
     overflow-x: hidden;
+    position: relative;
     line-height: 1.6;
 }
 
@@ -149,9 +158,26 @@ input, select, textarea {
 input:focus { outline: none; border-color: var(--acento); background: rgba(255,255,255,0.06); }
 
 /* --- CARRUSEL --- */
-.swiper { width: 100%; height: 450px; border-radius: 16px; border: 1px solid var(--borde); overflow: hidden; }
-.swiper-slide img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%) contrast(120%); }
-.slide-info { position: absolute; bottom: 40px; left: 40px; background: rgba(0,0,0,0.8); padding: 20px 30px; border-radius: 12px; backdrop-filter: blur(10px); }
+.swiper { 
+    width: 100vw; 
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 550px; 
+    overflow: hidden; 
+}
+.swiper-slide img { 
+    width: 100%; height: 100%; object-fit: cover; 
+    filter: grayscale(30%) contrast(120%); 
+    /* Fade superior e inferior aplicado directo a la foto */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+}
+.slide-info { 
+    position: absolute; bottom: 60px; 
+    left: max(20px, calc(50% - 530px)); /* Mantiene la alineación perfecta con los otros paneles */
+    background: rgba(0,0,0,0.8); padding: 20px 30px; border-radius: 12px; backdrop-filter: blur(10px); 
+}
 .slide-info h2 { font-size: 2.2rem; margin: 0; color: var(--texto); }
 .slide-info p { color: var(--texto-secundario); font-size: 1.1rem; margin: 5px 0 0; font-family: 'Inter', sans-serif; }
 
@@ -163,6 +189,9 @@ input:focus { outline: none; border-color: var(--acento); background: rgba(255,2
 .card-piloto h3 { margin: 10px 0 5px; font-size: 1.5rem; color: var(--texto); }
 .card-piloto p { color: var(--texto-secundario); margin: 0; font-size: 1rem; }
 .rol-tag { display: inline-block; margin-top: 15px; padding: 6px 18px; background: rgba(255,255,255,0.05); color: var(--texto); font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; border-radius: 20px; border: 1px solid var(--borde); }
+.cat-tag { display: inline-block; padding: 6px 18px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; border-radius: 20px; border: 1px solid var(--borde); }
+.cat-tag.lmp2 { background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento); }
+.cat-tag.gt3 { background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario); }
 
 /* --- CALENDARIO --- */
 .calendario-img { width: 100%; max-width: 800px; display: block; margin: 20px auto; border: 1px solid var(--borde); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
@@ -172,6 +201,19 @@ header { text-align: center; margin-bottom: 50px; }
 header h2 { color: var(--texto); font-size: 2.5rem; margin: 0 0 10px; font-weight: 600; }
 header p { color: var(--texto-secundario); font-size: 1.1rem; margin: 0; font-family: 'Inter', sans-serif; }
 
+/* --- CONTADOR EVENTOS --- */
+.countdown-timer {
+    background: rgba(0,0,0,0.4);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    text-align: center;
+    margin: 15px 0;
+    border: 1px dashed var(--borde);
+    letter-spacing: 1px;
+}
+
 /* Utilidades dinámicas para JS */
 .telemetria-data { background: rgba(0,0,0,0.3); padding: 20px; border: 1px solid var(--borde); margin: 15px 0; border-radius: 8px; }
 .telemetria-data p { margin: 0 0 10px; font-weight: 600; color: var(--texto); }
@@ -179,6 +221,49 @@ header p { color: var(--texto-secundario); font-size: 1.1rem; margin: 0; font-fa
 .telemetria-data li { padding: 8px 10px; border-bottom: 1px solid var(--borde); font-family: 'Inter', sans-serif; color: var(--texto-secundario); }
 .telemetria-data li:last-child { border-bottom: none; }
 .telemetria-data i { color: var(--acento); width: 20px; }
+
+/* --- PANEL DE ADMINISTRACIÓN --- */
+.admin-table-container {
+    overflow-x: auto;
+    background: var(--tarjeta);
+    border-radius: 12px;
+    border: 1px solid var(--borde);
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    min-width: 600px;
+}
+.admin-table th {
+    padding: 15px 10px;
+    border-bottom: 2px solid var(--borde);
+    color: var(--texto-secundario);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.admin-table td {
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+}
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-select {
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--borde);
+    color: var(--texto);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+}
+.admin-table select option { background: var(--tarjeta); color: var(--texto); }
 
 /* --- FOOTER GLOBAL --- */
 .footer-global {

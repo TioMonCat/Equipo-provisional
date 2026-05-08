@@ -44,13 +44,14 @@
         <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
         <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
         <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-stopwatch"></i> Telemetría / Eventos</a>
+        <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="display: none; color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
     </div>
 
     <div class="contenedor">
         
         <div id="inicio" class="tab-content" style="display: block;">
             
-            <div id="acceso-rapido" style="text-align: center; margin-bottom: 30px;">
+            <div id="acceso-rapido" style="text-align: center; margin-bottom: 30px; display: none;">
                 <button onclick="showSection('postulacion')" class="btn-secundario" style="max-width: 250px;">
                     <i class="fa-solid fa-file-signature"></i> Postular al Equipo
                 </button>
@@ -65,14 +66,14 @@
             <div class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide">
-                        <img src="https://images.unsplash.com/photo-1560636886-b4dc800d3810?q=80&w=1200&auto=format&fit=crop" alt="WEC Garage">
+                        <img src="img/oreca07.jpg" alt="Oreca 07">
                         <div class="slide-info">
                             <h2>Endurance Racing</h2>
                             <p>Desempeño y Estrategia</p>
                         </div>
                     </div>
                     <div class="swiper-slide">
-                        <img src="https://images.unsplash.com/photo-1614200187524-dc4b892acf16?q=80&w=1200&auto=format&fit=crop" alt="Sim Racing Setup">
+                        <img src="img/mercedes.webp" alt="Mercedes AMG">
                         <div class="slide-info">
                             <h2>Análisis Remoto</h2>
                             <p>Telemetría en tiempo real</p>
@@ -130,7 +131,7 @@
 
             <div id="msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px;">
                 <i class="fa-solid fa-lock" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
-                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">SISTEMA BLOQUEADO. REQUIERE IDENTIFICACIÓN DE PILOTO EN LA PANTALLA PRINCIPAL.</p>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">SISTEMA BLOQUEADO. SE REQUIERE ACCESO COMO PILOTO OFICIAL PARA VER LOS EVENTOS.</p>
             </div>
 
             <div id="panel-crear-carrera" class="panel-racing" style="display: none; max-width: 600px;">
@@ -143,6 +144,17 @@
 
             <div id="lista-carreras" style="display: none; max-width: 800px; margin: 0 auto;">
                 </div>
+        </div>
+
+        <div id="admin-panel" class="tab-content">
+            <header>
+                <h2>Panel de Administración</h2>
+                <p>Gestión de roles y categorías de la Crew</p>
+            </header>
+
+            <div id="lista-usuarios-admin" style="max-width: 900px; margin: 0 auto;">
+                <!-- Cargado dinámicamente desde JS -->
+            </div>
         </div>
 
         <div id="postulacion" class="tab-content">
@@ -165,11 +177,35 @@
                 <p>Normativas y reglas oficiales de la escudería.</p>
             </header>
 
-            <div class="panel-racing" style="max-width: 800px; margin: 0 auto;">
-                <h3><i class="fa-solid fa-gavel"></i> Código de Conducta</h3>
-                <p style="color: var(--texto-secundario);">
-                    Aquí se detallarán las reglas y normativas internas del equipo.
-                </p>
+            <div class="panel-racing" style="max-width: 800px; margin: 0 auto; text-align: left;">
+                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px; margin-top: 0;"><i class="fa-solid fa-gavel"></i> 1. Código de Conducta</h3>
+                <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                    <li><strong>Respeto mutuo:</strong> Se exige respeto absoluto hacia todos los miembros del equipo, directores de carrera y pilotos rivales. No se tolerarán insultos ni comportamientos tóxicos.</li>
+                    <li><strong>Representación:</strong> Al llevar el nombre o logo del equipo en servidores o eventos oficiales, el piloto actúa como embajador de la escudería.</li>
+                    <li><strong>Comunicación:</strong> El uso de Discord (o radio del equipo) es obligatorio durante los eventos de resistencia para mantener la coordinación del Pit Wall.</li>
+                </ul>
+
+                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-stopwatch"></i> 2. Asistencia y Compromiso</h3>
+                <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                    <li><strong>Confirmación de Eventos:</strong> Los pilotos deben confirmar su asistencia en el Panel de Telemetría (Eventos) antes del cierre de inscripciones.</li>
+                    <li><strong>Ausencias:</strong> Si un piloto confirmado no puede asistir, debe notificar a los Administradores lo antes posible. Ausencias repetidas sin justificar resultarán en la degradación a piloto de Reserva.</li>
+                    <li><strong>Entrenamientos:</strong> Se espera que los pilotos oficiales de LMP2 y GT3 participen en las sesiones de práctica para preparar los setups y estrategias de carrera.</li>
+                </ul>
+
+                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-car-burst"></i> 3. Comportamiento en Pista</h3>
+                <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                    <li><strong>Banderas Azules:</strong> Facilitar el adelantamiento de manera predecible y segura, manteniendo la línea de carrera sin hacer movimientos bruscos.</li>
+                    <li><strong>Incidentes:</strong> En caso de colisión, mantener la calma por la radio. Nunca tomar represalias en pista. Cualquier queja se gestionará mediante el sistema de comisarios tras la carrera.</li>
+                    <li><strong>Límites de Pista:</strong> Respetar los límites para evitar penalizaciones (Drive-Through o Stop & Go) que comprometan el esfuerzo de los relevos en carreras de Endurance.</li>
+                </ul>
+
+                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> 4. Sistema de Sanciones</h3>
+                <p style="color: var(--texto-secundario); margin-bottom: 15px;">El incumplimiento constante de este reglamento conllevará las siguientes medidas escalonadas:</p>
+                <ol style="color: var(--texto-secundario); line-height: 1.8; margin-bottom: 0;">
+                    <li><strong>Aviso verbal:</strong> Amonestación privada por parte de la Dirección.</li>
+                    <li><strong>Pérdida de asiento:</strong> Descenso temporal a la categoría de "Reserva / Pruebas".</li>
+                    <li><strong>Expulsión:</strong> Retiro permanente del Roster Oficial y bloqueo de los sistemas del equipo.</li>
+                </ol>
             </div>
         </div>
 
@@ -202,6 +238,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/ui.js"></script>
-    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
