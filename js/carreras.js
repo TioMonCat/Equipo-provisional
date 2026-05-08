@@ -151,9 +151,22 @@ export async function cambiarInscripcion(idCarrera, meInscribo) {
         let inscritos = docSnap.data().inscritos || [];
         
         if (meInscribo) {
-            if (!inscritos.some(p => p.uid === state.usuarioActual.uid)) {
-                inscritos.push({ uid: state.usuarioActual.uid, nombre: state.usuarioActual.nombre, categoria: state.usuarioActual.categoria || "Reserva" });
-            }
+            // Solución: Obtenemos los datos más recientes del piloto ANTES de inscribirlo.
+            // Esto evita que se use una categoría "vieja" si un admin la cambió después de que el piloto inició sesión.
+            const userDocRef = doc(db, "pilotos", state.usuarioActual.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            const freshCategory = userDocSnap.exists() ? userDocSnap.data().categoria : "Reserva";
+
+            // Actualizamos el estado local para que la UI sea consistente de inmediato
+            state.usuarioActual.categoria = freshCategory || "";
+
+            const pilotoParaInscribir = { 
+                uid: state.usuarioActual.uid, 
+                nombre: state.usuarioActual.nombre, 
+                categoria: freshCategory || "Reserva" 
+            };
+
+            if (!inscritos.some(p => p.uid === state.usuarioActual.uid)) inscritos.push(pilotoParaInscribir);
         } else {
             inscritos = inscritos.filter(p => p.uid !== state.usuarioActual.uid);
         }
