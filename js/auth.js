@@ -25,8 +25,15 @@ onAuthStateChanged(auth, async (user) => {
 export function cambiarModoAuth() {
     state.modoRegistro = !state.modoRegistro;
     document.getElementById('auth-titulo').innerText = state.modoRegistro ? "Solicitar credencial" : "Acceso al Pit Lane";
-    document.getElementById('btn-accion-auth').innerText = state.modoRegistro ? "CREAR CUENTA" : "INICIAR SISTEMAS";
+    document.getElementById('btn-accion-auth').innerText = state.modoRegistro ? "CREAR CUENTA" : "INICIAR SESIÓN";
     document.getElementById('campos-registro').style.display = state.modoRegistro ? "block" : "none";
+
+    const toggleText = document.getElementById('auth-toggle-text');
+    if (toggleText) {
+        toggleText.innerHTML = state.modoRegistro 
+            ? `¿Ya tienes credencial? <br><a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Acceder al Pit Lane</a>`
+            : `¿Nuevo en el equipo? <br><a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Solicitar credencial de piloto</a>`;
+    }
 }
 
 export function abrirLogin() {
@@ -93,6 +100,9 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     
     const linkAdminPostulaciones = document.getElementById('link-admin-postulaciones');
     if (linkAdminPostulaciones) linkAdminPostulaciones.style.display = (rol === "admin") ? "flex" : "none";
+
+    const linkAdminTelemetria = document.getElementById('link-admin-telemetria');
+    if (linkAdminTelemetria) linkAdminTelemetria.style.display = (rol === "admin") ? "flex" : "none";
 
     const navStatus = document.getElementById('nav-user-status');
     if (navStatus) navStatus.style.display = "flex";

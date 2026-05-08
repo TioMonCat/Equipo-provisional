@@ -50,6 +50,7 @@
         <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-stopwatch"></i> Telemetría / Eventos</a>
         <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="display: none; color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
         <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="display: none; color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
+        <a href="#" id="link-admin-telemetria" onclick="showSection('telemetria-vivo')" style="display: none; color: var(--secundario);"><i class="fa-solid fa-satellite-dish"></i> Telemetría (Beta)</a>
     </div>
 
     <div class="contenedor">
@@ -80,7 +81,7 @@
                     <div class="swiper-slide">
                         <img src="img/mercedes.webp" alt="Mercedes AMG">
                         <div class="slide-info">
-                            <h2>Análisis Remoto</h2>
+                            <h2>Ingeniería de Pista</h2>
                             <p>Telemetría en tiempo real</p>
                         </div>
                     </div>
@@ -101,10 +102,10 @@
                 <input type="email" id="auth-email" placeholder="Correo electrónico de comunicación" required>
                 <input type="password" id="auth-pass" placeholder="Clave de seguridad" required>
                 
-                <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SISTEMAS</button>
+                <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SESIÓN</button>
                 
-                <p style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">
-                    ¿Nuevo en la Crew? <br>
+                <p id="auth-toggle-text" style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">
+                    ¿Nuevo en el equipo? <br>
                     <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Solicitar credencial de piloto</a>
                 </p>
             </div>
@@ -113,7 +114,7 @@
         <div id="pilotos" class="tab-content">
             <header>
                 <h2>Roster Oficial</h2>
-                <p>Alineación actual del equipo de resistencia</p>
+                <p>Alineación actual</p>
             </header>
             <div class="grid-pilotos" id="contenedor-pilotos">
                 <!-- Aquí se cargarán los pilotos dinámicamente -->
@@ -179,6 +180,22 @@
 
             <div id="lista-postulaciones-admin" style="max-width: 900px; margin: 0 auto;">
                 <!-- Cargado dinámicamente desde JS -->
+            </div>
+        </div>
+
+        <div id="telemetria-vivo" class="tab-content">
+            <header>
+                <h2>Telemetría en Vivo (Beta)</h2>
+                <p>Integración con servidores de Assetto Corsa (Acceso solo Admin)</p>
+            </header>
+
+            <div class="panel-racing" style="max-width: 900px; margin: 0 auto; text-align: center; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <i class="fa-solid fa-chart-area" style="font-size: 3rem; color: var(--texto-secundario); margin-bottom: 20px;"></i>
+                <h3 style="color: var(--texto); margin-top: 0;">Módulo de Telemetría en Desarrollo</h3>
+                <p style="color: var(--texto-secundario); max-width: 500px; line-height: 1.6;">
+                    Este espacio está reservado para incrustar el mapa en vivo, la tabla de tiempos o la conexión a la base de datos de Assetto Corsa. 
+                    Actualmente es visible solo para administradores para realizar pruebas.
+                </p>
             </div>
         </div>
 
