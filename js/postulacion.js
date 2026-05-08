@@ -153,80 +153,131 @@ export function actualizarFormularioTiempos() {
 window.actualizarFormularioTiempos = actualizarFormularioTiempos;
 
 export async function cargarPostulacionesAdmin() {
-    const contenedor = document.getElementById('lista-postulaciones-admin');
-    if (!contenedor) return;
+    const contenedorPendientes = document.getElementById('lista-postulaciones-admin');
+    const contenedorHistorial = document.getElementById('historial-postulaciones-admin');
+    if (!contenedorPendientes) return;
 
-    contenedor.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>Cargando postulaciones de la base de datos...</p>";
+    contenedorPendientes.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>Cargando postulaciones pendientes...</p>";
+    if (contenedorHistorial) contenedorHistorial.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>Cargando historial...</p>";
 
     try {
         const querySnapshot = await getDocs(collection(db, "postulaciones"));
-        contenedor.innerHTML = "";
+        
+        const docs = [];
+        querySnapshot.forEach(docSnap => {
+            docs.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        // Ordenar por fecha (más recientes primero)
+        docs.sort((a, b) => b.fecha - a.fecha);
 
-        if (querySnapshot.empty) {
-            contenedor.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>No hay postulaciones pendientes en este momento.</p>";
-            return;
-        }
-
-        let html = `
+        let htmlPendientes = `
         <div class="admin-table-container">
             <table class="admin-table">
                 <thead>
                     <tr>
                         <th>Piloto / Discord</th>
                         <th>Categoría</th>
-                        <th>Estado</th>
                         <th>Captura</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>`;
 
-        querySnapshot.forEach(docSnap => {
-            const p = docSnap.data();
-            const pid = docSnap.id;
+        let htmlHistorial = `
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Piloto</th>
+                        <th>Categoría</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+        let pendientesCount = 0;
+        let historialCount = 0;
+
+        docs.forEach(p => {
+            const pid = p.id;
             const fechaStr = new Date(p.fecha).toLocaleDateString();
-            let colorEstado = p.estado === 'Pendiente' ? 'var(--secundario)' : (p.estado === 'Aprobado' ? '#4ade80' : '#d9534f');
             
-            let enlacesHTML = "<div style='display: flex; gap: 8px; flex-wrap: wrap;'>";
-            
-            // Renderizado inteligente (Detecta si es un Base64 comprimido o un viejo enlace por retrocompatibilidad)
-            if (p.capturaLmp2 && p.capturaLmp2.startsWith('data:image')) {
-                enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">LMP2</small><br><a href="${p.capturaLmp2}" target="_blank" title="Abrir imagen"><img src="${p.capturaLmp2}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
-            } else if (p.capturaLmp2) {
-                enlacesHTML += `<a href="${p.capturaLmp2}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> LMP2</a>`;
-            }
+            if (p.estado === 'Pendiente') {
+                pendientesCount++;
+                let enlacesHTML = "<div style='display: flex; gap: 8px; flex-wrap: wrap;'>";
+                
+                // Renderizado inteligente (Detecta si es un Base64 comprimido o un viejo enlace por retrocompatibilidad)
+                if (p.capturaLmp2 && p.capturaLmp2.startsWith('data:image')) {
+                    enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">LMP2</small><br><a href="${p.capturaLmp2}" target="_blank" title="Abrir imagen"><img src="${p.capturaLmp2}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
+                } else if (p.capturaLmp2) {
+                    enlacesHTML += `<a href="${p.capturaLmp2}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> LMP2</a>`;
+                }
 
-            if (p.capturaGt3 && p.capturaGt3.startsWith('data:image')) {
-                enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">GT3</small><br><a href="${p.capturaGt3}" target="_blank" title="Abrir imagen"><img src="${p.capturaGt3}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
-            } else if (p.capturaGt3) {
-                enlacesHTML += `<a href="${p.capturaGt3}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> GT3</a>`;
-            }
-            
-            if (p.capturaUrl) enlacesHTML += `<a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> Antiguo</a>`;
-            enlacesHTML += "</div>";
+                if (p.capturaGt3 && p.capturaGt3.startsWith('data:image')) {
+                    enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">GT3</small><br><a href="${p.capturaGt3}" target="_blank" title="Abrir imagen"><img src="${p.capturaGt3}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
+                } else if (p.capturaGt3) {
+                    enlacesHTML += `<a href="${p.capturaGt3}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> GT3</a>`;
+                }
+                
+                if (p.capturaUrl) enlacesHTML += `<a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> Antiguo</a>`;
+                enlacesHTML += "</div>";
 
-            html += `
-                <tr>
-                    <td>
-                        <strong>${p.nombre}</strong><br>
-                        <small style="color: var(--texto-secundario);"><i class="fa-brands fa-discord" style="color:#5865F2;"></i> ${p.discord || 'No provisto'}</small><br>
-                        <small style="color: var(--texto-secundario);">${fechaStr}</small>
-                    </td>
-                    <td><span class="cat-tag ${p.categoria.toLowerCase()}">${p.categoria}</span></td>
-                    <td><span style="color: ${colorEstado}; font-weight: bold;">${p.estado}</span></td>
-                    <td>${enlacesHTML}</td>
-                    <td style="display: flex; gap: 8px; align-items: center; justify-content: flex-start;">
-                        <button onclick="cambiarEstadoPostulacion('${pid}', 'Aprobado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; margin:0;" title="Aprobar"><i class="fa-solid fa-check"></i></button>
-                        <button onclick="cambiarEstadoPostulacion('${pid}', 'Rechazado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(217, 83, 79, 0.2); color: #d9534f; border: 1px solid #d9534f; margin:0;" title="Rechazar"><i class="fa-solid fa-xmark"></i></button>
-                        <button onclick="eliminarPostulacion('${pid}')" class="btn-mini btn-peligro" style="margin:0;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>
-            `;
+                htmlPendientes += `
+                    <tr>
+                        <td>
+                            <strong>${p.nombre}</strong><br>
+                            <small style="color: var(--texto-secundario);"><i class="fa-brands fa-discord" style="color:#5865F2;"></i> ${p.discord || 'No provisto'}</small><br>
+                            <small style="color: var(--texto-secundario);">${fechaStr}</small>
+                        </td>
+                        <td><span class="cat-tag ${p.categoria.toLowerCase()}">${p.categoria}</span></td>
+                        <td>${enlacesHTML}</td>
+                        <td style="display: flex; gap: 8px; align-items: center; justify-content: flex-start;">
+                            <button onclick="cambiarEstadoPostulacion('${pid}', 'Aprobado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(74, 222, 128, 0.2); color: #4ade80; border: 1px solid #4ade80; margin:0;" title="Aprobar"><i class="fa-solid fa-check"></i></button>
+                            <button onclick="cambiarEstadoPostulacion('${pid}', 'Rechazado', '${p.uid}', '${p.categoria}')" class="btn-mini" style="background: rgba(217, 83, 79, 0.2); color: #d9534f; border: 1px solid #d9534f; margin:0;" title="Rechazar"><i class="fa-solid fa-xmark"></i></button>
+                            <button onclick="eliminarPostulacion('${pid}')" class="btn-mini btn-peligro" style="margin:0;" title="Eliminar (Spam)"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                historialCount++;
+                let colorEstado = p.estado === 'Aprobado' ? '#4ade80' : '#d9534f';
+                htmlHistorial += `
+                    <tr>
+                        <td><strong>${p.nombre}</strong></td>
+                        <td><span class="cat-tag ${p.categoria.toLowerCase()}">${p.categoria}</span></td>
+                        <td><span style="color: ${colorEstado}; font-weight: bold;">${p.estado}</span></td>
+                        <td style="color: var(--texto-secundario);">${fechaStr}</td>
+                        <td>
+                            <button onclick="eliminarPostulacion('${pid}')" class="btn-mini btn-peligro" style="margin:0;" title="Eliminar registro"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }
         });
 
-        html += `</tbody></table></div>`;
-        contenedor.innerHTML = html;
-    } catch (error) { console.error("Error cargando postulaciones:", error); }
+        htmlPendientes += `</tbody></table></div>`;
+        htmlHistorial += `</tbody></table></div>`;
+
+        if (pendientesCount === 0) {
+            contenedorPendientes.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>No hay postulaciones pendientes de revisión.</p>";
+        } else {
+            contenedorPendientes.innerHTML = htmlPendientes;
+        }
+
+        if (contenedorHistorial) {
+            if (historialCount === 0) {
+                contenedorHistorial.innerHTML = "<p style='text-align: center; color: var(--texto-secundario);'>El historial está vacío.</p>";
+            } else {
+                contenedorHistorial.innerHTML = htmlHistorial;
+            }
+        }
+
+    } catch (error) { 
+        console.error("Error cargando postulaciones:", error); 
+        contenedorPendientes.innerHTML = "<p style='text-align: center; color: #d9534f;'>Error al cargar postulaciones.</p>";
+    }
 }
 
 export async function cambiarEstadoPostulacion(id, nuevoEstado, uid, categoria) {
