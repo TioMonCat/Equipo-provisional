@@ -283,7 +283,7 @@
                     <div class="vehiculo-info">
                         <h3>Oreca 07 LMP2</h3>
                         <p>Prototipo de Le Mans. Ligero, ágil y con una carga aerodinámica excepcional, ideal para carreras de resistencia.</p>
-                        <a href="https://drive.google.com/drive/folders/1ktGUufCzFdt5V-hPexsK5AEjZWXiVbHX?usp=sharing" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Mod</a>
+                        <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/rsx_oreca_07.zip" download class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Mod</a>
                     </div>
                 </div>
                 <div class="vehiculo-garaje">
@@ -291,7 +291,7 @@
                     <div class="vehiculo-info">
                         <h3>Mercedes AMG GT3</h3>
                         <p>Un GT3 robusto y fiable, conocido por su estabilidad en curvas de alta velocidad y su potente motor V8.</p>
-                        <a href="https://drive.google.com/drive/folders/1ktGUufCzFdt5V-hPexsK5AEjZWXiVbHX?usp=sharing" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Mod</a>
+                        <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/bg_mercedes_amg_gt_black_series_sc.zip" download class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Mod</a>
                     </div>
                 </div>
             </div>
@@ -385,6 +385,23 @@
                 <p>Envía tu solicitud para unirte a la parrilla de pilotos.</p>
             </header>
 
+            <!-- BANNER HORIZONTAL DE SOPORTE -->
+            <div class="panel-racing" style="max-width: 800px; margin: 0 auto 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; background: rgba(230, 204, 0, 0.05); border-color: rgba(230, 204, 0, 0.3); padding: 25px 30px;">
+                <div style="flex: 1; min-width: 250px;">
+                    <h3 style="margin-top: 0; color: var(--secundario); font-size: 1.2rem; border-bottom: none; padding-bottom: 0; margin-bottom: 5px;"><i class="fa-solid fa-headset"></i> ¿Problemas con tu prueba?</h3>
+                    <p style="color: var(--texto-secundario); font-size: 0.95rem; margin: 0;">Si presentas algún inconveniente técnico o tienes dudas antes de postularte, contáctanos:</p>
+                </div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 6px; border-left: 3px solid #5865F2; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-brands fa-discord" style="color: #5865F2; font-size: 1.2rem;"></i> <span style="color: var(--texto); font-weight: 500;">muncato.</span>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 6px; border-left: 3px solid #5865F2; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-brands fa-discord" style="color: #5865F2; font-size: 1.2rem;"></i> <span style="color: var(--texto); font-weight: 500;">gaboevox</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO DE POSTULACIÓN -->
             <div class="panel-racing" style="max-width: 800px; margin: 0 auto;">
                 <div id="postulacion-form-container">
                     <h3 style="margin-top: 0; border-bottom: 1px solid var(--borde); padding-bottom: 15px;"><i class="fa-solid fa-file-signature"></i> Datos de la Prueba</h3>
@@ -400,22 +417,26 @@
 
                         <div style="margin: 30px 0; padding: 20px; background: rgba(0, 123, 255, 0.05); border-left: 4px solid var(--acento); border-radius: 4px;">
                             <h4 style="margin-top: 0; color: var(--acento); font-size: 1.1rem;"><i class="fa-solid fa-download"></i> 2. Descarga de Mods</h4>
-                            <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes utilizar el vehículo del equipo y el mapa de la próxima carrera.</p>
-                            <a href="https://drive.google.com/drive/folders/1ktGUufCzFdt5V-hPexsK5AEjZWXiVbHX?usp=sharing" target="_blank" class="btn-secundario" style="text-decoration: none; display: inline-block; text-align: center; max-width: 350px; font-size: 0.9rem;"><i class="fa-solid fa-link"></i> Ir a Google Drive - Mods de Prueba</a>
+                            <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes descargar el mapa de la próxima carrera y el vehículo de tu categoría.</p>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/interlagos.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> Circuito Interlagos</a>
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/rsx_oreca_07.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car"></i> Oreca 07 LMP2</a>
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/bg_mercedes_amg_gt_black_series_sc.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car-side"></i> Mercedes GT3</a>
+                            </div>
                         </div>
 
                         <div id="tiempos-container" style="display: none; margin: 30px 0; padding: 25px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--borde); border-radius: 8px;">
                             <h4 style="margin-top: 0; color: var(--texto); font-size: 1.1rem;"><i class="fa-solid fa-stopwatch"></i> 3. Registro de Tiempo</h4>
-                            <p style="font-size: 0.95rem; color: var(--texto-secundario); margin-bottom: 20px;">Sube tu captura a un servicio como Google Drive o Lightshot y pega el enlace público aquí.</p>
+                            <p style="font-size: 0.95rem; color: var(--texto-secundario); margin-bottom: 20px;">Sube el archivo de tu captura de pantalla (JPG, PNG). El sistema la optimizará automáticamente.</p>
                             
                             <div id="tiempo-lmp2" style="display: none; margin-bottom: 15px;">
                                 <label for="postulacion-captura-lmp2" style="color: var(--texto); font-size: 0.9rem;">Tiempo objetivo LMP2: <strong style="color: var(--acento);">1:24.500</strong></label>
-                                <input type="url" id="postulacion-captura-lmp2" placeholder="Enlace captura LMP2..." style="margin-top: 5px; background: rgba(0,0,0,0.5);">
+                                <input type="file" id="postulacion-captura-lmp2" accept="image/jpeg, image/png, image/webp" style="margin-top: 5px; background: rgba(0,0,0,0.5);">
                             </div>
 
                             <div id="tiempo-gt3" style="display: none;">
                                 <label for="postulacion-captura-gt3" style="color: var(--texto); font-size: 0.9rem;">Tiempo objetivo GT3: <strong style="color: var(--secundario);">1:34.000</strong></label>
-                                <input type="url" id="postulacion-captura-gt3" placeholder="Enlace captura GT3..." style="margin-top: 5px; background: rgba(0,0,0,0.5);">
+                                <input type="file" id="postulacion-captura-gt3" accept="image/jpeg, image/png, image/webp" style="margin-top: 5px; background: rgba(0,0,0,0.5);">
                             </div>
                         </div>
                         

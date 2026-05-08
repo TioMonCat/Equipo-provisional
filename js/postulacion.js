@@ -2,6 +2,34 @@ import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from "https://
 import { db } from "./firebase-config.js";
 import { state } from "./state.js";
 
+// FUNCIÓN: Comprimir imagen usando Canvas para generar Base64 bajo el límite de Firestore
+async function comprimirImagen(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const MAX_WIDTH = 800; // Limita el ancho a 800px para garantizar un Base64 muy liviano
+                if (width > MAX_WIDTH) {
+                    height = Math.round((height * MAX_WIDTH) / width);
+                    width = MAX_WIDTH;
+                }
+                canvas.width = width; canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', 0.7)); // Compresión JPG al 70%
+            };
+            img.onerror = (err) => reject(err);
+        };
+        reader.onerror = (err) => reject(err);
+    });
+}
+
 export async function enviarPostulacion(event) {
     event.preventDefault(); // Evitamos que la página se recargue
 
@@ -12,16 +40,16 @@ export async function enviarPostulacion(event) {
 
     const categoria = document.getElementById('postulacion-categoria').value;
     const discord = document.getElementById('postulacion-discord').value;
-    const capturaLmp2 = document.getElementById('postulacion-captura-lmp2').value;
-    const capturaGt3 = document.getElementById('postulacion-captura-gt3').value;
+    const fileLmp2 = document.getElementById('postulacion-captura-lmp2').files[0];
+    const fileGt3 = document.getElementById('postulacion-captura-gt3').files[0];
 
     if (!categoria || !discord) {
         alert("Por favor, completa todos los campos requeridos.");
         return;
     }
-    if (categoria === "LMP2" && !capturaLmp2) return alert("Falta el enlace de tu captura LMP2.");
-    if (categoria === "GT3" && !capturaGt3) return alert("Falta el enlace de tu captura GT3.");
-    if (categoria === "Ambas" && (!capturaLmp2 || !capturaGt3)) return alert("Debes subir las capturas de ambas categorías.");
+    if (categoria === "LMP2" && !fileLmp2) return alert("Falta el archivo de tu captura LMP2.");
+    if (categoria === "GT3" && !fileGt3) return alert("Falta el archivo de tu captura GT3.");
+    if (categoria === "Ambas" && (!fileLmp2 || !fileGt3)) return alert("Debes subir las capturas de ambas categorías.");
 
     const btn = document.getElementById('btn-enviar-postulacion');
     btn.disabled = true;
@@ -30,13 +58,17 @@ export async function enviarPostulacion(event) {
     btn.style.cursor = "not-allowed";
 
     try {
-        // 1. Guardar la información en la base de datos con el enlace proporcionado
+        // 1. Procesar y comprimir las imágenes si el piloto las subió
+        let base64Lmp2 = fileLmp2 ? await comprimirImagen(fileLmp2) : null;
+        let base64Gt3 = fileGt3 ? await comprimirImagen(fileGt3) : null;
+
+        // 2. Guardar la información en la base de datos
         await addDoc(collection(db, "postulaciones"), {
             uid: state.usuarioActual.uid,
             nombre: state.usuarioActual.nombre,
             categoria: categoria,
-            capturaLmp2: capturaLmp2 || null,
-            capturaGt3: capturaGt3 || null,
+            capturaLmp2: base64Lmp2,
+            capturaGt3: base64Gt3,
             discord: discord,
             fecha: new Date().getTime(),
             estado: "Pendiente"
@@ -147,10 +179,23 @@ export async function cargarPostulacionesAdmin() {
             const fechaStr = new Date(p.fecha).toLocaleDateString();
             let colorEstado = p.estado === 'Pendiente' ? 'var(--secundario)' : (p.estado === 'Aprobado' ? '#4ade80' : '#d9534f');
             
-            let enlacesHTML = "";
-            if (p.capturaLmp2) enlacesHTML += `<a href="${p.capturaLmp2}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; margin-bottom:4px; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-up-right-from-square"></i> Ver LMP2</a>`;
-            if (p.capturaGt3) enlacesHTML += `<a href="${p.capturaGt3}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-up-right-from-square"></i> Ver GT3</a>`;
-            if (p.capturaUrl) enlacesHTML += `<a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-up-right-from-square"></i> Tiempo Antiguo</a>`;
+            let enlacesHTML = "<div style='display: flex; gap: 8px; flex-wrap: wrap;'>";
+            
+            // Renderizado inteligente (Detecta si es un Base64 comprimido o un viejo enlace por retrocompatibilidad)
+            if (p.capturaLmp2 && p.capturaLmp2.startsWith('data:image')) {
+                enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">LMP2</small><br><a href="${p.capturaLmp2}" target="_blank" title="Abrir imagen"><img src="${p.capturaLmp2}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
+            } else if (p.capturaLmp2) {
+                enlacesHTML += `<a href="${p.capturaLmp2}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> LMP2</a>`;
+            }
+
+            if (p.capturaGt3 && p.capturaGt3.startsWith('data:image')) {
+                enlacesHTML += `<div style="text-align:center;"><small style="color:var(--texto-secundario);">GT3</small><br><a href="${p.capturaGt3}" target="_blank" title="Abrir imagen"><img src="${p.capturaGt3}" style="width: 70px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--borde); transition: 0.3s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></a></div>`;
+            } else if (p.capturaGt3) {
+                enlacesHTML += `<a href="${p.capturaGt3}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; display:block; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> GT3</a>`;
+            }
+            
+            if (p.capturaUrl) enlacesHTML += `<a href="${p.capturaUrl}" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none; padding: 4px 8px; font-size: 0.75rem;"><i class="fa-solid fa-link"></i> Antiguo</a>`;
+            enlacesHTML += "</div>";
 
             html += `
                 <tr>
