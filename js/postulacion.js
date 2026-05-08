@@ -42,6 +42,30 @@ export async function enviarPostulacion(event) {
             estado: "Pendiente"
         });
 
+        // --- NOTIFICACIÓN AUTOMÁTICA A DISCORD ---
+        const webhookUrl = "https://discord.com/api/webhooks/1502181375732617378/9lHyVTWLJwYY7XWU14f6Z2oo87n6MpTJetQdgUjcv1ub123YcfPAw3bs1AOMC4ViYw8n"; 
+        
+        if (webhookUrl) {
+            const payload = {
+                content: "🚨 **¡NUEVA POSTULACIÓN RECIBIDA EN EL PORTAL!** 🚨",
+                embeds: [{
+                    title: `Piloto: ${state.usuarioActual.nombre}`,
+                    color: 16753920, // Naranja
+                    fields: [
+                        { name: "Usuario Discord", value: discord, inline: true },
+                        { name: "Categoría", value: categoria, inline: true }
+                    ]
+                }]
+            };
+            
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).catch(e => console.error("Error al notificar a Discord:", e));
+        }
+        // -----------------------------------------
+
         // 2. Ocultar formulario y mostrar éxito
         document.getElementById('postulacion-form-container').style.display = "none";
         document.getElementById('postulacion-mensaje').style.display = "block";
