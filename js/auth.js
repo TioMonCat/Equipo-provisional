@@ -12,27 +12,8 @@ onAuthStateChanged(auth, async (user) => {
             const pilotoDoc = await getDoc(doc(db, "pilotos", user.uid));
             if (pilotoDoc.exists()) {
                 const d = pilotoDoc.data();
-                await mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol, user.uid, d);
-            } else { await mostrarPanelPrivado(user.email, "piloto", user.uid, null); }
-
-            // Gestionar visibilidad de paneles con acceso restringido
-            const rol = state.rolActual;
-            const isPilotOrAdmin = rol === 'piloto' || rol === 'admin';
-
-            // Sección Asistencia
-            const msgNoLogin = document.getElementById('msg-no-login');
-            const listaCarreras = document.getElementById('lista-carreras');
-            const panelCrearCarrera = document.getElementById('panel-crear-carrera');
-            if (msgNoLogin) msgNoLogin.style.display = isPilotOrAdmin ? 'none' : 'block';
-            if (listaCarreras) listaCarreras.style.display = isPilotOrAdmin ? 'block' : 'none';
-            if (panelCrearCarrera) panelCrearCarrera.style.display = rol === 'admin' ? 'block' : 'none';
-
-            // Sección Garaje
-            const garajeMsg = document.getElementById('garaje-msg-no-login');
-            const garajeContenido = document.getElementById('garaje-contenido');
-            if (garajeMsg) garajeMsg.style.display = isPilotOrAdmin ? 'none' : 'block';
-            if (garajeContenido) garajeContenido.style.display = isPilotOrAdmin ? 'block' : 'none';
-
+                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol, user.uid, d);
+            } else { mostrarPanelPrivado(user.email, "piloto", user.uid, null); }
         } catch (error) { console.error("Error al recuperar la sesión:", error); }
     } else {
         const navAuth = document.getElementById('nav-auth-buttons');
@@ -40,10 +21,6 @@ onAuthStateChanged(auth, async (user) => {
 
         const accesoRapido = document.getElementById('acceso-rapido');
         if(accesoRapido) accesoRapido.style.display = "block";
-
-        // Resetear paneles privados al cerrar sesión
-        [document.getElementById('msg-no-login'), document.getElementById('garaje-msg-no-login')].forEach(el => { if(el) el.style.display = 'block'; });
-        [document.getElementById('lista-carreras'), document.getElementById('garaje-contenido'), document.getElementById('panel-crear-carrera')].forEach(el => { if(el) el.style.display = 'none'; });
     }
 });
 
@@ -180,4 +157,54 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     if (cat === "Ambas") {
         catHtml = `<span class="nav-tag lmp2" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);">LMP2</span><span class="nav-tag gt3" style="background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);">GT3</span>`;
     } else if (cat === "LMP2" || cat === "GT3") {
-        const cssStyle = cat === "LMP2" ? "background: rgba(0, 123, 255, 0.1); color: var(--ace
+        const cssStyle = cat === "LMP2" ? "background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);" : "background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);";
+        catHtml = `<span class="nav-tag" style="${cssStyle}">${cat}</span>`;
+    }
+    if (catContainer) catContainer.innerHTML = catHtml;
+
+    if (rol === "admin") {
+        if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag admin">Admin</span>`;
+    } else if (rol === "piloto") {
+        if (!cat) {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Reserva</span>`;
+        } else {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag" style="background: rgba(255,255,255,0.1); color: var(--texto);">Piloto</span>`;
+        }
+    } else if (rol === "miembro") {
+        if (ocultarBotonPostulacion) {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
+        } else {
+            if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Invitado</span>`;
+        }
+    }
+
+    const navAuth = document.getElementById('nav-auth-buttons');
+    if(navAuth) navAuth.style.display = "none";
+
+    const panelPrivado = document.getElementById('panel-privado');
+    const panelCrearCarrera = document.getElementById('panel-crear-carrera');
+    
+    if (panelPrivado) panelPrivado.style.display = (rol === "admin") ? "block" : "none";
+    if (panelCrearCarrera) panelCrearCarrera.style.display = (rol === "admin") ? "block" : "none";
+
+    document.getElementById('msg-no-login').style.display = (rol === "miembro") ? "block" : "none";
+    document.getElementById('lista-carreras').style.display = (rol === "miembro") ? "none" : "block";
+    
+    if (rol !== "miembro") cargarCarreras();
+    if (rol === "admin") {
+        cargarUsuariosAdmin();
+        cargarPostulacionesAdmin();
+    }
+    setTimeout(() => { if (typeof showSection === 'function') { showSection('inicio'); } }, 100);
+}
+
+export function cerrarSesion() {
+    signOut(auth).then(() => {
+        if (window.countdownInterval) clearInterval(window.countdownInterval);
+        state.usuarioActual = null;
+        state.rolActual = "invitado";
+        window.location.reload(); // Forma más limpia y robusta de restablecer toda la interfaz
+    });
+}
+
+window.cambiarModoAuth = cambiarModoAuth; window.abrirLogin = abrirLogin; window.abrirRegistro = abrirRegistro; window.manejarBotonPostulacion = manejarBotonPostulacion; window.procesarAuth = procesarAuth; window.cerrarSesion = cerrarSesion;
