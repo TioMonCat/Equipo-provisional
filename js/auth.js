@@ -2,7 +2,6 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, on
 import { doc, setDoc, getDoc, getDocs, query, where, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
 import { state } from "./state.js";
-import { cargarRoster } from "./roster.js";
 import { cargarCarreras } from "./carreras.js";
 import { cargarUsuariosAdmin } from "./admin.js";
 import { cargarPostulacionesAdmin } from "./postulacion.js";

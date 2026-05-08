@@ -38,3 +38,13 @@ const swiper = new Swiper(".mySwiper", {
     observer: true,
     observeParents: true
 });
+
+// Inicialización del Carrusel para "Última Carrera"
+const swiperUltimaCarrera = new Swiper(".swiper-ultima-carrera", {
+    grabCursor: true,
+    slidesPerView: 1,
+    spaceBetween: 20,
+    loop: true,
+    autoplay: { delay: 4000, disableOnInteraction: false },
+    pagination: { el: ".swiper-pagination", clickable: true },
+});
