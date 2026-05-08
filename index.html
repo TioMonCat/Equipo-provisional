@@ -58,7 +58,7 @@
         <div id="inicio" class="tab-content" style="display: block;">
             
             <div id="acceso-rapido" style="text-align: center; margin-bottom: 30px; display: none;">
-                <button onclick="showSection('postulacion')" class="btn-secundario" style="max-width: 250px;">
+                <button onclick="manejarBotonPostulacion()" class="btn-secundario" style="max-width: 250px;">
                     <i class="fa-solid fa-file-signature"></i> Postular al Equipo
                 </button>
             </div>
@@ -102,6 +102,11 @@
                 <input type="email" id="auth-email" placeholder="Correo electrónico de comunicación" required>
                 <input type="password" id="auth-pass" placeholder="Clave de seguridad" required>
                 
+                <div style="margin-bottom: 20px; padding: 12px; background: rgba(230, 204, 0, 0.05); border-left: 3px solid var(--secundario); text-align: left; font-size: 0.85rem; color: var(--texto-secundario);">
+                    <i class="fa-solid fa-envelope-circle-check" style="color: var(--secundario); margin-right: 5px;"></i>
+                    <span id="auth-spam-text">Recuerda que debes verificar tu correo antes de ingresar. Revisa tu carpeta de <strong>Spam o Correo No Deseado</strong>.</span>
+                </div>
+
                 <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SESIÓN</button>
                 
                 <p id="auth-toggle-text" style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">

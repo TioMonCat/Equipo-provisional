@@ -19,6 +19,9 @@ onAuthStateChanged(auth, async (user) => {
     } else {
         const navAuth = document.getElementById('nav-auth-buttons');
         if(navAuth) navAuth.style.display = "flex";
+
+        const accesoRapido = document.getElementById('acceso-rapido');
+        if(accesoRapido) accesoRapido.style.display = "block";
     }
 });
 
@@ -27,6 +30,13 @@ export function cambiarModoAuth() {
     document.getElementById('auth-titulo').innerText = state.modoRegistro ? "Solicitar credencial" : "Acceso al Pit Lane";
     document.getElementById('btn-accion-auth').innerText = state.modoRegistro ? "CREAR CUENTA" : "INICIAR SESIÓN";
     document.getElementById('campos-registro').style.display = state.modoRegistro ? "block" : "none";
+
+    const spamText = document.getElementById('auth-spam-text');
+    if (spamText) {
+        spamText.innerHTML = state.modoRegistro 
+            ? `Te enviaremos un enlace de confirmación. Asegúrate de revisar tu carpeta de <strong>Spam o Correo No Deseado</strong>.`
+            : `Recuerda que debes verificar tu correo antes de ingresar. Revisa tu carpeta de <strong>Spam o Correo No Deseado</strong>.`;
+    }
 
     const toggleText = document.getElementById('auth-toggle-text');
     if (toggleText) {
@@ -44,6 +54,14 @@ export function abrirLogin() {
 export function abrirRegistro() {
     if (typeof showSection === 'function') showSection('zona-login');
     if (!state.modoRegistro) cambiarModoAuth();
+}
+
+export function manejarBotonPostulacion() {
+    if (state.usuarioActual) {
+        if (typeof showSection === 'function') showSection('postulacion');
+    } else {
+        abrirRegistro();
+    }
 }
 
 export async function procesarAuth() {
@@ -190,4 +208,4 @@ export function cerrarSesion() {
     });
 }
 
-window.cambiarModoAuth = cambiarModoAuth; window.abrirLogin = abrirLogin; window.abrirRegistro = abrirRegistro; window.procesarAuth = procesarAuth; window.cerrarSesion = cerrarSesion;
+window.cambiarModoAuth = cambiarModoAuth; window.abrirLogin = abrirLogin; window.abrirRegistro = abrirRegistro; window.manejarBotonPostulacion = manejarBotonPostulacion; window.procesarAuth = procesarAuth; window.cerrarSesion = cerrarSesion;
