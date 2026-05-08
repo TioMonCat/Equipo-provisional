@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Portal | Racing Crew</title>
+    <title>ALR | Portal Oficial</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -79,6 +79,11 @@
         </div>
 
         <div class="nav-controls">
+            <!-- CONTADOR DE CONEXIONES RTDB -->
+            <div id="online-counter" class="online-counter-box" title="Usuarios conectados actualmente">
+                <i class="fa-solid fa-circle blink-green" style="font-size: 0.55rem;"></i> <span id="online-count-text">-- en línea</span>
+            </div>
+
             <div class="auth-buttons-mini" id="nav-auth-buttons" style="display: none;">
                 <button class="btn-mini btn-mini-outline" onclick="abrirLogin()">Entrar</button>
                 <button class="btn-mini" onclick="abrirRegistro()">Registrarse</button>

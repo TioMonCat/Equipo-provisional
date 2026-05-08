@@ -25,6 +25,7 @@ export async function cargarRoster() {
 
         querySnapshot.forEach((docSnap) => {
             const data = docSnap.data();
+            data.uid = docSnap.id; // <-- Agregamos el ID real del documento a los datos
             
             if (data.rol === "admin") { admins.push(data); } else {
                 if (data.categoria === "LMP2" || data.categoria === "Ambas") lmp2.push(data);
@@ -55,7 +56,7 @@ export async function cargarRoster() {
             }
             
             return `
-                <div class="card-piloto">
+                <div class="card-piloto" data-uid="${data.uid}">
                     <img src="${imagenPiloto}" class="img-piloto">
                     <h3>${nombreFormateado}</h3>
                     <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
@@ -80,6 +81,9 @@ export async function cargarRoster() {
         appendSection("Pilotos de Reserva / Pruebas", "fa-solid fa-helmet-safety", otros);
         
         contenedor.innerHTML = htmlFinal;
+        
+        if (typeof window.actualizarPresenciaRoster === 'function') window.actualizarPresenciaRoster();
+        
     } catch (error) {
         console.error("Error cargando el roster:", error);
         contenedor.innerHTML = "<p style='text-align: center; grid-column: 1 / -1; color: #d9534f;'>Error al conectar con la base de datos.</p>";

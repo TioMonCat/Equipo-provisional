@@ -8,3 +8,4 @@ import "./admin.js";
 import "./postulacion.js";
 import "./stream.js";
 import "./noticias.js";
+import "./presence.js";
