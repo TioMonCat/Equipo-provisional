@@ -151,6 +151,7 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
         if (tienePostulacionPendiente) {
             btnPostulacion.disabled = true;
             btnPostulacion.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Postulación en Revisión';
+            btnPostulacion.className = 'btn-secundario';
             btnPostulacion.style.opacity = "0.7";
             btnPostulacion.style.cursor = "not-allowed";
             btnPostulacion.style.borderColor = "var(--secundario)";
@@ -158,6 +159,7 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
         } else {
             btnPostulacion.disabled = false;
             btnPostulacion.innerHTML = '<i class="fa-solid fa-file-signature"></i> Postular al Equipo';
+            btnPostulacion.className = 'btn-destacado';
             btnPostulacion.style.opacity = "1";
             btnPostulacion.style.cursor = "pointer";
             btnPostulacion.style.borderColor = "";

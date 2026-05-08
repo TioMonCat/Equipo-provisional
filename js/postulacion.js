@@ -116,6 +116,7 @@ export async function enviarPostulacion(event) {
             if (btnPostulacion) {
                 btnPostulacion.disabled = true;
                 btnPostulacion.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Postulación en Revisión';
+                btnPostulacion.className = 'btn-secundario';
                 btnPostulacion.style.opacity = "0.7";
                 btnPostulacion.style.cursor = "not-allowed";
                 btnPostulacion.style.borderColor = "var(--secundario)";

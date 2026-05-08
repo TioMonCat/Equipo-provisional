@@ -265,19 +265,35 @@ nav {
 /* --- BOTONES ESTILO COMPETICIÓN (Cortados) --- */
 button { 
     width: 100%; padding: 14px 20px; 
-    background: rgba(59, 130, 246, 0.1); color: #73C2FB; /* Azul Maya sutil */
-    border: 1px solid rgba(115, 194, 251, 0.3); font-weight: 700; cursor: pointer; transition: 0.3s; 
+    background: rgba(255, 255, 255, 0.05); color: var(--texto);
+    border: 1px solid rgba(255, 255, 255, 0.1); font-weight: 700; cursor: pointer; transition: 0.3s; 
     border-radius: 8px;
     font-family: 'Montserrat', sans-serif;
     letter-spacing: 1px;
 }
-button:hover { background: rgba(59, 130, 246, 0.2); border-color: #73C2FB; color: #fff; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(59, 130, 246, 0.15); }
-button.btn-secundario { background: transparent; border: 1px solid var(--acento); color: var(--acento); border-radius: 8px; }
-button.btn-secundario:hover { background: var(--acento); color: var(--texto); }
+button:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); color: #fff; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+.btn-secundario { background: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: var(--texto-secundario); border-radius: 8px; transition: 0.3s; cursor: pointer; text-align: center; }
+.btn-secundario:hover { background: rgba(255, 255, 255, 0.1); color: #fff; border-color: rgba(255, 255, 255, 0.5); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+a.btn-secundario { padding: 14px 20px; display: inline-block; font-family: 'Montserrat', sans-serif; font-weight: 700; box-sizing: border-box; }
 button.btn-peligro { background: rgba(217, 83, 79, 0.1); border: 1px solid #d9534f; color: #d9534f; border-radius: 8px; }
 button.btn-peligro:hover { background: #d9534f; color: var(--texto); }
 button.btn-alerta { background: var(--secundario); color: #000; }
 button.btn-alerta:hover { background: #fff; }
+
+/* Botón principal animado */
+.btn-destacado {
+    background: rgba(230, 204, 0, 0.1);
+    color: var(--secundario);
+    border: 1px solid var(--secundario);
+    box-shadow: 0 0 15px rgba(230, 204, 0, 0.2);
+    animation: pulse-gold 2s infinite;
+}
+.btn-destacado:hover { background: var(--secundario); color: #000; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(230, 204, 0, 0.4); }
+@keyframes pulse-gold {
+    0% { box-shadow: 0 0 0 0 rgba(230, 204, 0, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(230, 204, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(230, 204, 0, 0); }
+}
 
 /* --- PANELES HUD (Formularios y Cajas) --- */
 .panel-racing {
