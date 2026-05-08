@@ -2,8 +2,17 @@
 function toggleMenu() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
+    const body = document.body;
+
     sidebar.classList.toggle('active');
     overlay.classList.toggle('active');
+
+    // Si el sidebar está activo, bloqueamos el scroll del body para permitir el scroll solo dentro del menú.
+    if (sidebar.classList.contains('active')) {
+        body.style.overflow = 'hidden';
+    } else {
+        body.style.overflow = '';
+    }
 }
 
 // Función para cambiar de sección de forma segura

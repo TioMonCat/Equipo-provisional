@@ -8,6 +8,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Ajustes para compactar y embellecer el menú lateral */
+        #sidebar {
+            padding-top: 20px !important;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        #sidebar a {
+            padding: 10px 15px !important;
+            font-size: 0.95rem !important;
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            border-radius: 6px;
+            margin: 0 15px;
+            transition: all 0.2s ease-in-out;
+        }
+        #sidebar a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+        #sidebar a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        /* Agrupadores visuales en el menú */
+        .sidebar-section {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 15px 20px 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
 
@@ -44,14 +82,22 @@
 
     <div class="sidebar" id="sidebar">
         <div class="close-btn" onclick="toggleMenu()">&times;</div>
+        
+        <div class="sidebar-section">General</div>
         <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-gauge-high"></i> Inicio</a>
         <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
         <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
+        
+        <div class="sidebar-section">Paddock</div>
         <a href="#" onclick="showSection('garaje')"><i class="fa-solid fa-warehouse"></i> Garaje</a>
         <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-calendar-check"></i> Eventos y Asistencia</a>
-        <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="display: none; color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
-        <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="display: none; color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
-        <a href="#" id="link-admin-telemetria" onclick="showSection('telemetria-vivo')" style="display: none; color: var(--secundario);"><i class="fa-solid fa-satellite-dish"></i> Telemetría (Beta)</a>
+        
+        <div id="admin-group" style="display: none;">
+            <div class="sidebar-section" style="color: var(--acento);">Administración</div>
+            <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
+            <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
+            <a href="#" id="link-admin-telemetria" onclick="showSection('telemetria-vivo')" style="color: var(--secundario);"><i class="fa-solid fa-satellite-dish"></i> Telemetría (Beta)</a>
+        </div>
     </div>
 
     <div class="contenedor">

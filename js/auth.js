@@ -132,14 +132,9 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     document.getElementById('panel-auth').style.display = "none";
     document.getElementById('acceso-rapido').style.display = (rol === "admin" || (rol === "miembro" && !ocultarBotonPostulacion)) ? "block" : "none";
 
-    const linkAdmin = document.getElementById('link-admin');
-    if (linkAdmin) linkAdmin.style.display = (rol === "admin") ? "flex" : "none";
-    
-    const linkAdminPostulaciones = document.getElementById('link-admin-postulaciones');
-    if (linkAdminPostulaciones) linkAdminPostulaciones.style.display = (rol === "admin") ? "flex" : "none";
-
-    const linkAdminTelemetria = document.getElementById('link-admin-telemetria');
-    if (linkAdminTelemetria) linkAdminTelemetria.style.display = (rol === "admin") ? "flex" : "none";
+    // Mostrar opciones de administrador de forma agrupada
+    const adminGroup = document.getElementById('admin-group');
+    if (adminGroup) adminGroup.style.display = (rol === "admin") ? "block" : "none";
 
     const navStatus = document.getElementById('nav-user-status');
     if (navStatus) navStatus.style.display = "flex";
@@ -190,6 +185,11 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     document.getElementById('msg-no-login').style.display = (rol === "miembro") ? "block" : "none";
     document.getElementById('lista-carreras').style.display = (rol === "miembro") ? "none" : "block";
     
+    // Control de acceso al Garaje
+    const canAccessGarage = rol === 'piloto' || rol === 'admin';
+    document.getElementById('garaje-msg-no-login').style.display = canAccessGarage ? 'none' : 'block';
+    document.getElementById('garaje-contenido').style.display = canAccessGarage ? 'block' : 'none';
+
     if (rol !== "miembro") cargarCarreras();
     if (rol === "admin") {
         cargarUsuariosAdmin();
