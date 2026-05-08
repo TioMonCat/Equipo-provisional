@@ -22,7 +22,10 @@
         <div id="nav-user-status" class="nav-user-status" style="display: none;">
             <div class="status-info">
                 <span class="conexion-text"><i class="fa-solid fa-satellite-dish"></i> Conexión Establecida</span>
-                <span class="piloto-text" id="nav-nombre-piloto">---</span>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                    <span class="piloto-text" id="nav-nombre-piloto">---</span>
+                    <div id="nav-user-tags" style="display: flex; gap: 5px;"></div>
+                </div>
             </div>
             <button onclick="cerrarSesion()" class="btn-desconectar" title="Desconectar"><i class="fa-solid fa-power-off"></i></button>
         </div>
@@ -209,6 +212,9 @@
                             
                             <input type="url" id="postulacion-captura-url" placeholder="https://..." style="margin: 0; background: rgba(0,0,0,0.5);" required>
                         </div>
+                        
+                        <label for="postulacion-discord" style="color: var(--texto-secundario); font-size: 0.95rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: 8px;">4. Usuario de Discord</label>
+                        <input type="text" id="postulacion-discord" placeholder="Ejemplo: apex_pilot" style="margin-top: 0;" required>
 
                         <button type="submit" id="btn-enviar-postulacion" class="btn-alerta" style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px;"><i class="fa-solid fa-paper-plane"></i> Enviar Postulación</button>
                     </form>

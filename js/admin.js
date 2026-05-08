@@ -58,6 +58,7 @@ export async function cargarUsuariosAdmin() {
                             <option value="" ${!u.categoria ? 'selected' : ''}>Ninguna / Reserva</option>
                             <option value="LMP2" ${u.categoria === 'LMP2' ? 'selected' : ''}>LMP2</option>
                             <option value="GT3" ${u.categoria === 'GT3' ? 'selected' : ''}>GT3</option>
+                            <option value="Ambas" ${u.categoria === 'Ambas' ? 'selected' : ''}>Ambas Categorías</option>
                         </select>
                     </td>
                 </tr>

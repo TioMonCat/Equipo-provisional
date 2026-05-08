@@ -82,6 +82,11 @@ nav {
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .piloto-text { font-size: 0.95rem; font-weight: bold; color: var(--texto); font-family: 'Montserrat', sans-serif; }
 
+.nav-tag { font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; font-weight: bold; border: 1px solid var(--borde); font-family: 'Montserrat', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+.nav-tag.admin { background: rgba(217, 83, 79, 0.1); color: #d9534f; border-color: #d9534f; }
+.nav-tag.miembro { background: rgba(255, 255, 255, 0.1); color: var(--texto-secundario); border-color: var(--texto-secundario); }
+.nav-tag.pendiente { background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario); }
+
 .btn-desconectar { background: transparent; color: var(--texto-secundario); border: none; padding: 5px; cursor: pointer; transition: 0.3s; width: auto; font-size: 1.1rem; }
 .btn-desconectar:hover { color: #d9534f; transform: scale(1.1); box-shadow: none; background: transparent; }
 
@@ -156,6 +161,7 @@ input, select, textarea {
     border-radius: 8px; box-sizing: border-box; transition: 0.3s;
 }
 input:focus { outline: none; border-color: var(--acento); background: rgba(255,255,255,0.06); }
+select option { background-color: var(--tarjeta); color: var(--texto); }
 
 /* --- CARRUSEL --- */
 .swiper { 

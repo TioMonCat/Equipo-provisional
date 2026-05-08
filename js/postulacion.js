@@ -12,9 +12,10 @@ export async function enviarPostulacion(event) {
 
     const categoria = document.getElementById('postulacion-categoria').value;
     const capturaUrl = document.getElementById('postulacion-captura-url').value;
+    const discord = document.getElementById('postulacion-discord').value;
 
-    if (!categoria || !capturaUrl) {
-        alert("Por favor, completa todos los campos y añade el enlace de tu captura.");
+    if (!categoria || !capturaUrl || !discord) {
+        alert("Por favor, completa todos los campos.");
         return;
     }
 
@@ -31,6 +32,7 @@ export async function enviarPostulacion(event) {
             nombre: state.usuarioActual.nombre,
             categoria: categoria,
             capturaUrl: capturaUrl,
+            discord: discord,
             fecha: new Date().getTime(),
             estado: "Pendiente"
         });
@@ -38,6 +40,12 @@ export async function enviarPostulacion(event) {
         // 2. Ocultar formulario y mostrar éxito
         document.getElementById('postulacion-form-container').style.display = "none";
         document.getElementById('postulacion-mensaje').style.display = "block";
+
+        if (state.rolActual !== "admin") {
+            document.getElementById('acceso-rapido').style.display = "none";
+            const tagsContainer = document.getElementById('nav-user-tags');
+            if(tagsContainer) tagsContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
+        }
 
     } catch (error) {
         console.error("Error al enviar postulación:", error);
@@ -71,7 +79,7 @@ export async function cargarPostulacionesAdmin() {
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Piloto</th>
+                        <th>Piloto / Discord</th>
                         <th>Categoría</th>
                         <th>Estado</th>
                         <th>Captura</th>
@@ -90,6 +98,7 @@ export async function cargarPostulacionesAdmin() {
                 <tr>
                     <td>
                         <strong>${p.nombre}</strong><br>
+                        <small style="color: var(--texto-secundario);"><i class="fa-brands fa-discord" style="color:#5865F2;"></i> ${p.discord || 'No provisto'}</small><br>
                         <small style="color: var(--texto-secundario);">${fechaStr}</small>
                     </td>
                     <td><span class="cat-tag ${p.categoria.toLowerCase()}">${p.categoria}</span></td>
@@ -116,7 +125,7 @@ export async function cambiarEstadoPostulacion(id, nuevoEstado, uid, categoria) 
         try {
             await updateDoc(doc(db, "postulaciones", id), { estado: nuevoEstado });
             if (nuevoEstado === 'Aprobado') {
-                await updateDoc(doc(db, "pilotos", uid), { rol: "piloto", categoria: categoria === "Ambas" ? "" : categoria });
+                await updateDoc(doc(db, "pilotos", uid), { rol: "piloto", categoria: categoria });
                 if (window.cargarUsuariosAdmin) window.cargarUsuariosAdmin();
                 if (window.cargarRoster) window.cargarRoster();
             }

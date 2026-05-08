@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { doc, setDoc, getDoc, getDocs, query, where, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
 import { state } from "./state.js";
 import { cargarRoster } from "./roster.js";
@@ -13,8 +13,8 @@ onAuthStateChanged(auth, async (user) => {
             const pilotoDoc = await getDoc(doc(db, "pilotos", user.uid));
             if (pilotoDoc.exists()) {
                 const d = pilotoDoc.data();
-                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol, user.uid);
-            } else { mostrarPanelPrivado(user.email, "piloto", user.uid); }
+                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol, user.uid, d);
+            } else { mostrarPanelPrivado(user.email, "piloto", user.uid, null); }
         } catch (error) { console.error("Error al recuperar la sesión:", error); }
     } else {
         const navAuth = document.getElementById('nav-auth-buttons');
@@ -55,14 +55,14 @@ export async function procesarAuth() {
                 correo: email, nombre: nombre, apellido: apellido, rol: "miembro", fechaRegistro: new Date()
             });
             cargarRoster();
-            mostrarPanelPrivado(`${nombre} ${apellido}`, "miembro", credencial.user.uid);
+            mostrarPanelPrivado(`${nombre} ${apellido}`, "miembro", credencial.user.uid, {categoria: ""});
         } else {
             const credencial = await signInWithEmailAndPassword(auth, email, pass);
             const pilotoDoc = await getDoc(doc(db, "pilotos", credencial.user.uid));
             if (pilotoDoc.exists()) {
                 const d = pilotoDoc.data();
-                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol, credencial.user.uid);
-            } else { mostrarPanelPrivado(email, "piloto", credencial.user.uid); }
+                mostrarPanelPrivado(`${d.nombre} ${d.apellido}`, d.rol, credencial.user.uid, d);
+            } else { mostrarPanelPrivado(email, "piloto", credencial.user.uid, null); }
         }
     } catch (error) {
         console.error(error);
@@ -70,12 +70,23 @@ export async function procesarAuth() {
     }
 }
 
-function mostrarPanelPrivado(nombreCompleto, rol, uid) {
+async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     state.usuarioActual = { uid: uid, nombre: nombreCompleto };
     state.rolActual = rol;
 
+    let ocultarBotonPostulacion = false;
+    if (rol === "miembro") {
+        try {
+            const q = query(collection(db, "postulaciones"), where("uid", "==", uid), where("estado", "==", "Pendiente"));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                ocultarBotonPostulacion = true;
+            }
+        } catch(e) { console.error(e); }
+    }
+
     document.getElementById('panel-auth').style.display = "none";
-    document.getElementById('acceso-rapido').style.display = (rol === "miembro" || rol === "admin") ? "block" : "none";
+    document.getElementById('acceso-rapido').style.display = (rol === "admin" || (rol === "miembro" && !ocultarBotonPostulacion)) ? "block" : "none";
 
     const linkAdmin = document.getElementById('link-admin');
     if (linkAdmin) linkAdmin.style.display = (rol === "admin") ? "flex" : "none";
@@ -87,6 +98,32 @@ function mostrarPanelPrivado(nombreCompleto, rol, uid) {
     if (navStatus) navStatus.style.display = "flex";
     const nombreNav = document.getElementById('nav-nombre-piloto');
     if (nombreNav) nombreNav.innerText = nombreCompleto;
+
+    const tagsContainer = document.getElementById('nav-user-tags');
+    if (tagsContainer) {
+        tagsContainer.innerHTML = '';
+        if (rol === "admin") {
+            tagsContainer.innerHTML = `<span class="nav-tag admin">Admin</span>`;
+        } else if (rol === "piloto") {
+            const cat = userData?.categoria;
+            if (cat === "Ambas") {
+                tagsContainer.innerHTML = `
+                    <span class="nav-tag lmp2" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);">LMP2</span>
+                    <span class="nav-tag gt3" style="background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);">GT3</span>`;
+            } else if (cat === "LMP2" || cat === "GT3") {
+                const cssStyle = cat === "LMP2" ? "background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);" : "background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);";
+                tagsContainer.innerHTML = `<span class="nav-tag" style="${cssStyle}">${cat}</span>`;
+            } else {
+                tagsContainer.innerHTML = `<span class="nav-tag miembro">Reserva</span>`;
+            }
+        } else if (rol === "miembro") {
+            if (ocultarBotonPostulacion) {
+                tagsContainer.innerHTML = `<span class="nav-tag pendiente">En Evaluación</span>`;
+            } else {
+                tagsContainer.innerHTML = `<span class="nav-tag miembro">Bloqueado</span>`;
+            }
+        }
+    }
 
     const navAuth = document.getElementById('nav-auth-buttons');
     if(navAuth) navAuth.style.display = "none";

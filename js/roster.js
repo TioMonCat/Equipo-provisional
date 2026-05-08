@@ -26,10 +26,11 @@ export async function cargarRoster() {
         querySnapshot.forEach((docSnap) => {
             const data = docSnap.data();
             
-            if (data.rol === "admin") admins.push(data);
-            else if (data.categoria === "LMP2") lmp2.push(data);
-            else if (data.categoria === "GT3") gt3.push(data);
-            else otros.push(data);
+            if (data.rol === "admin") { admins.push(data); } else {
+                if (data.categoria === "LMP2" || data.categoria === "Ambas") lmp2.push(data);
+                if (data.categoria === "GT3" || data.categoria === "Ambas") gt3.push(data);
+                if (!data.categoria || (data.categoria !== "LMP2" && data.categoria !== "GT3" && data.categoria !== "Ambas")) otros.push(data);
+            }
         });
 
         const generarCard = (data) => {
@@ -37,7 +38,14 @@ export async function cargarRoster() {
             if (data.apellido) nombreFormateado += ` ${data.apellido.charAt(0).toUpperCase()}.`;
 
             let etiquetaRol = data.rol === "admin" ? "Director / Driver" : "Driver Oficial";
-            let catTag = data.categoria ? `<span class="cat-tag ${data.categoria.toLowerCase()}">${data.categoria}</span>` : "";
+            
+            let catTag = "";
+            if (data.categoria === "Ambas") {
+                catTag = `<span class="cat-tag lmp2">LMP2</span><span class="cat-tag gt3">GT3</span>`;
+            } else if (data.categoria) {
+                catTag = `<span class="cat-tag ${data.categoria.toLowerCase()}">${data.categoria}</span>`;
+            }
+            
             const imagenPorDefecto = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop";
             
             return `
