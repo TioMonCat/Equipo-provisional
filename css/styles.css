@@ -397,6 +397,7 @@ select option { background-color: var(--tarjeta); color: var(--texto); }
 .cat-tag { display: inline-block; padding: 6px 18px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; border-radius: 20px; border: 1px solid var(--borde); }
 .cat-tag.lmp2 { background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento); }
 .cat-tag.gt3 { background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario); }
+.cat-tag.ingeniero { background: rgba(0, 163, 108, 0.1); color: #00A36C; border-color: #00A36C; }
 
 /* --- CALENDARIO --- */
 .calendario-img { 

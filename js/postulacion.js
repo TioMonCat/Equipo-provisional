@@ -141,23 +141,36 @@ window.enviarPostulacion = enviarPostulacion;
 export function actualizarFormularioTiempos() {
     const cat = document.getElementById('postulacion-categoria').value;
     const container = document.getElementById('tiempos-container');
+    const divDescarga = document.getElementById('descarga-mods-container');
     const divLmp2 = document.getElementById('tiempo-lmp2');
     const divGt3 = document.getElementById('tiempo-gt3');
     const inputLmp2 = document.getElementById('postulacion-captura-lmp2');
     const inputGt3 = document.getElementById('postulacion-captura-gt3');
 
-    if (!cat) { container.style.display = "none"; return; }
-    container.style.display = "block";
+    if (!cat) { 
+        container.style.display = "none"; 
+        if (divDescarga) divDescarga.style.display = "block";
+        return; 
+    }
     
-    if (cat === "LMP2") {
-        divLmp2.style.display = "block"; inputLmp2.required = true;
-        divGt3.style.display = "none"; inputGt3.required = false; inputGt3.value = "";
-    } else if (cat === "GT3") {
-        divLmp2.style.display = "none"; inputLmp2.required = false; inputLmp2.value = "";
-        divGt3.style.display = "block"; inputGt3.required = true;
-    } else if (cat === "Ambas") {
-        divLmp2.style.display = "block"; inputLmp2.required = true;
-        divGt3.style.display = "block"; inputGt3.required = true;
+    if (cat === "Ingeniero") {
+        container.style.display = "none";
+        if (divDescarga) divDescarga.style.display = "none";
+        inputLmp2.required = false; inputLmp2.value = "";
+        inputGt3.required = false; inputGt3.value = "";
+    } else {
+        container.style.display = "block";
+        if (divDescarga) divDescarga.style.display = "block";
+        if (cat === "LMP2") {
+            divLmp2.style.display = "block"; inputLmp2.required = true;
+            divGt3.style.display = "none"; inputGt3.required = false; inputGt3.value = "";
+        } else if (cat === "GT3") {
+            divLmp2.style.display = "none"; inputLmp2.required = false; inputLmp2.value = "";
+            divGt3.style.display = "block"; inputGt3.required = true;
+        } else if (cat === "Ambas") {
+            divLmp2.style.display = "block"; inputLmp2.required = true;
+            divGt3.style.display = "block"; inputGt3.required = true;
+        }
     }
 }
 window.actualizarFormularioTiempos = actualizarFormularioTiempos;
@@ -285,7 +298,11 @@ export async function cambiarEstadoPostulacion(id, nuevoEstado, uid, categoria) 
         try {
             await updateDoc(doc(db, "postulaciones", id), { estado: nuevoEstado });
             if (nuevoEstado === 'Aprobado') {
-                await updateDoc(doc(db, "pilotos", uid), { rol: "piloto", categoria: categoria });
+                let rolParaAsignar = "piloto";
+                if (categoria === "Ingeniero") {
+                    rolParaAsignar = "ingeniero";
+                }
+                await updateDoc(doc(db, "pilotos", uid), { rol: rolParaAsignar, categoria: categoria });
                 if (window.cargarUsuariosAdmin) window.cargarUsuariosAdmin();
                 if (window.cargarRoster) window.cargarRoster();
             }

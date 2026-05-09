@@ -186,6 +186,8 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     let catHtml = '';
     if (cat === "Ambas") {
         catHtml = `<span class="nav-tag lmp2" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);">LMP2</span><span class="nav-tag gt3" style="background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);">GT3</span>`;
+    } else if (cat === "Ingeniero") {
+        catHtml = `<span class="nav-tag ingeniero">Ingeniero</span>`;
     } else if (cat === "LMP2" || cat === "GT3") {
         const cssStyle = cat === "LMP2" ? "background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento);" : "background: rgba(230, 204, 0, 0.1); color: var(--secundario); border-color: var(--secundario);";
         catHtml = `<span class="nav-tag" style="${cssStyle}">${cat}</span>`;
@@ -194,6 +196,8 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
 
     if (rol === "admin") {
         if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag admin">Admin</span>`;
+    } else if (rol === "ingeniero") {
+        if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag ingeniero">Ingeniero</span>`;
     } else if (rol === "piloto") {
         if (!cat) {
             if (rolContainer) rolContainer.innerHTML = `<span class="nav-tag miembro">Reserva</span>`;
@@ -218,7 +222,7 @@ async function mostrarPanelPrivado(nombreCompleto, rol, uid, userData) {
     if (panelCrearCarrera) panelCrearCarrera.style.display = (rol === "admin") ? "block" : "none";
 
     // Control de acceso a contenido privado (Garaje y Noticias)
-    const canAccessPrivate = rol === 'piloto' || rol === 'admin';
+    const canAccessPrivate = rol === 'piloto' || rol === 'admin' || rol === 'ingeniero';
     togglePrivateUI(canAccessPrivate);
 
     if (rol !== "miembro") cargarCarreras();

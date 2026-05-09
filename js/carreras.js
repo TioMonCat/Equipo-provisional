@@ -82,13 +82,15 @@ export async function cargarCarreras() {
             } else {
                 const lmp2 = [];
                 const gt3 = [];
+                const ingenieros = [];
                 const otros = [];
 
                 inscritos.forEach(p => {
                     const cat = p.categoria || "Reserva";
                     if (cat === "LMP2" || cat === "Ambas") { if (!lmp2.some(x => x.uid === p.uid)) lmp2.push(p); }
-                    if (cat === "GT3" || cat === "Ambas") { if (!gt3.some(x => x.uid === p.uid)) gt3.push(p); }
-                    if (cat !== "LMP2" && cat !== "GT3" && cat !== "Ambas") otros.push(p);
+                    else if (cat === "GT3" || cat === "Ambas") { if (!gt3.some(x => x.uid === p.uid)) gt3.push(p); }
+                    else if (cat === "Ingeniero") { if (!ingenieros.some(x => x.uid === p.uid)) ingenieros.push(p); }
+                    else otros.push(p);
                 });
 
                 if (lmp2.length > 0) {
@@ -98,6 +100,10 @@ export async function cargarCarreras() {
                 if (gt3.length > 0) {
                     htmlInscritos += `<li style='color: var(--secundario); font-weight: bold; background: rgba(230, 204, 0, 0.1); border-radius: 4px; margin-top: 5px;'><i class="fa-solid fa-car-side"></i> GT3</li>`;
                     htmlInscritos += gt3.map(p => `<li>&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-helmet-safety"></i> ${p.nombre}</li>`).join('');
+                }
+                if (ingenieros.length > 0) {
+                    htmlInscritos += `<li style='color: #00A36C; font-weight: bold; background: rgba(0, 163, 108, 0.1); border-radius: 4px; margin-top: 5px;'><i class="fa-solid fa-laptop-code"></i> Ingenieros de Pista</li>`;
+                    htmlInscritos += ingenieros.map(p => `<li>&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-headset"></i> ${p.nombre}</li>`).join('');
                 }
                 if (otros.length > 0) {
                     htmlInscritos += `<li style='color: var(--texto-secundario); font-weight: bold; background: rgba(255, 255, 255, 0.05); border-radius: 4px; margin-top: 5px;'><i class="fa-solid fa-users"></i> Reservas</li>`;

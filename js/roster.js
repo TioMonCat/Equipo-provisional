@@ -8,7 +8,7 @@ export async function cargarRoster() {
     contenedor.innerHTML = "<p style='text-align: center; grid-column: 1 / -1; color: var(--texto-secundario);'>Cargando datos de pilotos...</p>";
 
     try {
-        const q = query(collection(db, "pilotos"), where("rol", "in", ["piloto", "admin"]));
+        const q = query(collection(db, "pilotos"), where("rol", "in", ["piloto", "admin", "ingeniero"]));
         const querySnapshot = await getDocs(q);
         
         contenedor.innerHTML = "";
@@ -19,6 +19,7 @@ export async function cargarRoster() {
         }
 
         const admins = [];
+        const ingenieros = [];
         const lmp2 = [];
         const gt3 = [];
         const otros = [];
@@ -27,10 +28,12 @@ export async function cargarRoster() {
             const data = docSnap.data();
             data.uid = docSnap.id; // <-- Agregamos el ID real del documento a los datos
             
-            if (data.rol === "admin") { admins.push(data); } else {
+            if (data.rol === "admin") { admins.push(data); }
+            else if (data.rol === "ingeniero") { ingenieros.push(data); }
+            else {
                 if (data.categoria === "LMP2" || data.categoria === "Ambas") lmp2.push(data);
                 if (data.categoria === "GT3" || data.categoria === "Ambas") gt3.push(data);
-                if (!data.categoria || (data.categoria !== "LMP2" && data.categoria !== "GT3" && data.categoria !== "Ambas")) otros.push(data);
+                if (!data.categoria || (data.categoria !== "LMP2" && data.categoria !== "GT3" && data.categoria !== "Ambas" && data.categoria !== "Ingeniero")) otros.push(data);
             }
         });
 
@@ -38,18 +41,22 @@ export async function cargarRoster() {
             let nombreFormateado = data.nombre || "Piloto";
             if (data.apellido) nombreFormateado += ` ${data.apellido.charAt(0).toUpperCase()}.`;
 
-            let etiquetaRol = data.rol === "admin" ? "Director / Piloto" : "Piloto Oficial";
+            let etiquetaRol = data.rol === "admin" ? "Director / Piloto" : (data.rol === "ingeniero" ? "Ingeniero de Equipo" : "Piloto Oficial");
             
             let catTag = "";
             if (data.categoria === "Ambas") {
                 catTag = `<span class="cat-tag lmp2">LMP2</span><span class="cat-tag gt3">GT3</span>`;
+            } else if (data.categoria === "Ingeniero") {
+                catTag = `<span class="cat-tag ingeniero">Ingeniero</span>`;
             } else if (data.categoria) {
                 catTag = `<span class="cat-tag ${data.categoria.toLowerCase()}">${data.categoria}</span>`;
             }
             
             let imagenPiloto = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop";
             
-            if (data.categoria === "LMP2" || data.categoria === "Ambas") {
+            if (data.rol === "ingeniero" || data.categoria === "Ingeniero") {
+                imagenPiloto = "img/promo3.jpg";
+            } else if (data.categoria === "LMP2" || data.categoria === "Ambas") {
                 imagenPiloto = "img/LMP2driver.jpg";
             } else if (data.categoria === "GT3") {
                 imagenPiloto = "img/GT3driver.jpg";
@@ -76,6 +83,7 @@ export async function cargarRoster() {
         };
 
         appendSection("Dirección del Equipo", "fa-solid fa-user-tie", admins);
+        appendSection("Ingeniería de Pista", "fa-solid fa-laptop-code", ingenieros);
         appendSection("Categoría LMP2", "fa-solid fa-gauge-high", lmp2);
         appendSection("Categoría GT3", "fa-solid fa-car-side", gt3);
         appendSection("Pilotos de Reserva / Pruebas", "fa-solid fa-helmet-safety", otros);

@@ -20,10 +20,10 @@ export async function cargarUsuariosAdmin() {
         const usuarios = [];
         querySnapshot.forEach(docSnap => usuarios.push({ uid: docSnap.id, ...docSnap.data() }));
 
-        // Ordenamos: primero admins, luego pilotos, luego miembros
+        // Ordenamos: primero admins, luego ingenieros, luego pilotos, luego miembros
         usuarios.sort((a, b) => {
-            const peso = { "admin": 1, "piloto": 2, "miembro": 3 };
-            return (peso[a.rol] || 4) - (peso[b.rol] || 4);
+            const peso = { "admin": 1, "ingeniero": 2, "piloto": 3, "miembro": 4 };
+            return (peso[a.rol] || 5) - (peso[b.rol] || 5);
         });
 
         let html = `
@@ -51,6 +51,7 @@ export async function cargarUsuariosAdmin() {
                         <select id="admin-rol-${u.uid}" class="admin-select" data-original="${u.rol || 'miembro'}">
                             <option value="miembro" ${u.rol === 'miembro' ? 'selected' : ''}>Miembro (Invitado)</option>
                             <option value="piloto" ${u.rol === 'piloto' ? 'selected' : ''}>Piloto Oficial</option>
+                            <option value="ingeniero" ${u.rol === 'ingeniero' ? 'selected' : ''}>Ingeniero de Equipo</option>
                             <option value="admin" ${u.rol === 'admin' ? 'selected' : ''}>Administrador</option>
                         </select>
                     </td>
@@ -60,6 +61,7 @@ export async function cargarUsuariosAdmin() {
                             <option value="LMP2" ${u.categoria === 'LMP2' ? 'selected' : ''}>LMP2</option>
                             <option value="GT3" ${u.categoria === 'GT3' ? 'selected' : ''}>GT3</option>
                             <option value="Ambas" ${u.categoria === 'Ambas' ? 'selected' : ''}>Ambas Categorías</option>
+                            <option value="Ingeniero" ${u.categoria === 'Ingeniero' ? 'selected' : ''}>Ingeniero / Telemetría</option>
                         </select>
                     </td>
                     <td style="text-align: center;">

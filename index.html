@@ -461,15 +461,16 @@
                     <h3 style="margin-top: 0; border-bottom: 1px solid var(--borde); padding-bottom: 15px;"><i class="fa-solid fa-file-signature"></i> Datos de la Prueba</h3>
                     
                     <form id="form-postulacion" onsubmit="enviarPostulacion(event)">
-                        <label for="postulacion-categoria" style="color: var(--texto-secundario); font-size: 0.95rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: 8px;">1. ¿En qué categoría deseas competir?</label>
+                        <label for="postulacion-categoria" style="color: var(--texto-secundario); font-size: 0.95rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: 8px;">1. ¿En qué categoría o rol deseas participar?</label>
                         <select id="postulacion-categoria" required onchange="actualizarFormularioTiempos()">
                             <option value="" disabled selected>Selecciona una categoría de preferencia</option>
                             <option value="LMP2">LMP2</option>
                             <option value="GT3">GT3</option>
                             <option value="Ambas">Ambas</option>
+                            <option value="Ingeniero">Ingeniero de Equipo</option>
                         </select>
 
-                        <div style="margin: 30px 0; padding: 20px; background: rgba(255, 255, 255, 0.03); border-left: 4px solid rgba(255, 255, 255, 0.3); border-radius: 4px;">
+                        <div id="descarga-mods-container" style="margin: 30px 0; padding: 20px; background: rgba(255, 255, 255, 0.03); border-left: 4px solid rgba(255, 255, 255, 0.3); border-radius: 4px;">
                             <h4 style="margin-top: 0; color: var(--texto); font-size: 1.1rem;"><i class="fa-solid fa-download"></i> 2. Descarga de Mods</h4>
                             <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes descargar el mapa de la próxima carrera y el vehículo de tu categoría.</p>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
