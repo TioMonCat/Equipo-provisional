@@ -105,7 +105,7 @@
         
         <div class="sidebar-section">General</div>
         <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-gauge-high"></i> Inicio</a>
-        <div id="link-noticias-wrapper" style="display: none;">
+        <div id="link-noticias-wrapper">
             <a href="#" onclick="showSection('noticias')"><i class="fa-solid fa-newspaper"></i> Noticias y Anuncios</a>
         </div>
         <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
@@ -115,13 +115,13 @@
             <div class="sidebar-section">Paddock</div>
             <a href="#" onclick="showSection('garaje')"><i class="fa-solid fa-warehouse"></i> Garaje</a>
             <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-calendar-check"></i> Eventos y Asistencia</a>
+            <a href="#" onclick="showSection('telemetria-vivo')"><i class="fa-solid fa-satellite-dish"></i> Telemetría en Vivo</a>
         </div>
         
         <div id="admin-group" style="display: none;">
             <div class="sidebar-section" style="color: var(--acento);">Administración</div>
             <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
             <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
-            <a href="#" id="link-admin-telemetria" onclick="showSection('telemetria-vivo')" style="color: var(--secundario);"><i class="fa-solid fa-satellite-dish"></i> Telemetría (Beta)</a>
         </div>
     </div>
 
@@ -138,7 +138,7 @@
             <!-- BANNER DE NOTICIAS RECIENTES (Se oculta automáticamente después de 24h) -->
             <!-- Para mostrarlo, edita el data-timestamp con la fecha y hora de tu nueva publicación en formato YYYY-MM-DDTHH:MM:SS -->
             <!-- Envuelto en un contenedor de autorización -->
-            <div id="noticias-auth-wrapper" style="display: none;">
+            <div id="noticias-auth-wrapper">
             <div id="banner-noticia-reciente" class="panel-racing banner-noticia" style="display: none; max-width: 800px; margin: 0 auto 30px; background: rgba(0, 123, 255, 0.1); border-color: var(--acento); padding: 20px; text-align: center; cursor: pointer; transition: 0.3s;" onclick="showSection('noticias')" data-timestamp="2026-05-08T12:00:00Z">
                 <h3 style="margin: 0; color: var(--acento); font-size: 1.2rem; border: none; padding: 0;"><i class="fa-solid fa-bullhorn fa-shake"></i> ¡NUEVO ANUNCIO OFICIAL!</h3>
                 <p style="margin: 5px 0 0; color: var(--texto); font-size: 0.95rem;">Se ha publicado un nuevo comunicado. Haz clic aquí para leerlo.</p>
@@ -394,6 +394,13 @@
                 </div>
             </div>
 
+        <!-- CONTROLES DE TELEMETRÍA -->
+        <div class="panel-racing" style="max-width: 900px; margin: 0 auto 30px; text-align: left;">
+            <h3 style="margin-top: 0; color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px;"><i class="fa-solid fa-satellite-dish" style="color: #f1c40f;"></i> Conexión de Telemetría</h3>
+            <p style="color: var(--texto-secundario); font-size: 0.95rem; margin-bottom: 15px;">Si el servidor estaba apagado, la web detiene la búsqueda automática para ahorrar recursos. Usa este botón para forzar una reconexión manual.</p>
+            <button onclick="iniciarTelemetria(); showSection('telemetria-vivo');" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-rotate-right"></i> Reconectar Servidor</button>
+        </div>
+
             <div id="lista-usuarios-admin" style="max-width: 900px; margin: 0 auto;">
                 <!-- Cargado dinámicamente desde JS -->
             </div>
@@ -420,16 +427,48 @@
         <div id="telemetria-vivo" class="tab-content">
             <header>
                 <h2>Telemetría en Vivo (Beta)</h2>
-                <p>Integración con servidores de Assetto Corsa (Acceso solo Admin)</p>
+                <p>Live Timing y Status del Servidor Oficial</p>
             </header>
 
-            <div class="panel-racing" style="max-width: 900px; margin: 0 auto; text-align: center; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <i class="fa-solid fa-chart-area" style="font-size: 3rem; color: var(--texto-secundario); margin-bottom: 20px;"></i>
-                <h3 style="color: var(--texto); margin-top: 0;">Módulo de Telemetría en Desarrollo</h3>
-                <p style="color: var(--texto-secundario); max-width: 500px; line-height: 1.6;">
-                    Este espacio está reservado para incrustar el mapa en vivo, la tabla de tiempos o la conexión a la base de datos de Assetto Corsa. 
-                    Actualmente es visible solo para administradores para realizar pruebas.
+            <div id="telemetria-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE EQUIPO. SE REQUIERE UN ASIENTO OFICIAL PARA ACCEDER A LA TELEMETRÍA.</p>
+            </div>
+
+            <div id="telemetria-contenido" style="display: none;">
+                <div class="panel-racing" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="margin: 0; border: none; padding: 0; font-size: 1.2rem;"><i class="fa-solid fa-stopwatch"></i> Monitor de Tiempos</h3>
+                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <span id="telemetria-status" style="font-size: 0.85rem; color: var(--texto-secundario); font-weight: bold; font-family: 'Chakra Petch', sans-serif;"><i class="fa-solid fa-satellite-dish"></i> Inicializando enlace...</span>
+                        <a href="https://panel.apexlatamracing.it.com/live-timing" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Panel Original</a>
+                    </div>
+                </div>
+                
+                <!-- TABLA DE TELEMETRÍA (Modo Cloudflare Worker) -->
+                <div class="admin-table-container" style="background: rgba(0,0,0,0.8); border-color: #333; overflow-x: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <table class="admin-table" style="min-width: 800px; margin: 0; border-collapse: collapse; font-family: 'Chakra Petch', sans-serif;">
+                        <thead>
+                            <tr style="background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent); border-bottom: 2px solid var(--secundario);">
+                                <th style="width: 60px; text-align: center; padding: 12px;">POS</th>
+                                <th style="padding: 12px; text-align: left;">PILOTO</th>
+                                <th style="padding: 12px; text-align: left;">COCHE</th>
+                                <th style="text-align: center; padding: 12px;">MEJOR VUELTA</th>
+                                <th style="text-align: center; padding: 12px;">ÚLTIMA VUELTA</th>
+                                <th style="text-align: center; padding: 12px;">ESTADO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="telemetria-body">
+                            <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--texto-secundario);"><i class="fa-solid fa-satellite-dish fa-spin"></i> Conectando con el servidor de telemetría...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <p style="text-align: center; color: var(--texto-secundario); font-size: 0.85rem; margin-top: 15px;">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--acento);"></i> 
+                    Telemetría segura extraída mediante Cloudflare Worker.
                 </p>
+            </div>
             </div>
         </div>
 
@@ -475,8 +514,8 @@
                             <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes descargar el mapa de la próxima carrera y el vehículo de tu categoría.</p>
                             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                                 <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/interlagos.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> Circuito Interlagos</a>
-                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/rsx_oreca_07.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car"></i> Oreca 07 LMP2</a>
-                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/bg_mercedes_amg_gt_black_series_sc.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car-side"></i> Mercedes GT3</a>
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/rsx_oreca_07.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car"></i> Oreca 07 - ERC NG LMP2</a>
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/bg_mercedes_amg_gt_black_series_sc.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car-side"></i> Mercedes-AMG GT3 EVO EMKA</a>
                             </div>
                         </div>
 
@@ -517,35 +556,42 @@
                 <p>Normativas y reglas oficiales de la escudería.</p>
             </header>
 
-            <div class="panel-racing" style="max-width: 800px; margin: 0 auto; text-align: left;">
-                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px; margin-top: 0;"><i class="fa-solid fa-gavel"></i> 1. Código de Conducta</h3>
-                <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
-                    <li><strong>Respeto mutuo:</strong> Se exige respeto absoluto hacia todos los miembros del equipo, directores de carrera y pilotos rivales. No se tolerarán insultos ni comportamientos tóxicos.</li>
-                    <li><strong>Representación:</strong> Al llevar el nombre o logo del equipo en servidores o eventos oficiales, el piloto actúa como embajador de la escudería.</li>
-                    <li><strong>Comunicación:</strong> El uso de Discord (o radio del equipo) es obligatorio durante los eventos de resistencia para mantener la coordinación del Pit Wall.</li>
-                </ul>
+            <div id="reglamento-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA PRIVADA. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA LEER EL REGLAMENTO.</p>
+            </div>
 
-                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-stopwatch"></i> 2. Asistencia y Compromiso</h3>
-                <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
-                    <li><strong>Confirmación de Eventos:</strong> Los pilotos deben confirmar su asistencia en el Panel de Telemetría (Eventos) antes del cierre de inscripciones.</li>
-                    <li><strong>Ausencias:</strong> Si un piloto confirmado no puede asistir, debe notificar a los Administradores lo antes posible. Ausencias repetidas sin justificar resultarán en la degradación a piloto de Reserva.</li>
-                    <li><strong>Entrenamientos:</strong> Se espera que los pilotos oficiales de LMP2 y GT3 participen en las sesiones de práctica para preparar los setups y estrategias de carrera.</li>
-                </ul>
+            <div id="reglamento-contenido" style="display: none;">
+                <div class="panel-racing" style="max-width: 800px; margin: 0 auto; text-align: left;">
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px; margin-top: 0;"><i class="fa-solid fa-gavel"></i> 1. Código de Conducta</h3>
+                    <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                        <li><strong>Respeto mutuo:</strong> Se exige respeto absoluto hacia todos los miembros del equipo, directores de carrera y pilotos rivales. No se tolerarán insultos ni comportamientos tóxicos.</li>
+                        <li><strong>Representación:</strong> Al llevar el nombre o logo del equipo en servidores o eventos oficiales, el piloto actúa como embajador de la escudería.</li>
+                        <li><strong>Comunicación:</strong> El uso de Discord (o radio del equipo) es obligatorio durante los eventos de resistencia para mantener la coordinación del Pit Wall.</li>
+                    </ul>
 
-                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-car-burst"></i> 3. Comportamiento en Pista</h3>
-                <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
-                    <li><strong>Banderas Azules:</strong> Facilitar el adelantamiento de manera predecible y segura, manteniendo la línea de carrera sin hacer movimientos bruscos.</li>
-                    <li><strong>Incidentes:</strong> En caso de colisión, mantener la calma por la radio. Nunca tomar represalias en pista. Cualquier queja se gestionará mediante el sistema de comisarios tras la carrera.</li>
-                    <li><strong>Límites de Pista:</strong> Respetar los límites para evitar penalizaciones (Drive-Through o Stop & Go) que comprometan el esfuerzo de los relevos en carreras de Endurance.</li>
-                </ul>
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-stopwatch"></i> 2. Asistencia y Compromiso</h3>
+                    <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                        <li><strong>Confirmación de Eventos:</strong> Los pilotos deben confirmar su asistencia en el Panel de Telemetría (Eventos) antes del cierre de inscripciones.</li>
+                        <li><strong>Ausencias:</strong> Si un piloto confirmado no puede asistir, debe notificar a los Administradores lo antes posible. Ausencias repetidas sin justificar resultarán en la degradación a piloto de Reserva.</li>
+                        <li><strong>Entrenamientos:</strong> Se espera que los pilotos oficiales de LMP2 y GT3 participen en las sesiones de práctica para preparar los setups y estrategias de carrera.</li>
+                    </ul>
 
-                <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> 4. Sistema de Sanciones</h3>
-                <p style="color: var(--texto-secundario); margin-bottom: 15px;">El incumplimiento constante de este reglamento conllevará las siguientes medidas escalonadas:</p>
-                <ol style="color: var(--texto-secundario); line-height: 1.8; margin-bottom: 0;">
-                    <li><strong>Aviso verbal:</strong> Amonestación privada por parte de la Dirección.</li>
-                    <li><strong>Pérdida de asiento:</strong> Descenso temporal a la categoría de "Reserva / Pruebas".</li>
-                    <li><strong>Expulsión:</strong> Retiro permanente del Roster Oficial y bloqueo de los sistemas del equipo.</li>
-                </ol>
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-car-burst"></i> 3. Comportamiento en Pista</h3>
+                    <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                        <li><strong>Banderas Azules:</strong> Facilitar el adelantamiento de manera predecible y segura, manteniendo la línea de carrera sin hacer movimientos bruscos.</li>
+                        <li><strong>Incidentes:</strong> En caso de colisión, mantener la calma por la radio. Nunca tomar represalias en pista. Cualquier queja se gestionará mediante el sistema de comisarios tras la carrera.</li>
+                        <li><strong>Límites de Pista:</strong> Respetar los límites para evitar penalizaciones (Drive-Through o Stop & Go) que comprometan el esfuerzo de los relevos en carreras de Endurance.</li>
+                    </ul>
+
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> 4. Sistema de Sanciones</h3>
+                    <p style="color: var(--texto-secundario); margin-bottom: 15px;">El incumplimiento constante de este reglamento conllevará las siguientes medidas escalonadas:</p>
+                    <ol style="color: var(--texto-secundario); line-height: 1.8; margin-bottom: 0;">
+                        <li><strong>Aviso verbal:</strong> Amonestación privada por parte de la Dirección.</li>
+                        <li><strong>Pérdida de asiento:</strong> Descenso temporal a la categoría de "Reserva / Pruebas".</li>
+                        <li><strong>Expulsión:</strong> Retiro permanente del Roster Oficial y bloqueo de los sistemas del equipo.</li>
+                    </ol>
+                </div>
             </div>
         </div>
 
@@ -555,12 +601,7 @@
                 <p>Novedades, actualizaciones y comunicados oficiales del equipo.</p>
             </header>
 
-            <div id="noticias-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
-                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
-                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA PRIVADA. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA LEER COMUNICADOS.</p>
-            </div>
-
-            <div id="noticias-contenido" style="display: none; max-width: 900px; margin: 0 auto;">
+            <div id="noticias-contenido" style="max-width: 900px; margin: 0 auto;">
                 <!-- ÚNICO ANUNCIO (SIN FECHA) -->
                 <article class="panel-racing noticia-card">
                     <span class="nav-tag" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento); margin-bottom: 15px; display: inline-block;">Aviso Oficial</span>
@@ -607,5 +648,6 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/ui.js"></script>
     <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/telemetria.js"></script>
 </body>
 </html>

@@ -11,8 +11,8 @@ function togglePrivateUI(canAccess) {
     const displayState = canAccess ? 'block' : 'none';
     const lockState = canAccess ? 'none' : 'block';
     
-    const privateIds = ['garaje-contenido', 'noticias-contenido', 'lista-carreras', 'link-noticias-wrapper', 'noticias-auth-wrapper', 'paddock-group'];
-    const guestIds = ['msg-no-login', 'garaje-msg-no-login', 'noticias-msg-no-login'];
+    const privateIds = ['garaje-contenido', 'lista-carreras', 'paddock-group', 'reglamento-contenido', 'telemetria-contenido'];
+    const guestIds = ['msg-no-login', 'garaje-msg-no-login', 'reglamento-msg-no-login', 'telemetria-msg-no-login'];
     
     privateIds.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = displayState; });
     guestIds.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = lockState; });
