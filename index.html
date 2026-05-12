@@ -259,27 +259,36 @@
 
         <div id="zona-login" class="tab-content">
             <div id="panel-auth" class="panel-racing" style="max-width: 450px;">
-                <h3 id="auth-titulo" style="text-align: center;">Acceso al Pit Lane</h3>
-                
-                <div id="campos-registro" style="display: none;">
-                    <input type="text" id="auth-nombre" placeholder="Nombre">
-                    <input type="text" id="auth-apellido" placeholder="Apellido">
-                </div>
-                
-                <input type="email" id="auth-email" placeholder="Correo electrónico de comunicación" required>
-                <input type="password" id="auth-pass" placeholder="Clave de seguridad" required>
-                
-                <div style="margin-bottom: 20px; padding: 12px; background: rgba(230, 204, 0, 0.05); border-left: 3px solid var(--secundario); text-align: left; font-size: 0.85rem; color: var(--texto-secundario);">
-                    <i class="fa-solid fa-envelope-circle-check" style="color: var(--secundario); margin-right: 5px;"></i>
-                    <span id="auth-spam-text">Recuerda que debes verificar tu correo antes de ingresar. Revisa tu carpeta de <strong>Spam o Correo No Deseado</strong>.</span>
-                </div>
+                <div id="auth-form-container">
+                    <h3 id="auth-titulo" style="text-align: center;">Acceso al Pit Lane</h3>
+                    
+                    <div id="campos-registro" style="display: none;">
+                        <input type="text" id="auth-nombre" placeholder="Nombre">
+                        <input type="text" id="auth-apellido" placeholder="Apellido">
+                    </div>
+                    
+                    <input type="email" id="auth-email" placeholder="Correo electrónico" required>
+                    <input type="password" id="auth-pass" placeholder="Contraseña" required>
+                    
+                    <div style="margin-bottom: 20px; padding: 12px; background: rgba(230, 204, 0, 0.05); border-left: 3px solid var(--secundario); text-align: left; font-size: 0.85rem; color: var(--texto-secundario);">
+                        <i class="fa-solid fa-envelope-circle-check" style="color: var(--secundario); margin-right: 5px;"></i>
+                        <span id="auth-spam-text">Recuerda que debes verificar tu correo antes de ingresar. Revisa tu carpeta de <strong>Spam o Correo No Deseado</strong>.</span>
+                    </div>
 
-                <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SESIÓN</button>
+                    <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SESIÓN</button>
+                    
+                    <p id="auth-toggle-text" style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">
+                        ¿Nuevo en el equipo? <br>
+                        <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Solicitar credencial de piloto</a>
+                    </p>
+                </div>
                 
-                <p id="auth-toggle-text" style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">
-                    ¿Nuevo en el equipo? <br>
-                    <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Solicitar credencial de piloto</a>
-                </p>
+                <div id="registro-mensaje" style="display: none; text-align: center; padding: 10px;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: #4ade80; margin-bottom: 20px;"></i>
+                    <h3 style="margin-top: 0;">¡Registro Exitoso!</h3>
+                    <p style="color: var(--texto-secundario);">Hemos enviado un enlace de confirmación a tu correo.<br>Por favor, revísalo (incluso en la carpeta de <strong>Spam o Correo No Deseado</strong>) para verificar tu cuenta antes de iniciar sesión.</p>
+                    <button onclick="volverALogin()" class="btn-secundario" style="max-width: 250px; margin-top: 20px;">Volver a Iniciar Sesión</button>
+                </div>
             </div>
         </div>
 

@@ -44,6 +44,11 @@ export function cambiarModoAuth() {
     document.getElementById('btn-accion-auth').innerText = state.modoRegistro ? "CREAR CUENTA" : "INICIAR SESIÓN";
     document.getElementById('campos-registro').style.display = state.modoRegistro ? "block" : "none";
 
+    const passInput = document.getElementById('auth-pass');
+    if (passInput) {
+        passInput.placeholder = state.modoRegistro ? "Nueva contraseña" : "Contraseña";
+    }
+
     const spamText = document.getElementById('auth-spam-text');
     if (spamText) {
         spamText.innerHTML = state.modoRegistro 
@@ -100,8 +105,8 @@ export async function procesarAuth() {
             // Cerramos la sesión forzosamente hasta que verifique su correo
             await signOut(auth);
             
-            alert("¡Registro exitoso! Hemos enviado un enlace de confirmación a tu correo. Por favor, revísalo (incluso en spam) para verificar tu cuenta antes de iniciar sesión.");
-            cambiarModoAuth(); // Volver al formulario de login
+            document.getElementById('auth-form-container').style.display = "none";
+            document.getElementById('registro-mensaje').style.display = "block";
         } else {
             const credencial = await signInWithEmailAndPassword(auth, email, pass);
             
@@ -242,4 +247,14 @@ export function cerrarSesion() {
     });
 }
 
-window.cambiarModoAuth = cambiarModoAuth; window.abrirLogin = abrirLogin; window.abrirRegistro = abrirRegistro; window.manejarBotonPostulacion = manejarBotonPostulacion; window.procesarAuth = procesarAuth; window.cerrarSesion = cerrarSesion;
+export function volverALogin() {
+    document.getElementById('registro-mensaje').style.display = "none";
+    document.getElementById('auth-form-container').style.display = "block";
+    document.getElementById('auth-email').value = "";
+    document.getElementById('auth-pass').value = "";
+    document.getElementById('auth-nombre').value = "";
+    document.getElementById('auth-apellido').value = "";
+    if (state.modoRegistro) cambiarModoAuth();
+}
+
+window.cambiarModoAuth = cambiarModoAuth; window.abrirLogin = abrirLogin; window.abrirRegistro = abrirRegistro; window.manejarBotonPostulacion = manejarBotonPostulacion; window.procesarAuth = procesarAuth; window.cerrarSesion = cerrarSesion; window.volverALogin = volverALogin;
