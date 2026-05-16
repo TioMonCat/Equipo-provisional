@@ -216,7 +216,7 @@ export async function notificarNoticiaDiscord() {
         content: "📢 **¡NUEVO ANUNCIO OFICIAL PUBLICADO!** 📢\n@everyone",
         embeds: [{
             title: titulo,
-            description: `Se ha publicado un nuevo comunicado en el portal del equipo. Por favor, ingresen a la sección de **Noticias** en la web para leer los detalles completos.\n\n🔗 **Ir al Portal Oficial**`,
+            description: `Se ha publicado un nuevo comunicado.\n\n🔗 **Enlace:** https://apexlatamracing.it.com/`,
             color: 3447003 // Color Azul Oficial (Hexadecimal convertido a decimal)
         }]
     };
