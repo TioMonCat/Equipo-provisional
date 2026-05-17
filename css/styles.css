@@ -126,23 +126,49 @@ nav {
 
 /* Adaptación móvil del HUD de conexión */
 @media (max-width: 850px) {
+    nav {
+        flex-wrap: wrap;
+        padding: 12px 5%;
+        gap: 10px;
+    }
+    .logo-img { height: 40px; }
+    
+    .nav-controls {
+        gap: 12px;
+        order: 2;
+        margin-left: auto;
+    }
+    .online-counter-box {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+
     .nav-user-status {
         position: static;
         transform: none;
         animation: dropDownMobile 0.5s ease forwards;
-        padding: 5px 12px;
-        gap: 8px;
+        padding: 8px 10px;
+        order: 3;
+        width: 100%;
+        border-radius: 8px;
+        margin-top: 5px;
+        box-sizing: border-box;
     }
     @keyframes dropDownMobile { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
     .conexion-text { display: none; }
-        .auth-buttons-mini {
-            position: static;
-            transform: none;
-            animation: dropDownMobile 0.5s ease forwards;
-            padding: 5px 8px !important;
-            gap: 5px !important;
-        }
-    .logo-img { height: 45px; }
+    
+    .auth-buttons-mini {
+        position: static;
+        transform: none;
+        animation: dropDownMobile 0.5s ease forwards;
+        padding: 8px !important;
+        gap: 10px !important;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 5px;
+        box-sizing: border-box;
+    }
 }
 
 /* --- CONTROLES DE NAVEGACIÓN --- */
@@ -348,6 +374,21 @@ select option { background-color: var(--tarjeta); color: var(--texto); }
 }
 .slide-info h2 { font-size: 2.2rem; margin: 0; color: var(--texto); }
 .slide-info p { color: var(--texto-secundario); font-size: 1.1rem; margin: 5px 0 0; font-family: 'Inter', sans-serif; }
+
+/* --- CARRUSEL MÓVIL --- */
+@media (max-width: 850px) {
+    .swiper { height: 380px; }
+    .slide-info {
+        bottom: 25px;
+        left: 20px;
+        right: 20px;
+        width: auto;
+        text-align: center;
+        padding: 15px 20px;
+    }
+    .slide-info h2 { font-size: 1.5rem; }
+    .slide-info p { font-size: 0.95rem; }
+}
 
 /* --- PLATAFORMAS DE COMPETICIÓN --- */
 .plataformas-banner {
