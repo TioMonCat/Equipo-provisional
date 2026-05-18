@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALR | Portal Oficial</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* Ajustes para compactar y embellecer el menú lateral */
+        #sidebar {
+            padding-top: 20px !important;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        #sidebar a {
+            padding: 10px 15px !important;
+            font-size: 0.95rem !important;
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            border-radius: 6px;
+            margin: 0 15px;
+            transition: all 0.2s ease-in-out;
+        }
+        #sidebar a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+        #sidebar a i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        /* Agrupadores visuales en el menú */
+        .sidebar-section {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 15px 20px 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BANNER GLOBAL DE STREAM -->
+    <div id="live-stream-banner" class="stream-banner" style="display: none;">
+        <div class="stream-content">
+            <span class="stream-indicator"><i class="fa-solid fa-circle blink-red"></i> EN VIVO</span>
+            <span class="stream-text">ALERTA DE TELEMETRÍA: Piloto en pista.</span>
+            <a id="stream-link" href="#" target="_blank" class="btn-stream">[Ver On-Board]</a>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <nav>
+        <div class="logo" onclick="showSection('inicio')">
+            <img src="img/LogoEquipo.png" alt="Logo Oficial del Equipo" class="logo-img">
+        </div>
+        
+        <!-- INDICADOR CENTRAL DE SESIÓN -->
+        <div id="nav-user-status" class="nav-user-status" style="display: none;" onclick="cerrarSesion()" title="Cerrar Sesión">
+            <div class="status-info-wrapper">
+                <div class="status-info">
+                    <span class="conexion-text"><i class="fa-solid fa-satellite-dish"></i> Conexión Establecida</span>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                        <div id="nav-categoria-tags" style="display: flex; gap: 5px;"></div>
+                        <span class="piloto-text" id="nav-nombre-piloto">---</span>
+                        <div id="nav-rol-tags" style="display: flex; gap: 5px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="logout-overlay">
+                <i class="fa-solid fa-power-off"></i> DESCONECTAR
+            </div>
+        </div>
+
+        <!-- BOTONES DE ACCESO (CENTRADOS) -->
+        <div class="auth-buttons-mini" id="nav-auth-buttons" style="display: none;">
+            <button class="btn-mini btn-mini-outline" onclick="abrirLogin()">Entrar</button>
+            <button class="btn-mini" onclick="abrirRegistro()">Registrarse</button>
+        </div>
+
+        <div class="nav-controls">
+            <!-- CONTADOR DE CONEXIONES RTDB -->
+            <div id="online-counter" class="online-counter-box" title="Usuarios conectados actualmente">
+                <i class="fa-solid fa-circle blink-green" style="font-size: 0.55rem;"></i> <span id="online-count-text">-- en línea</span>
+            </div>
+
+            <div class="menu-icon" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidebar" id="sidebar">
+        <div class="close-btn" onclick="toggleMenu()">&times;</div>
+        
+        <div class="sidebar-section">General</div>
+        <a href="#" onclick="showSection('inicio')"><i class="fa-solid fa-gauge-high"></i> Inicio</a>
+        <div id="link-noticias-wrapper">
+            <a href="#" onclick="showSection('noticias')"><i class="fa-solid fa-newspaper"></i> Noticias y Anuncios</a>
+        </div>
+        <a href="#" onclick="showSection('pilotos')"><i class="fa-solid fa-helmet-safety"></i> Roster Oficial</a>
+        <a href="#" onclick="showSection('calendario')"><i class="fa-solid fa-flag-checkered"></i> Temporada</a>
+        
+        <div id="paddock-group" style="display: none;">
+            <div class="sidebar-section">Paddock</div>
+            <a href="#" onclick="showSection('garaje')"><i class="fa-solid fa-warehouse"></i> Garaje</a>
+            <a href="#" onclick="showSection('asistencia')"><i class="fa-solid fa-calendar-check"></i> Eventos y Asistencia</a>
+            <a href="#" onclick="showSection('telemetria-vivo')"><i class="fa-solid fa-satellite-dish"></i> Telemetría en Vivo</a>
+        </div>
+        
+        <div id="admin-group" style="display: none;">
+            <div class="sidebar-section" style="color: var(--acento);">Administración</div>
+            <a href="#" id="link-admin" onclick="showSection('admin-panel')" style="color: var(--acento);"><i class="fa-solid fa-users-gear"></i> Gestión Admin</a>
+            <a href="#" id="link-admin-postulaciones" onclick="showSection('admin-postulaciones')" style="color: var(--acento);"><i class="fa-solid fa-file-contract"></i> Evaluar Postulaciones</a>
+        </div>
+    </div>
+
+    <div class="contenedor">
+        
+        <div id="inicio" class="tab-content" style="display: block;">
+            
+            <div id="acceso-rapido" style="text-align: center; margin-bottom: 30px; display: none;">
+                <button onclick="manejarBotonPostulacion()" class="btn-destacado" style="max-width: 250px;">
+                    <i class="fa-solid fa-file-signature"></i> Postular al Equipo
+                </button>
+            </div>
+
+            <!-- BANNER DE NOTICIAS RECIENTES (Se oculta automáticamente después de 24h) -->
+            <!-- Para mostrarlo, edita el data-timestamp con la fecha y hora de tu nueva publicación en formato YYYY-MM-DDTHH:MM:SS -->
+            <!-- Envuelto en un contenedor de autorización -->
+            <div id="noticias-auth-wrapper">
+            <div id="banner-noticia-reciente" class="panel-racing banner-noticia" style="display: none; max-width: 800px; margin: 0 auto 30px; background: rgba(0, 123, 255, 0.1); border-color: var(--acento); padding: 20px; text-align: center; cursor: pointer; transition: 0.3s;" onclick="showSection('noticias')" data-timestamp="2026-05-11T03:00:00Z">
+                <h3 style="margin: 0; color: var(--acento); font-size: 1.2rem; border: none; padding: 0;"><i class="fa-solid fa-bullhorn fa-shake"></i> ¡NUEVO ANUNCIO OFICIAL!</h3>
+                <p style="margin: 5px 0 0; color: var(--texto); font-size: 0.95rem;">Se ha publicado un nuevo comunicado. Haz clic aquí para leerlo.</p>
+            </div>
+            </div>
+
+            <!-- PANEL EXCLUSIVO PARA ADMINISTRADORES -->
+            <div id="panel-privado" class="panel-racing" style="display: none; max-width: 500px; text-align: center; border-color: var(--acento); background: rgba(0, 123, 255, 0.05);">
+                <p style="font-family: 'Chakra Petch'; color: var(--acento); font-weight: 700; margin-top: 0; font-size: 1.2rem;">SISTEMA DIRECTOR DE CARRERA</p>
+                <button onclick="showSection('asistencia')">Gestión de Calendario</button>
+            </div>
+
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="img/promo1.jpg" alt="Promo 1">
+                        <div class="slide-info">
+                            <h2>Bienvenidos al Equipo</h2>
+                            <p>Pasión por el SimRacing</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/promo2.jpg" alt="Promo 2">
+                        <div class="slide-info">
+                            <h2>Endurance Racing</h2>
+                            <p>Desempeño y Estrategia</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/promo3.jpg" alt="Promo 3">
+                        <div class="slide-info">
+                            <h2>Ingeniería de Pista</h2>
+                            <p>Telemetría en tiempo real</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/promo4.jpg" alt="Promo 4">
+                        <div class="slide-info">
+                            <h2>Trabajo en Equipo</h2>
+                            <p>Coordinación y disciplina</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/promo5.jpg" alt="Promo 5">
+                        <div class="slide-info">
+                            <h2>LMP2 & GT3</h2>
+                            <p>Múltiples categorías</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/promo6.jpg" alt="Promo 6">
+                        <div class="slide-info">
+                            <h2>Únete a la Parrilla</h2>
+                            <p>Demuestra tu talento en pista</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="img/promo7.jpg" alt="Promo 7">
+                        <div class="slide-info">
+                            <h2>Competitividad</h2>
+                            <p>La mas grande forma de competir</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+
+            <!-- PLATAFORMAS DE COMPETICIÓN -->
+            <div class="plataformas-banner">
+                <p>Plataformas Oficiales de Competición</p>
+                <div class="plataformas-logos">
+                    <img src="img/aclogo.png" alt="Assetto Corsa">
+                    <img src="img/lmulogo.png" alt="Le Mans Ultimate">
+                </div>
+            </div>
+
+            <!-- INICIO: SECCIÓN ÚLTIMA CARRERA (ESTÁTICA) -->
+            <div class="panel-racing" style="margin-top: 50px;">
+                <header style="margin-bottom: 30px; text-align: center;">
+                    <h2>Última Carrera: [Evento por disputarse]</h2>
+                    <p>A la espera del inicio oficial de la temporada.</p>
+                </header>
+
+                <div class="ultima-carrera-content" style="display: flex; flex-wrap: wrap; gap: 30px; align-items: stretch;">
+
+                    <!-- Columna del Carrusel -->
+                    <div class="ultima-carrera-gallery" style="flex: 1.5; min-width: 300px; display: flex; flex-direction: column;">
+                        <!-- El carrusel estático usa la clase .swiper-ultima-carrera que ya está configurada en ui.js -->
+                        <div class="swiper swiper-ultima-carrera" style="border-radius: 12px; border: 1px solid var(--borde); width: 100%; height: 100%; min-height: 250px;">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide" style="height: auto;"><img src="img/promo1.jpg" alt="Foto del evento 1" style="width: 100%; height: 100%; object-fit: cover; border-radius: 11px;"></div>
+                                <div class="swiper-slide" style="height: auto;"><img src="img/promo2.jpg" alt="Foto del evento 2" style="width: 100%; height: 100%; object-fit: cover; border-radius: 11px;"></div>
+                                <div class="swiper-slide" style="height: auto;"><img src="img/promo3.jpg" alt="Foto del evento 3" style="width: 100%; height: 100%; object-fit: cover; border-radius: 11px;"></div>
+                            </div>
+                            <div class="swiper-pagination"></div>
+                        </div>
+                    </div>
+
+                    <!-- Columna del Listado de Pilotos -->
+                    <div class="ultima-carrera-pilots" style="flex: 1; min-width: 300px; display: flex; flex-direction: column;">
+                        <div class="telemetria-data" style="text-align: left; height: 100%; margin: 0;">
+                            <p style="margin-top: 0; margin-bottom: 15px;">RESULTADOS POR CATEGORÍA:</p>
+                            <ul style="list-style: none; padding: 0; margin: 0;">
+                                <li style='color: var(--acento); font-weight: bold; background: rgba(0, 123, 255, 0.1); border-radius: 4px; margin-top: 5px; padding: 5px 10px; display: flex; justify-content: space-between; align-items: center;'>
+                                    <span><i class="fa-solid fa-gauge-high"></i> LMP2</span>
+                                    <span style="font-family: 'Chakra Petch'; font-size: 0.9em; color: var(--texto-secundario); font-weight: normal;">P- <i class="fa-solid fa-arrow-right" style="color: #666; margin: 0 5px;"></i> <strong style="color: white;">P-</strong></span>
+                                </li>
+                                <li style="padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--texto-secundario); font-style: italic;">
+                                    <i class="fa-solid fa-helmet-safety"></i> Alineación por confirmar
+                                </li>
+                                
+                                <li style='color: var(--secundario); font-weight: bold; background: rgba(230, 204, 0, 0.1); border-radius: 4px; margin-top: 15px; padding: 5px 10px; display: flex; justify-content: space-between; align-items: center;'>
+                                    <span><i class="fa-solid fa-car-side"></i> GT3</span>
+                                    <span style="font-family: 'Chakra Petch'; font-size: 0.9em; color: var(--texto-secundario); font-weight: normal;">P- <i class="fa-solid fa-arrow-right" style="color: #666; margin: 0 5px;"></i> <strong style="color: white;">P-</strong></span>
+                                </li>
+                                <li style="padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--texto-secundario); font-style: italic;">
+                                    <i class="fa-solid fa-helmet-safety"></i> Alineación por confirmar
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="zona-login" class="tab-content">
+            <div id="panel-auth" class="panel-racing" style="max-width: 450px;">
+                <div id="auth-form-container">
+                    <h3 id="auth-titulo" style="text-align: center;">Acceso al Pit Lane</h3>
+                    
+                    <div id="campos-registro" style="display: none;">
+                        <input type="text" id="auth-nombre" placeholder="Nombre">
+                        <input type="text" id="auth-apellido" placeholder="Apellido">
+                    </div>
+                    
+                    <input type="email" id="auth-email" placeholder="Correo electrónico" required>
+                    <input type="password" id="auth-pass" placeholder="Contraseña" required>
+                    
+                    <div style="margin-bottom: 20px; padding: 12px; background: rgba(230, 204, 0, 0.05); border-left: 3px solid var(--secundario); text-align: left; font-size: 0.85rem; color: var(--texto-secundario);">
+                        <i class="fa-solid fa-envelope-circle-check" style="color: var(--secundario); margin-right: 5px;"></i>
+                        <span id="auth-spam-text">Recuerda que debes verificar tu correo antes de ingresar. Revisa tu carpeta de <strong>Spam o Correo No Deseado</strong>.</span>
+                    </div>
+
+                    <button id="btn-accion-auth" onclick="procesarAuth()">INICIAR SESIÓN</button>
+                    
+                    <p id="auth-toggle-text" style="text-align: center; margin-top: 20px; font-family: 'Chakra Petch';">
+                        ¿Nuevo en el equipo? <br>
+                        <a href="#" onclick="event.preventDefault(); cambiarModoAuth();" style="color: var(--acento); text-decoration: none; border-bottom: 1px solid var(--acento);">Solicitar credencial de piloto</a>
+                    </p>
+                </div>
+                
+                <div id="registro-mensaje" style="display: none; text-align: center; padding: 10px;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: #4ade80; margin-bottom: 20px;"></i>
+                    <h3 style="margin-top: 0;">¡Registro Exitoso!</h3>
+                    <p style="color: var(--texto-secundario);">Hemos enviado un enlace de confirmación a tu correo.<br>Por favor, revísalo (incluso en la carpeta de <strong>Spam o Correo No Deseado</strong>) para verificar tu cuenta antes de iniciar sesión.</p>
+                    <button onclick="volverALogin()" class="btn-secundario" style="max-width: 250px; margin-top: 20px;">Volver a Iniciar Sesión</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="pilotos" class="tab-content">
+            <header>
+                <h2>Roster Oficial</h2>
+                <p>Alineación actual</p>
+            </header>
+            <div class="grid-pilotos" id="contenedor-pilotos">
+                <!-- Aquí se cargarán los pilotos dinámicamente -->
+            </div>
+        </div>
+
+        <div id="calendario" class="tab-content">
+            <header>
+                <h2>Temporada 2026</h2>
+                <p>Cronograma oficial del campeonato</p>
+            </header>
+            <img src="img/HorarioERCNG.png" class="calendario-img" alt="Calendario oficial del equipo">
+        </div>
+
+        <div id="garaje" class="tab-content">
+            <header>
+                <h2>Garaje del Equipo</h2>
+                <p>Descarga las skins (liveries) oficiales para los vehículos de la temporada.</p>
+            </header>
+
+            <div id="garaje-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE PILOTOS. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA ACCEDER AL GARAJE.</p>
+            </div>
+
+            <div id="garaje-contenido" style="display: none; max-width: 900px; margin: 0 auto;">
+                <div class="vehiculo-garaje">
+                    <img src="img/LMP2 2.JPG" alt="LMP2 Oreca 07" class="vehiculo-img">
+                    <div class="vehiculo-info">
+                        <h3>Oreca 07 LMP2</h3>
+                        <p>Diseño oficial para el Oreca 07 LMP2. Viste los colores de la escudería en tus carreras de resistencia.</p>
+                        <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/LMP2.zip" download class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Skin</a>
+                    </div>
+                </div>
+                <div class="vehiculo-garaje">
+                    <img src="img/GT3 2.JPG" alt="Mercedes AMG GT3" class="vehiculo-img">
+                    <div class="vehiculo-info">
+                        <h3>Mercedes AMG GT3</h3>
+                        <p>Diseño oficial para el Mercedes AMG GT3. Representa al equipo en pista con nuestra pintura exclusiva.</p>
+                        <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/GT3.zip" download class="btn-secundario" style="text-decoration: none; display: inline-block; margin-top: 15px;"><i class="fa-solid fa-download"></i> Descargar Skin</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="asistencia" class="tab-content">
+            <header>
+                <h2>Eventos y Asistencia</h2>
+                <p>Confirma tu disponibilidad para las próximas jornadas.</p>
+            </header>
+
+            <div id="msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px;">
+                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE PILOTOS. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA GESTIONAR TU ASISTENCIA A LOS EVENTOS.</p>
+            </div>
+
+            <div id="panel-crear-carrera" class="panel-racing" style="display: none; max-width: 600px;">
+                <h3>Programar Evento</h3>
+                <input type="text" id="nueva-carrera-nombre" placeholder="Nombre del Evento (Ej: 6 Horas de Spa)">
+                <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label for="nueva-carrera-fecha" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: -5px;">Fecha</label>
+                        <input type="date" id="nueva-carrera-fecha">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="nueva-carrera-hora" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: -5px;">Hora de Inicio</label>
+                        <input type="time" id="nueva-carrera-hora">
+                    </div>
+                </div>
+                <input type="text" id="nueva-carrera-pista" placeholder="Circuito">
+                <button onclick="crearCarrera()">Guardar en Servidor</button>
+            </div>
+
+            <div id="lista-carreras" style="display: none; max-width: 800px; margin: 0 auto;">
+                </div>
+        </div>
+
+        <div id="admin-panel" class="tab-content">
+            <header>
+                <h2>Panel de Administración</h2>
+                <p>Gestión de roles y categorías de la Crew</p>
+            </header>
+
+            <!-- CONTROLES DE TRANSMISIÓN EN VIVO -->
+            <div class="panel-racing" style="max-width: 900px; margin: 0 auto 30px; text-align: left;">
+                <h3 style="margin-top: 0; color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px;"><i class="fa-solid fa-video" style="color: #00A36C;"></i> Gestión de Transmisión (En Vivo)</h3>
+                <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label for="admin-stream-url" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif;">URL de la transmisión (Twitch/YouTube)</label>
+                        <input type="url" id="admin-stream-url" placeholder="Ej: https://twitch.tv/tu_canal" style="margin-bottom: 0; margin-top: 5px;">
+                    </div>
+                    <button id="btn-toggle-stream" onclick="toggleStreamStatus()" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-satellite-dish"></i> Activar Transmisión</button>
+                </div>
+            </div>
+
+            <!-- NOTIFICACIONES A DISCORD -->
+            <div class="panel-racing" style="max-width: 900px; margin: 0 auto 30px; text-align: left;">
+                <h3 style="margin-top: 0; color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px;"><i class="fa-brands fa-discord" style="color: #5865F2;"></i> Avisos de Noticias</h3>
+                <div style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label for="admin-noticia-titulo" style="color: var(--texto-secundario); font-size: 0.85rem; font-family: 'Montserrat', sans-serif;">Título del Anuncio (Para Discord)</label>
+                        <input type="text" id="admin-noticia-titulo" placeholder="Ej: Apertura del Portal Oficial" style="margin-bottom: 0; margin-top: 5px;">
+                    </div>
+                    <button id="btn-discord-noticia" onclick="notificarNoticiaDiscord()" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-paper-plane"></i> Enviar Aviso</button>
+                </div>
+            </div>
+
+        <!-- CONTROLES DE TELEMETRÍA -->
+        <div class="panel-racing" style="max-width: 900px; margin: 0 auto 30px; text-align: left;">
+            <h3 style="margin-top: 0; color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px;"><i class="fa-solid fa-satellite-dish" style="color: #f1c40f;"></i> Conexión de Telemetría</h3>
+            <p style="color: var(--texto-secundario); font-size: 0.95rem; margin-bottom: 15px;">Si el servidor estaba apagado, la web detiene la búsqueda automática para ahorrar recursos. Usa este botón para forzar una reconexión manual.</p>
+            <button onclick="iniciarTelemetria(); showSection('telemetria-vivo');" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-rotate-right"></i> Reconectar Servidor</button>
+        </div>
+
+            <div id="lista-usuarios-admin" style="max-width: 900px; margin: 0 auto;">
+                <!-- Cargado dinámicamente desde JS -->
+            </div>
+        </div>
+
+        <div id="admin-postulaciones" class="tab-content">
+            <header>
+                <h2>Revisión de Postulaciones</h2>
+                <p>Evalúa a los candidatos que desean unirse al equipo.</p>
+            </header>
+
+            <div id="lista-postulaciones-admin" style="max-width: 900px; margin: 0 auto;">
+                <!-- Cargado dinámicamente desde JS -->
+            </div>
+
+            <header style="margin-top: 50px; margin-bottom: 20px;">
+                <h3 style="color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px; text-align: left; max-width: 900px; margin: 0 auto;"><i class="fa-solid fa-clock-rotate-left"></i> Historial de Evaluaciones</h3>
+            </header>
+            <div id="historial-postulaciones-admin" style="max-width: 900px; margin: 0 auto;">
+                <!-- Cargado dinámicamente desde JS -->
+            </div>
+        </div>
+
+        <div id="telemetria-vivo" class="tab-content">
+            <header>
+                <h2>Telemetría en Vivo (Beta)</h2>
+                <p>Live Timing y Status del Servidor Oficial</p>
+            </header>
+
+            <div id="telemetria-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE EQUIPO. SE REQUIERE UN ASIENTO OFICIAL PARA ACCEDER A LA TELEMETRÍA.</p>
+            </div>
+
+            <div id="telemetria-contenido" style="display: none;">
+                <div class="panel-racing" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="margin: 0; border: none; padding: 0; font-size: 1.2rem;"><i class="fa-solid fa-stopwatch"></i> Monitor de Tiempos</h3>
+                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <span id="telemetria-status" style="font-size: 0.85rem; color: var(--texto-secundario); font-weight: bold; font-family: 'Chakra Petch', sans-serif;"><i class="fa-solid fa-satellite-dish"></i> Inicializando enlace...</span>
+                        <a href="https://panel.apexlatamracing.it.com/live-timing" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Panel Original</a>
+                    </div>
+                </div>
+                
+                <!-- TABLA DE TELEMETRÍA (Modo Cloudflare Worker) -->
+                <div class="admin-table-container" style="background: rgba(0,0,0,0.8); border-color: #333; overflow-x: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+                    <table class="admin-table" style="min-width: 800px; margin: 0; border-collapse: collapse; font-family: 'Chakra Petch', sans-serif;">
+                        <thead>
+                            <tr style="background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent); border-bottom: 2px solid var(--secundario);">
+                                <th style="width: 60px; text-align: center; padding: 12px;">POS</th>
+                                <th style="padding: 12px; text-align: left;">PILOTO</th>
+                                <th style="padding: 12px; text-align: left;">COCHE</th>
+                                <th style="text-align: center; padding: 12px;">MEJOR VUELTA</th>
+                                <th style="text-align: center; padding: 12px;">ÚLTIMA VUELTA</th>
+                                <th style="text-align: center; padding: 12px;">ESTADO</th>
+                            </tr>
+                        </thead>
+                        <tbody id="telemetria-body">
+                            <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--texto-secundario);"><i class="fa-solid fa-satellite-dish fa-spin"></i> Conectando con el servidor de telemetría...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <p style="text-align: center; color: var(--texto-secundario); font-size: 0.85rem; margin-top: 15px;">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--acento);"></i> 
+                    Telemetría segura extraída mediante Cloudflare Worker.
+                </p>
+            </div>
+            </div>
+        </div>
+
+        <div id="postulacion" class="tab-content">
+            <header>
+                <h2>Formulario de Postulación</h2>
+                <p>Envía tu solicitud para unirte a la parrilla de pilotos.</p>
+            </header>
+
+            <!-- BANNER HORIZONTAL DE SOPORTE -->
+            <div class="panel-racing" style="max-width: 800px; margin: 0 auto 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; background: rgba(230, 204, 0, 0.05); border-color: rgba(230, 204, 0, 0.3); padding: 25px 30px;">
+                <div style="flex: 1; min-width: 250px;">
+                    <h3 style="margin-top: 0; color: var(--secundario); font-size: 1.2rem; border-bottom: none; padding-bottom: 0; margin-bottom: 5px;"><i class="fa-solid fa-headset"></i> ¿Problemas con tu prueba?</h3>
+                    <p style="color: var(--texto-secundario); font-size: 0.95rem; margin: 0;">Si presentas algún inconveniente técnico o tienes dudas antes de postularte, contáctanos:</p>
+                </div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 6px; border-left: 3px solid #5865F2; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-brands fa-discord" style="color: #5865F2; font-size: 1.2rem;"></i> <span style="color: var(--texto); font-weight: 500;">muncato.</span>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 6px; border-left: 3px solid #5865F2; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-brands fa-discord" style="color: #5865F2; font-size: 1.2rem;"></i> <span style="color: var(--texto); font-weight: 500;">gaboevox</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO DE POSTULACIÓN -->
+            <div class="panel-racing" style="max-width: 800px; margin: 0 auto;">
+                <div id="postulacion-form-container">
+                    <h3 style="margin-top: 0; border-bottom: 1px solid var(--borde); padding-bottom: 15px;"><i class="fa-solid fa-file-signature"></i> Datos de la Prueba</h3>
+                    
+                    <form id="form-postulacion" onsubmit="enviarPostulacion(event)">
+                        <label for="postulacion-categoria" style="color: var(--texto-secundario); font-size: 0.95rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: 8px;">1. ¿En qué categoría o rol deseas participar?</label>
+                        <select id="postulacion-categoria" required onchange="actualizarFormularioTiempos()">
+                            <option value="" disabled selected>Selecciona una categoría de preferencia</option>
+                            <option value="LMP2">LMP2</option>
+                            <option value="GT3">GT3</option>
+                            <option value="Ambas">Ambas</option>
+                            <option value="Ingeniero">Ingeniero de Equipo</option>
+                        </select>
+
+                        <div id="descarga-mods-container" style="margin: 30px 0; padding: 20px; background: rgba(255, 255, 255, 0.03); border-left: 4px solid rgba(255, 255, 255, 0.3); border-radius: 4px;">
+                            <h4 style="margin-top: 0; color: var(--texto); font-size: 1.1rem;"><i class="fa-solid fa-download"></i> 2. Descarga de Mods</h4>
+                            <p style="font-size: 0.95rem; margin-bottom: 15px; color: var(--texto);">Para realizar tu prueba, debes descargar el mapa de la próxima carrera y el vehículo de tu categoría.</p>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/interlagos.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> Circuito Interlagos</a>
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/rsx_oreca_07.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car"></i> Oreca 07 - ERC NG LMP2</a>
+                                <a href="https://github.com/TioMonCat/Equipo-provisional/releases/download/1.0/emka_mercedes-amg_gt3_evo.zip" download class="btn-secundario" style="text-decoration: none; flex: 1; text-align: center; min-width: 200px; font-size: 0.9rem;"><i class="fa-solid fa-car-side"></i> Mercedes-AMG GT3 EVO EMKA</a>
+                            </div>
+                        </div>
+
+                        <div id="tiempos-container" style="display: none; margin: 30px 0; padding: 25px; background: rgba(255, 255, 255, 0.02); border: 1px dashed var(--borde); border-radius: 8px;">
+                            <h4 style="margin-top: 0; color: var(--texto); font-size: 1.1rem;"><i class="fa-solid fa-stopwatch"></i> 3. Registro de Tiempo</h4>
+                            <p style="font-size: 0.95rem; color: var(--texto-secundario); margin-bottom: 20px;">Sube el archivo de tu captura de pantalla (JPG, PNG). El sistema la optimizará automáticamente.</p>
+                            
+                            <div id="tiempo-lmp2" style="display: none; margin-bottom: 15px;">
+                                <label for="postulacion-captura-lmp2" style="color: var(--texto); font-size: 0.9rem;">Tiempo objetivo LMP2: <strong style="color: var(--acento);">1:25.000</strong></label>
+                                <input type="file" id="postulacion-captura-lmp2" accept="image/jpeg, image/png, image/webp" style="margin-top: 5px; background: rgba(0,0,0,0.5);">
+                            </div>
+
+                            <div id="tiempo-gt3" style="display: none;">
+                                <label for="postulacion-captura-gt3" style="color: var(--texto); font-size: 0.9rem;">Tiempo objetivo GT3: <strong style="color: var(--secundario);">1:34.500</strong></label>
+                                <input type="file" id="postulacion-captura-gt3" accept="image/jpeg, image/png, image/webp" style="margin-top: 5px; background: rgba(0,0,0,0.5);">
+                            </div>
+                        </div>
+                        
+                        <label for="postulacion-discord" style="color: var(--texto-secundario); font-size: 0.95rem; font-family: 'Montserrat', sans-serif; display: block; margin-bottom: 8px;">4. Usuario de Discord</label>
+                        <input type="text" id="postulacion-discord" placeholder="Ejemplo: apex_pilot" style="margin-top: 0;" required>
+
+                        <button type="submit" id="btn-enviar-postulacion" class="btn-alerta" style="margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px;"><i class="fa-solid fa-paper-plane"></i> Enviar Postulación</button>
+                    </form>
+                </div>
+                
+                <div id="postulacion-mensaje" style="display: none; text-align: center; padding: 40px 20px;">
+                    <i class="fa-solid fa-circle-check" style="font-size: 4rem; color: #4ade80; margin-bottom: 20px;"></i>
+                    <h3 style="margin-top: 0;">¡Postulación Enviada!</h3>
+                    <p style="color: var(--texto-secundario);">Tus datos y tiempo han sido registrados para su evaluación.<br>Los directores de carrera evaluarán tu solicitud pronto.</p>
+                    <button onclick="showSection('inicio')" class="btn-secundario" style="max-width: 250px; margin-top: 20px;">Volver al Inicio</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="reglamento" class="tab-content">
+            <header>
+                <h2>Reglamento Interno</h2>
+                <p>Normativas y reglas oficiales de la escudería.</p>
+            </header>
+
+            <div id="reglamento-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
+                <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
+                <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA PRIVADA. SE REQUIERE UN ASIENTO OFICIAL EN EL EQUIPO PARA LEER EL REGLAMENTO.</p>
+            </div>
+
+            <div id="reglamento-contenido" style="display: none;">
+                <div class="panel-racing" style="max-width: 800px; margin: 0 auto; text-align: left;">
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px; margin-top: 0;"><i class="fa-solid fa-gavel"></i> 1. Código de Conducta</h3>
+                    <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                        <li><strong>Respeto mutuo:</strong> Se exige respeto absoluto hacia todos los miembros del equipo, directores de carrera y pilotos rivales. No se tolerarán insultos ni comportamientos tóxicos.</li>
+                        <li><strong>Representación:</strong> Al llevar el nombre o logo del equipo en servidores o eventos oficiales, el piloto actúa como embajador de la escudería.</li>
+                        <li><strong>Comunicación:</strong> El uso de Discord (o radio del equipo) es obligatorio durante los eventos de resistencia para mantener la coordinación del Pit Wall.</li>
+                    </ul>
+
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-stopwatch"></i> 2. Asistencia y Compromiso</h3>
+                    <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                        <li><strong>Confirmación de Eventos:</strong> Los pilotos deben confirmar su asistencia en el Panel de Telemetría (Eventos) antes del cierre de inscripciones.</li>
+                        <li><strong>Ausencias:</strong> Si un piloto confirmado no puede asistir, debe notificar a los Administradores lo antes posible. Ausencias repetidas sin justificar resultarán en la degradación a piloto de Reserva.</li>
+                        <li><strong>Entrenamientos:</strong> Se espera que los pilotos oficiales de LMP2 y GT3 participen en las sesiones de práctica para preparar los setups y estrategias de carrera.</li>
+                    </ul>
+
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-car-burst"></i> 3. Comportamiento en Pista</h3>
+                    <ul style="color: var(--texto-secundario); margin-bottom: 30px; line-height: 1.8;">
+                        <li><strong>Banderas Azules:</strong> Facilitar el adelantamiento de manera predecible y segura, manteniendo la línea de carrera sin hacer movimientos bruscos.</li>
+                        <li><strong>Incidentes:</strong> En caso de colisión, mantener la calma por la radio. Nunca tomar represalias en pista. Cualquier queja se gestionará mediante el sistema de comisarios tras la carrera.</li>
+                        <li><strong>Límites de Pista:</strong> Respetar los límites para evitar penalizaciones (Drive-Through o Stop & Go) que comprometan el esfuerzo de los relevos en carreras de Endurance.</li>
+                    </ul>
+
+                    <h3 style="border-bottom: 1px solid var(--acento); padding-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> 4. Sistema de Sanciones</h3>
+                    <p style="color: var(--texto-secundario); margin-bottom: 15px;">El incumplimiento constante de este reglamento conllevará las siguientes medidas escalonadas:</p>
+                    <ol style="color: var(--texto-secundario); line-height: 1.8; margin-bottom: 0;">
+                        <li><strong>Aviso verbal:</strong> Amonestación privada por parte de la Dirección.</li>
+                        <li><strong>Pérdida de asiento:</strong> Descenso temporal a la categoría de "Reserva / Pruebas".</li>
+                        <li><strong>Expulsión:</strong> Retiro permanente del Roster Oficial y bloqueo de los sistemas del equipo.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div id="noticias" class="tab-content">
+            <header>
+                <h2>Noticias y Anuncios</h2>
+                <p>Novedades, actualizaciones y comunicados oficiales del equipo.</p>
+            </header>
+
+            <div id="noticias-contenido" style="max-width: 900px; margin: 0 auto;">
+                <!-- ÚNICO ANUNCIO (SIN FECHA) -->
+                <article class="panel-racing noticia-card">
+                    <span class="nav-tag" style="background: rgba(0, 123, 255, 0.1); color: var(--acento); border-color: var(--acento); margin-bottom: 15px; display: inline-block;">Comunicado Oficial</span>
+                    <h3 style="margin-top: 0; font-size: 1.8rem; border: none; padding-bottom: 0;">Fecha Confirmada: Próximo Desafío en Pista</h3>
+                    <p style="color: var(--texto-secundario); line-height: 1.7;">
+                        La dirección de carrera ha confirmado oficialmente la fecha de nuestro próximo evento. Es momento de encender los motores, afinar nuestras estrategias y prepararnos para demostrar de qué estamos hechos. El esfuerzo de cada piloto e ingeniero será fundamental para alcanzar la victoria en Interlagos.
+                    </p>
+                    <img src="img/InterlagosFecha.png" alt="Anuncio Interlagos" style="display: block; margin: 25px auto 0; width: 100%; max-width: 500px; height: auto; border-radius: 8px; border: 1px solid var(--borde); box-shadow: 0 5px 20px rgba(0,0,0,0.4);">
+                </article>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer-global">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="img/LogoEquipo.png" alt="Logo Oficial del Equipo" class="footer-logo">
+                <p>Pasión por el SimRacing y la competición de resistencia<br>al más alto nivel.</p>
+                <div class="footer-plataformas" style="display: flex; gap: 20px; margin-top: 20px; align-items: center;">
+                    <img src="img/aclogo.png" alt="Assetto Corsa" style="height: 30px; opacity: 0.5; filter: grayscale(100%); transition: 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none'" onmouseout="this.style.opacity='0.5'; this.style.filter='grayscale(100%)'">
+                    <img src="img/lmulogo.png" alt="Le Mans Ultimate" style="height: 30px; opacity: 0.5; filter: grayscale(100%); transition: 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none'" onmouseout="this.style.opacity='0.5'; this.style.filter='grayscale(100%)'">
+                </div>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/apexlatamracing/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://x.com/apexlatamracing" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.tiktok.com/@apexlatamracing" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Legal & Contacto</h4>
+                <ul>
+                    <li><a href="#" onclick="showSection('reglamento'); return false;">Reglamento Interno</a></li>
+                    <li><a href="mailto:apexlatamracingcontact@gmail.com">Contacto Comercial: apexlatamracingcontact@gmail.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Racing Crew. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="js/ui.js?v=1.1"></script>
+    <script type="module" src="js/main.js?v=1.1"></script>
+    <script type="module" src="js/telemetria.js?v=1.1"></script>
+</body>
+</html>
