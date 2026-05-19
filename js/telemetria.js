@@ -3,10 +3,29 @@ export function iniciarTelemetria() {
     // Esta función se mantiene para recargar el iframe cuando el admin presiona "Recargar Panel".
     const iframe = document.getElementById('iframe-telemetria');
     if (iframe) {
-        iframe.src = iframe.src;
-        console.log("Iframe de telemetría recargado.");
+        const urlOriginal = iframe.src;
+        iframe.src = 'about:blank';
+        
+        setTimeout(() => {
+            iframe.src = urlOriginal;
+            console.log("Iframe de telemetría recargado para ajustar el mapa.");
+        }, 50);
     }
 }
 
-document.addEventListener('DOMContentLoaded', iniciarTelemetria);
+document.addEventListener('DOMContentLoaded', () => {
+    const telemetriaTab = document.getElementById('telemetria-vivo');
+    
+    if (telemetriaTab) {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'style' && telemetriaTab.style.display === 'block') {
+                    iniciarTelemetria();
+                }
+            });
+        });
+        observer.observe(telemetriaTab, { attributes: true });
+    }
+});
+
 window.iniciarTelemetria = iniciarTelemetria;
