@@ -432,7 +432,7 @@
         <div class="panel-racing" style="max-width: 900px; margin: 0 auto 30px; text-align: left;">
             <h3 style="margin-top: 0; color: var(--texto); border-bottom: 1px solid var(--borde); padding-bottom: 10px;"><i class="fa-solid fa-satellite-dish" style="color: #f1c40f;"></i> Conexión de Telemetría</h3>
             <p style="color: var(--texto-secundario); font-size: 0.95rem; margin-bottom: 15px;">Si el servidor estaba apagado, la web detiene la búsqueda automática para ahorrar recursos. Usa este botón para forzar una reconexión manual.</p>
-            <button onclick="iniciarTelemetria(); showSection('telemetria-vivo');" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-rotate-right"></i> Reconectar Servidor</button>
+            <button onclick="iniciarTelemetria(); showSection('telemetria-vivo');" class="btn-secundario" style="width: auto; height: 48px; padding: 0 25px;"><i class="fa-solid fa-rotate-right"></i> Recargar Panel de Telemetría</button>
         </div>
 
             <div id="lista-usuarios-admin" style="max-width: 900px; margin: 0 auto;">
@@ -459,49 +459,34 @@
         </div>
 
         <div id="telemetria-vivo" class="tab-content">
-            <header>
-                <h2>Telemetría en Vivo (Beta)</h2>
-                <p>Live Timing y Status del Servidor Oficial</p>
-            </header>
-
-            <div id="telemetria-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 0 auto;">
+            <div id="telemetria-msg-no-login" class="panel-racing" style="text-align: center; max-width: 600px; margin: 40px auto 0;">
+                <h2 style="margin-top: 0; margin-bottom: 20px;">Telemetría en Vivo</h2>
                 <i class="fa-solid fa-id-card" style="font-size: 2rem; color: var(--texto-secundario); margin-bottom: 15px;"></i>
                 <p style="font-family: 'Chakra Petch'; color: var(--texto-secundario);">ZONA DE EQUIPO. SE REQUIERE UN ASIENTO OFICIAL PARA ACCEDER A LA TELEMETRÍA.</p>
             </div>
 
             <div id="telemetria-contenido" style="display: none;">
-                <div class="panel-racing" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-                        <h3 style="margin: 0; border: none; padding: 0; font-size: 1.2rem;"><i class="fa-solid fa-stopwatch"></i> Monitor de Tiempos</h3>
-                        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                        <span id="telemetria-status" style="font-size: 0.85rem; color: var(--texto-secundario); font-weight: bold; font-family: 'Chakra Petch', sans-serif;"><i class="fa-solid fa-satellite-dish"></i> Inicializando enlace...</span>
-                        <a href="https://panel.apexlatamracing.it.com/live-timing" target="_blank" class="btn-mini btn-secundario" style="text-decoration: none;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Panel Original</a>
+                <div class="panel-racing" style="max-width: 100vw; width: 100vw; position: relative; left: 50%; transform: translateX(-50%); margin: 0 auto 30px; padding: 20px 0; border-radius: 0; border-left: none; border-right: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 15px; padding: 0 20px;">
+                        <div style="flex: 1; display: flex; align-items: center;">
+                            <span id="telemetria-status" style="font-size: 0.85rem; color: #4ade80; font-weight: bold; font-family: 'Chakra Petch', sans-serif;"><i class="fa-solid fa-satellite-dish"></i> Panel Original</span>
+                        </div>
+                        <div style="text-align: center; flex: 2; min-width: 300px;">
+                            <h2 style="margin: 0; font-size: 1.8rem; color: var(--texto);">Telemetría en Vivo</h2>
+                            <p style="margin: 5px 0 0; color: var(--texto-secundario); font-size: 0.95rem;">Live Timing y Status del Servidor Oficial</p>
+                        </div>
+                        <div style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+                            <a href="acmanager://race/online/join?httpPort=8081&ip=apexlatamracing.ddns.net" class="btn-mini btn-secundario" style="text-decoration: none;"><i class="fa-solid fa-gamepad"></i> Unirse al Servidor</a>
+                            <div style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 6px; border-left: 3px solid var(--secundario);">
+                                <span style="color: var(--texto-secundario); font-family: 'Chakra Petch'; font-size: 0.9rem;">Contraseña: <strong style="color: var(--secundario); font-size: 1rem; letter-spacing: 1px;">ALRserver</strong></span>
+                            </div>
+                        </div>
                     </div>
-                </div>
                 
-                <!-- TABLA DE TELEMETRÍA (Modo Cloudflare Worker) -->
-                <div class="admin-table-container" style="background: rgba(0,0,0,0.8); border-color: #333; overflow-x: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                    <table class="admin-table" style="min-width: 800px; margin: 0; border-collapse: collapse; font-family: 'Chakra Petch', sans-serif;">
-                        <thead>
-                            <tr style="background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent); border-bottom: 2px solid var(--secundario);">
-                                <th style="width: 60px; text-align: center; padding: 12px;">POS</th>
-                                <th style="padding: 12px; text-align: left;">PILOTO</th>
-                                <th style="padding: 12px; text-align: left;">COCHE</th>
-                                <th style="text-align: center; padding: 12px;">MEJOR VUELTA</th>
-                                <th style="text-align: center; padding: 12px;">ÚLTIMA VUELTA</th>
-                                <th style="text-align: center; padding: 12px;">ESTADO</th>
-                            </tr>
-                        </thead>
-                        <tbody id="telemetria-body">
-                            <tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--texto-secundario);"><i class="fa-solid fa-satellite-dish fa-spin"></i> Conectando con el servidor de telemetría...</td></tr>
-                        </tbody>
-                    </table>
+                <!-- IFRAME DE TELEMETRÍA DIRECTA -->
+                <div style="overflow: hidden; margin-top: 20px; border-top: 1px solid var(--borde); border-bottom: 1px solid var(--borde);">
+                    <iframe id="iframe-telemetria" src="https://panel.apexlatamracing.it.com/live-timing" width="100%" height="1200px" frameborder="0" style="border: none; background: #000; display: block;"></iframe>
                 </div>
-                
-                <p style="text-align: center; color: var(--texto-secundario); font-size: 0.85rem; margin-top: 15px;">
-                    <i class="fa-solid fa-shield-halved" style="color: var(--acento);"></i> 
-                    Telemetría segura extraída mediante Cloudflare Worker.
-                </p>
             </div>
             </div>
         </div>
@@ -655,14 +640,16 @@
             <div class="footer-brand">
                 <img src="img/LogoEquipo.png" alt="Logo Oficial del Equipo" class="footer-logo">
                 <p>Pasión por el SimRacing y la competición de resistencia<br>al más alto nivel.</p>
-                <div class="footer-plataformas" style="display: flex; gap: 20px; margin-top: 20px; align-items: center;">
-                    <img src="img/aclogo.png" alt="Assetto Corsa" style="height: 30px; opacity: 0.5; filter: grayscale(100%); transition: 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none'" onmouseout="this.style.opacity='0.5'; this.style.filter='grayscale(100%)'">
-                    <img src="img/lmulogo.png" alt="Le Mans Ultimate" style="height: 30px; opacity: 0.5; filter: grayscale(100%); transition: 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none'" onmouseout="this.style.opacity='0.5'; this.style.filter='grayscale(100%)'">
-                </div>
-                <div class="social-icons">
-                    <a href="https://www.instagram.com/apexlatamracing/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://x.com/apexlatamracing" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="https://www.tiktok.com/@apexlatamracing" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                <div style="display: flex; align-items: center; gap: 20px; margin-top: 20px; flex-wrap: wrap;">
+                    <div class="social-icons" style="margin-top: 0;">
+                        <a href="https://www.instagram.com/apexlatamracing/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="https://x.com/apexlatamracing" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="https://www.tiktok.com/@apexlatamracing" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
+                    <div class="footer-plataformas" style="display: flex; gap: 15px; align-items: center; border-left: 1px solid var(--borde); padding-left: 20px;">
+                        <img src="img/aclogo.png" alt="Assetto Corsa" style="height: 25px; opacity: 0.5; filter: grayscale(100%); transition: 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none'" onmouseout="this.style.opacity='0.5'; this.style.filter='grayscale(100%)'">
+                        <img src="img/lmulogo.png" alt="Le Mans Ultimate" style="height: 25px; opacity: 0.5; filter: grayscale(100%); transition: 0.3s;" onmouseover="this.style.opacity='1'; this.style.filter='none'" onmouseout="this.style.opacity='0.5'; this.style.filter='grayscale(100%)'">
+                    </div>
                 </div>
             </div>
             
